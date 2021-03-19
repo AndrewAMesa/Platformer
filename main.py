@@ -2,7 +2,7 @@ import pygame, sys
 from pygame.locals import *
 pygame.init()
 
-test = 0
+test = "Branch test"
 class main():
     DISPLAYWIDTH = 15
     DISPLAYHEIGHT = 15
