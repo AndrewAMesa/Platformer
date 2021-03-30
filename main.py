@@ -1,8 +1,10 @@
 import pygame, sys
 from pygame.locals import *
+
 pygame.init()
 
-class main():
+
+class Main:
     DISPLAYWIDTH = 15
     DISPLAYHEIGHT = 15
     TILESIZE = 30
@@ -10,17 +12,17 @@ class main():
 
     def main(self):
 
-
         while True:
 
-            #Event Loop
+            # Event Loop
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
 
-            #Update the Screen
+            # Update the Screen
             pygame.display.update()
 
-MainObject = main()
+
+MainObject = Main()
 MainObject.main()
