@@ -1,8 +1,6 @@
 import pygame, sys
 from pygame.locals import *
-
-from LevelInterpreter import *
-
+from sprites import *
 pygame.init()
 
 
@@ -11,6 +9,16 @@ class Main:
     DISPLAYHEIGHT = 15
     TILESIZE = 30
     DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
+
+    #Images
+    swordImage = pygame.image.load("Images/Sword.png") \
+
+    #Sprites
+    sword = Sword(40, 40, swordImage)
+
+    #Sprite Groups
+    currentWeapon = pygame.sprite.Group()
+    currentWeapon.add(sword)
 
     def main(self):
 

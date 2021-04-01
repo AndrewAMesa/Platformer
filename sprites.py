@@ -9,11 +9,8 @@ class Platform:
 class Sword:
     def __init__(self, _left, _top, _image):
         pygame.sprite.Sprite.__init__(self)
-        self.left = _left
-        self.top = _top
         self.image = _image
         self.rect = self.image.get_rect()
-        self.rect.update(self.left, self.top, self.rect.width, self.rect.height)
-        self.count = 0
+        self.rect.update(_left, _top, self.rect.width, self.rect.height)
         self.xMove = 0
-        self.yMove =0
+        self.yMove = 0
