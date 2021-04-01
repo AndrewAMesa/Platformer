@@ -3,20 +3,23 @@ import pygame
 class MainCharacter:
 
     #Basic initialization class that supports different directions for the sprite
-    def __init__(self, sprites, posX, posY, direction):
+    def __init__(self, sprites, posX, posY, directionX, directionY):
 
         super().__init__()
         self.sprites = sprites
         self.currentSprite = 0
         self.image = self.sprites[self.currentSprite]
 
-        if direction != 0:
+        if directionX != 0:
             # For when the sprite is reversed
             self.sprites1 = []
             for i in range(len(self.sprites)):
                 self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
 
-            self.direction = direction
+        #Basic direction values for the character so that Andy can work on the weapons
+        #These can be used as multipliers for speed when the character and other objects are moving
+        self.directionX = directionX   #Can either be -1 or 1 (Left or Right)
+        self.directionY = directionY   #Can either be -1, 0, or 1 (Down, Neutral, Up)
 
 
 class Platform(pygame.sprite.Sprite):
