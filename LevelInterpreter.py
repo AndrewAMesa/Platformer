@@ -38,20 +38,4 @@ class LevelInterpreter:
             tempLeft = 0 - self.TILESIZE
             for x in range(self.BOARDWIDTH):
                 tempLeft += self.TILESIZE
-                if self.lineList[tempZ] == "w":
-                    tempCheck = int((random.random() * 6)) + 1
-                    if tempCheck == 1:
-                        tempWall = self.Wall
-                    elif tempCheck == 2:
-                        tempWall = self.Wall2
-                    elif tempCheck == 3:
-                        tempWall = self.Wall3
-                    elif tempCheck == 4:
-                        tempWall = self.Wall4
-                    elif tempCheck == 5:
-                        tempWall = self.Wall5
-                    elif tempCheck == 6:
-                        tempWall = self.Wall5
-                    self.tileList2[y][x] = tile(self.TILESIZE, tempLeft, tempTop, pygame.image.load(tempWall))
-                    self.tileList2[y][x].isWall = True
-                    tempZ += 1
+                #if self.lineList[tempZ] == "w":
