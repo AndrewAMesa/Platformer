@@ -63,7 +63,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect.topleft = [posX, posY]
 
         #Object information
-        self.breakable = breakable           #If True, destroy block in response to damage
+        self.breakable = breakable           #If True, destroy block in response to any damage
         self.damage = damage                 #For Blocks such as spikes and lava, amount of damage inflicted to the player
 
 
