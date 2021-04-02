@@ -26,6 +26,15 @@ class Sword (pygame.sprite.Sprite):
         self.rect.update(_left, _top, self.rect.width, self.rect.height)
         self.xMove = 0
         self.yMove = 0
-    def attack(self, enemyGroup, player):
-        self.rect
-    def rotate
+        self.xDirection = 1
+        self.yDirection = 0
+        self.attacking = False
+        self.attackingCount = 5
+    def attack(self):
+        if self.attacking == True:
+            self.rect.x += self.xDirection
+            self.rect.y += self.yDirection
+            self.attackingCount -= 1
+            if self.attackingCount == 0:
+                self.attacking = False
+                self.attackingCount = 5

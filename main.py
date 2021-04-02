@@ -39,7 +39,11 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed(3) == (True, False, False):
+                    sword.attacking = True
 
+        sword.attack()
         # Update the Screen
         pygame.display.update()
 
