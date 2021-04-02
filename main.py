@@ -2,6 +2,7 @@ import pygame, sys
 from pygame.locals import *
 
 from LevelInterpreter import *
+from sprites import *
 
 pygame.init()
 
