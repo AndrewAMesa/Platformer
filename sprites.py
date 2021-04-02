@@ -1,9 +1,12 @@
 import pygame
 
-class MainCharacter:
+##################
+#Character Classes
+##################
 
-    #Basic initialization class that supports different directions for the sprite
-    def __init__(self, sprites, posX, posY, directionX, directionY):
+#Main Character Class
+class Character(pygame.sprite.Sprite):
+    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY):
 
         super().__init__()
         self.sprites = sprites
@@ -16,12 +19,34 @@ class MainCharacter:
             for i in range(len(self.sprites)):
                 self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
 
-        #Basic direction values for the character so that Andy can work on the weapons
-        #These can be used as multipliers for speed when the character and other objects are moving
-        self.directionX = directionX   #Can either be -1 or 1 (Left or Right)
-        self.directionY = directionY   #Can either be -1, 0, or 1 (Down, Neutral, Up)
+        #position values
+        self.rect = self.image.get_rect()
+        self.posX = posX
+        self.posY = posY
+        self.rect.topleft = [posX, posY]
+
+        # Basic direction values for the character so that Andy can work on the weapons
+        # These can be used as multipliers for speed when the character and other objects are moving
+        self.directionX = directionX  # Can either be -1 or 1 (Left or Right)
+        self.directionY = directionY  # Can either be -1, 0, or 1 (Down, Neutral, Up)
 
 
+#Lower Character Classes
+class MainCharacter(Character):
+
+    #Basic initialization class that supports different directions for the sprite
+    def __init__(self, sprites, posX, posY, directionX, directionY):
+
+        super().__init__()
+
+
+
+
+##############
+#Block Classes
+##############
+
+#Main Block Class
 class Platform(pygame.sprite.Sprite):
 
     def __init__(self, sprites, posX, posY, breakable, damage):
@@ -41,6 +66,8 @@ class Platform(pygame.sprite.Sprite):
         self.breakable = breakable           #If True, destroy block in response to damage
         self.damage = damage                 #For Blocks such as spikes and lava, amount of damage inflicted to the player
 
+
+#Lower Block Classes
 class BasicBlock(Platform):
 
     def __init__(self, sprites, posX, posY):
