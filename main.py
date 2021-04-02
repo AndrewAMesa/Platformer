@@ -11,9 +11,16 @@ DISPLAYHEIGHT = 15
 TILESIZE = 30
 DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
 
+#Images
+swordImage = pygame.image.load("Images/Sword.png")
+
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
+
+sword = Sword(233, 225, swordImage)
+main_Weapon = pygame.sprite.Group()
+main_Weapon.add(sword)
 
 platform1 = Platform(DISPLAYSURF)
 platform_group = pygame.sprite.Group()
@@ -25,6 +32,7 @@ def main():
     while True:
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
+        main_Weapon.draw(DISPLAYSURF)
 
         # Event Loop
         for event in pygame.event.get():
