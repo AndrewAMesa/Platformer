@@ -11,7 +11,7 @@ class Main:
     DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
 
     #Images
-    swordImage = pygame.image.load("Images/Sword.png") \
+    swordImage = pygame.image.load("Images/Sword.png")
 
     #Sprites
     sword = Sword(40, 40, swordImage)
@@ -23,7 +23,7 @@ class Main:
     def main(self):
 
         while True:
-
+            self.currentWeapon.draw(self.DISPLAYSURF)
             # Event Loop
             for event in pygame.event.get():
                 if event.type == QUIT:

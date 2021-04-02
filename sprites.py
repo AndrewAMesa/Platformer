@@ -1,12 +1,12 @@
 import pygame, sys
-from pygame.locals import *
+from pygame.sprite import *
 
 class MainCharacter:
     print("hi")
 class Platform:
     print("hi")
 
-class Sword:
+class Sword (pygame.sprite.Sprite):
     def __init__(self, _left, _top, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
