@@ -33,6 +33,8 @@ def main():
                 sys.exit()
 
         # Update the Screen
+        for character in character_group:
+            character.update()
         pygame.display.update()
 
 
