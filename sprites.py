@@ -30,14 +30,26 @@ class Character(pygame.sprite.Sprite):
         # These can be used as multipliers for speed when the character and other objects are moving
         self.directionX = directionX  # Can either be -1 or 1 (Left or Right)
         self.directionY = directionY  # Can either be -1, 0, or 1 (Down, Neutral, Up)
-class MainCharacter(pygame.sprite.Sprite):
+
+        #Character Health
+        self.health = health
+        #Character Damage on contact to player
+        self.damage = damage
+
+class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
-        super().__init__()
-        self.image = pygame.image.load(os.path.join("Images", "Player.png"))
-        self.rect = self.image.get_rect()
-        self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
+
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load(os.path.join("Images", "Player.png")))
+
         self.x_velocity = 0
         self.y_velocity = 0
+
+        super().__init__(self.images, 0, 0, 10, 0, 1, 0)
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
     def update(self):
         self.x_velocity = 0
@@ -60,9 +72,10 @@ class MainCharacter(pygame.sprite.Sprite):
 
 #Main Block Class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, DISPLAYSURF, posX, posY, breakable, damage, image):
+
+    def __init__(self, sprite, posX, posY, breakable, damage):
         super().__init__()
-        self.image = image
+        self.image = sprite
 
         #position values
         self.rect = self.image.get_rect()
@@ -81,38 +94,40 @@ class Platform(pygame.sprite.Sprite):
 #Lower Block Classes
 class BasicBlock(Platform):
 
-    def __init__(self, sprites, posX, posY):
+    def __init__(self, posX, posY):
 
         #Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
 
-        super.__init__(sprites, posX, posY, False, 0)
+        super().__init__(self.sprite, posX, posY, False, 0)
 
 
 class BreakableBlock(Platform):
 
-    def __init__(self, sprites, posX, posY):
+    def __init__(self, posX, posY):
 
         # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
 
-        super.__init__(sprites, posX, posY, True, 0)
+        super().__init__(self.sprite, posX, posY, True, 0)
 
 class SpikesBlock(Platform):
 
-    def __init__(self, sprites, posX, posY):
+    def __init__(self, posX, posY):
 
         # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
 
-        super.__init__(sprites, posX, posY, False, 5)
+        super().__init__(self.sprite, posX, posY, False, 5)
 
 class LavaBlock(Platform):
 
-    def __init__(self, sprites, posX, posY):
+    def __init__(self, posX, posY):
 
         # Load Images
-        self.sprites = []
-        self.sprites.append(pygame.image.load('Images/Lava.png'))
+        self.sprite = pygame.image.load('Images/Lava.png')
 
-        super.__init__(sprites, posX, posY, False, 5)
+        super().__init__(self.sprite, posX, posY, False, 5)
 
 
 
