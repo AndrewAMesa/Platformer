@@ -27,3 +27,15 @@ class LevelInterpreter:
                     self.lineList.append(line[x])
             self.count += 1
         self.count -= 1
+
+    def convert(self):
+        tempZ = 0
+        tempTop = 0 - self.TILESIZE
+        self.tileList2 = [[0] * (self.BOARDWIDTH) for x in range(self.count)]
+
+        for y in range(self.count):
+            tempTop += self.TILESIZE
+            tempLeft = 0 - self.TILESIZE
+            for x in range(self.BOARDWIDTH):
+                tempLeft += self.TILESIZE
+                #if self.lineList[tempZ] == "w":
