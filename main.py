@@ -14,7 +14,7 @@ FPS = 60
 GRAVITY = 1
 DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
 
-platform1 = LavaBlock(150, 300)
+platform1 = LavaBlock(150, 250)
 platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
 
