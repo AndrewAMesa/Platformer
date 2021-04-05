@@ -23,6 +23,7 @@ class MainCharacter(pygame.sprite.Sprite):
 
     def jump(self):
         self.y_velocity = -10
+        self.rect.y += self.y_velocity
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF):

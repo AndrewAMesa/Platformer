@@ -28,6 +28,11 @@ def update_all():
         main_character.y_velocity = 0
     else:
         main_character.y_velocity += GRAVITY
+        for platform in platform_group:
+            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
+                if main_character.rect.bottom + GRAVITY > platform.rect.top > main_character.rect.bottom:
+                    main_character.rect.bottom = platform.rect.top
+                    main_character.y_velocity = 0
     for platform in platform_group:
         platform.update()
     for character in character_group:
