@@ -38,7 +38,6 @@ def update_all():
     for character in character_group:
         character.update()
 
-
 def checkStanding(character):
     for platform in platform_group:
         if character.rect.bottom == platform.rect.top:
@@ -67,6 +66,5 @@ def main():
         pygame.display.update()
 
         fpsClock.tick(FPS)
-
 
 main()
