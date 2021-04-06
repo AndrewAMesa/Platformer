@@ -2,40 +2,60 @@ import pygame
 
 class LevelInterpreter:
 
-    def parseText(self, levelNum):
-        self.count = 0
-        file = open("Levels/Level" + str(levelNum) + ".txt")
-        line = file.readline()
-        for x in range(0, len(line)):
-            if line[x] == "i":
-                self.startingSpotX = x
-                self.startingSpotY = self.count
-                self.BOARDWIDTH += 1
-                self.lineList.append(line[x])
-            elif line[x] != ',' and line[x] != '\n':
-                self.BOARDWIDTH += 1
-                self.lineList.append(line[x])
-        self.count += 1
-        while line:
-            line = file.readline()
-            for x in range(0, len(line)):
-                if line[x] == "i":
-                    self.startingSpotX = x
-                    self.startingSpotY = self.count
-                    self.lineList.append(line[x])
-                elif line[x] != "," and line[x] != "\n":
-                    self.lineList.append(line[x])
-            self.count += 1
-        self.count -= 1
+    def readFile(self, levelNum):
 
-    def convert(self):
-        tempZ = 0
-        tempTop = 0 - self.TILESIZE
-        self.tileList2 = [[0] * (self.BOARDWIDTH) for x in range(self.count)]
+        timeStr = ""
+        lvlTime = -1
 
-        for y in range(self.count):
-            tempTop += self.TILESIZE
-            tempLeft = 0 - self.TILESIZE
-            for x in range(self.BOARDWIDTH):
-                tempLeft += self.TILESIZE
-                #if self.lineList[tempZ] == "w":
+        a = []
+
+        f = open("Levels/Level" + str(levelNum) + ".png", "r")
+
+        for x in f:
+            if "t" not in x:
+                c = []
+                for i in x:
+                    if i != "\n":
+                        c.append(i)
+
+                a.append(c)
+
+            elif "t" in x:
+                timeStr = x
+                timeStr = timeStr.replace("t", "")
+                lvlTime = int(timeStr)
+
+        lenX = len(a)
+        lenY = len(a[0])
+
+        b = []
+
+        for i in range(lenY):
+            d = []
+            for j in range(lenX):
+                d.append(0)
+
+            b.append(d)
+
+        lenX = len(b)
+        lenY = len(b[0])
+
+        # inverting the map
+        for i in range(lenX):
+            for j in range(lenY):
+                b[i][j] = a[j][i]
+
+        for i in range(lenX):
+            for j in range(lenY):
+                if b[i][j] == "P":
+                    startingPosX = i
+                    startingPosY = j
+                    exit
+
+        for i in range(lenX):
+            for j in range(lenY):
+                if b[i][j] == "L":
+                    platform_group.add(platform1)
+
+
+        return b
