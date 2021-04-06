@@ -35,12 +35,15 @@ class Character(pygame.sprite.Sprite):
 class MainCharacter(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF):
         super().__init__()
+        self.health = 100
         self.image = pygame.image.load(os.path.join("Images", "Player.png"))
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
         self.x_velocity = 0
         self.y_velocity = 0
-
+    def addhealth(self):
+        if self.health!=100:
+            self.health+=10
     def update(self):
         self.x_velocity = 0
         keys = pygame.key.get_pressed()
@@ -127,9 +130,9 @@ class Collectables(pygame.sprite.Sprite):
         self.image=pygame.image.load(image)
 
     def is_collided_with(self, char):
-
         if self.rect.colliderect(char.rect):
-
+            if self.name=='health':
+                char.addhealth()
             self.kill()
 
     def getname(self):
