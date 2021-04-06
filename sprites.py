@@ -80,7 +80,7 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self, posX, posY, breakable, damage, image):
 
         super().__init__()
-        self.image = sprite
+        self.image = image
 
         # position values
         self.rect = self.image.get_rect()
