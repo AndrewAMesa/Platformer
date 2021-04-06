@@ -12,7 +12,8 @@ DISPLAYHEIGHT = 15
 TILESIZE = 30
 FPS = 60
 GRAVITY = 1
-DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
+infoObject = pygame.display.Info()
+DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform1 = Platform(pygame.image.load('Images/TestPlatform.png'), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 30, False, 0)
@@ -21,7 +22,6 @@ platform3 = LavaBlock(100, 350)
 platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
 platform_group.add(platform2)
-platform_group.add(platform3)
 
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
@@ -59,6 +59,7 @@ def checkStanding(character):
 
 
 def main():
+    readFile(0)
     while True:
         DISPLAYSURF.fill((0, 0, 0))
         update_all()
@@ -71,6 +72,11 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
+
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
                 if event.key == K_w:
                     if checkStanding(main_character):
                         main_character.jump()
@@ -79,5 +85,64 @@ def main():
         pygame.display.update()
 
         fpsClock.tick(FPS)
+
+
+def readFile(levelNum):
+    timeStr = ""
+    lvlTime = -1
+
+    a = []
+
+    f = open("Levels/Level" + str(levelNum), "r")
+
+    for x in f:
+        if "t" not in x:
+            c = []
+            for i in x:
+                if i != "\n":
+                    c.append(i)
+
+            a.append(c)
+
+        elif "t" in x:
+            timeStr = x
+            timeStr = timeStr.replace("t", "")
+            lvlTime = int(timeStr)
+
+    lenX = len(a)
+    lenY = len(a[0])
+
+    b = []
+
+    for i in range(lenY):
+        d = []
+        for j in range(lenX):
+            d.append(0)
+
+        b.append(d)
+
+    lenX = len(b)
+    lenY = len(b[0])
+
+    # inverting the map
+    for i in range(lenX):
+        for j in range(lenY):
+            b[i][j] = a[j][i]
+
+    startingPosX = 0
+    startingPosY = 0
+
+    for i in range(lenX):
+        for j in range(lenY):
+            if b[i][j] == "P":
+                startingPosX = i
+                startingPosY = j
+                exit
+
+    for i in range(lenX):
+        for j in range(lenY):
+            if b[i][j] == "L":
+                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * (120)), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * (120))))
+
 
 main()
