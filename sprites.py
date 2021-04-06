@@ -50,6 +50,7 @@ class MainCharacter(Character):
 
         self.x_velocity = 0
         self.y_velocity = 0
+        self.jump_height = -15
 
         super().__init__(self.images, 0, 0, 10, 0, 1, 0)
 
@@ -67,8 +68,7 @@ class MainCharacter(Character):
         self.rect.y += self.y_velocity
 
     def jump(self):
-        self.y_velocity = -10
-        self.rect.y += self.y_velocity
+        self.y_velocity = self.jump_height
 
 
 ##############
