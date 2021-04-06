@@ -20,11 +20,13 @@ GRAVITY = 1
 DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
-platform1 = Platform(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 30, False, 0, pygame.image.load('Images/TestPlatform.png'))
-platform2 = Platform(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60, False, 0, pygame.image.load('Images/TestPlatform.png'))
+platform1 = Platform(pygame.image.load('Images/TestPlatform.png'), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 30, False, 0)
+platform2 = Platform(pygame.image.load('Images/TestPlatform.png'), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60, False, 0)
+platform3 = LavaBlock(100, 350)
 platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
 platform_group.add(platform2)
+platform_group.add(platform3)
 
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()

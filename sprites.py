@@ -80,7 +80,7 @@ class MainCharacter(Character):
 
 # Main Block Class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, posX, posY, breakable, damage, image):
+    def __init__(self, image, posX, posY, breakable, damage):
 
         super().__init__()
         self.image = image
@@ -99,30 +99,52 @@ class Platform(pygame.sprite.Sprite):
         pass
 
 
-# Lower Block Classes
+#Lower Block Classes
 class BasicBlock(Platform):
-    def __init__(self, sprites, posX, posY):
-        # Load Images
-        Platform.__init__(sprites, posX, posY, False, 0)
+
+    def __init__(self, posX, posY):
+
+        #Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0)
 
 
 class BreakableBlock(Platform):
-    def __init__(self, sprites, posX, posY):
-        # Load Images
-        Platform.__init__(sprites, posX, posY, True, 0)
 
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, True, 0)
 
 class SpikesBlock(Platform):
-    def __init__(self, sprites, posX, posY):
-        # Load Images
-        Platform.__init__(sprites, posX, posY, False, 5)
 
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 5)
 
 class LavaBlock(Platform):
-    def __init__(self, sprites, posX, posY):
+
+    def __init__(self, posX, posY):
+
         # Load Images
-        image = (pygame.image.load('Images/Lava.png'))
-        Platform.__init__(sprites, posX, posY, False, 5, image)
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 5)
+
+class DoorBlock(Platform):
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0)
 
 
 
