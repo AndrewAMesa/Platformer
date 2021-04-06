@@ -18,7 +18,6 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform1 = Platform(pygame.image.load('Images/TestPlatform.png'), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 30, False, 0)
 platform2 = Platform(pygame.image.load('Images/TestPlatform.png'), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60, False, 0)
-platform3 = LavaBlock(100, 350)
 platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
 platform_group.add(platform2)
@@ -45,11 +44,10 @@ def update_all():
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom:
                     main_character.rect.bottom = platform.rect.top
                     main_character.y_velocity = 0
-
+    character_group.update()
+    shiftX, shiftY = main_character.getShift()
     for platform in platform_group:
-        platform.update()
-    for character in character_group:
-        character.update()
+        platform.update(shiftX, shiftY)
 
 def checkStanding(character):
     for platform in platform_group:
@@ -142,7 +140,7 @@ def readFile(levelNum):
     for i in range(lenX):
         for j in range(lenY):
             if b[i][j] == "L":
-                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * (120)), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * (120))))
+                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * 120), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * 120)))
 
 
 main()
