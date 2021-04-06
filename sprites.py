@@ -67,8 +67,11 @@ class MainCharacter(Character):
         self.rect.x += self.x_velocity
         self.rect.y += self.y_velocity
 
-    def jump(self):
-        self.y_velocity = self.jump_height
+    def jump(self, weapon):
+        self.y_velocity = -10
+        weapon.y_velocity = -10
+        self.rect.y += self.y_velocity
+        weapon.rect.y += weapon.y_velocity
 
 
 ##############
@@ -148,3 +151,43 @@ class Collectables(pygame.sprite.Sprite):
 
     def getposy(self):
         return self.posy
+
+##############
+#Weapons
+##############
+class Sword (pygame.sprite.Sprite):
+    def __init__(self, _left, _top, _image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        self.rect = self.image.get_rect()
+        self.rect.update(_left, _top, self.rect.width, self.rect.height)
+        self.x_velocity = 0
+        self.y_velocity = 0
+        self.xMove = 0
+        self.yMove = 0
+        self.xDirection = 2
+        self.yDirection = 0
+        self.attacking = False
+        self.attackingCount = 8
+    def update(self):
+        self.x_velocity = 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d]:
+            self.x_velocity = 5
+        if keys[pygame.K_a]:
+            self.x_velocity = -5
+        self.rect.x += self.x_velocity
+        self.rect.y += self.y_velocity
+        self.attack()
+    def attack(self):
+        if self.attacking == True:
+            self.rect.x += self.xDirection
+            self.rect.y += self.yDirection
+            self.attackingCount -= 1
+            if self.attackingCount == 0:
+                self.attacking = False
+                self.attackingCount = 8
+                self.xDirection = 2
+            elif self.attackingCount <= 4:
+                self.xDirection = -2
+
