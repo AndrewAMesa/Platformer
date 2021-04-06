@@ -65,9 +65,6 @@ class MainCharacter(Character):
         if keys[pygame.K_a]:
             self.x_velocity = -5
 
-        #self.rect.x += self.x_velocity
-        self.rect.y += self.y_velocity
-
 
     def getShift(self):
         return self.x_velocity, self.y_velocity
