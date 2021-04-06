@@ -1,13 +1,15 @@
 import pygame, sys
+
 pygame.init()
 import pygame
 import os
 
+
 ##################
-#Character Classes
+# Character Classes
 ##################
 
-#Main Character Class
+# Main Character Class
 class Character(pygame.sprite.Sprite):
     def __init__(self, sprites, posX, posY, health, damage, directionX, directionY):
 
@@ -22,7 +24,7 @@ class Character(pygame.sprite.Sprite):
             for i in range(len(self.sprites)):
                 self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
 
-        #position values
+        # position values
         self.rect = self.image.get_rect()
         self.posX = posX
         self.posY = posY
@@ -32,6 +34,8 @@ class Character(pygame.sprite.Sprite):
         # These can be used as multipliers for speed when the character and other objects are moving
         self.directionX = directionX  # Can either be -1 or 1 (Left or Right)
         self.directionY = directionY  # Can either be -1, 0, or 1 (Down, Neutral, Up)
+
+
 class MainCharacter(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF):
         super().__init__()
@@ -57,62 +61,52 @@ class MainCharacter(pygame.sprite.Sprite):
 
 
 ##############
-#Block Classes
+# Block Classes
 ##############
 
-#Main Block Class
+# Main Block Class
 class Platform(pygame.sprite.Sprite):
     def __init__(self, posX, posY, breakable, damage, image):
         super().__init__()
         self.image = image
 
-        #position values
+        # position values
         self.rect = self.image.get_rect()
         self.posX = posX
         self.posY = posY
         self.rect.center = (self.posX, self.posY)
 
-        #Object information
-        self.breakable = breakable           #If True, destroy block in response to any damage
-        self.damage = damage                 #For Blocks such as spikes and lava, amount of damage inflicted to the player
+        # Object information
+        self.breakable = breakable  # If True, destroy block in response to any damage
+        self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
 
     def update(self):
         pass
 
 
-#Lower Block Classes
+# Lower Block Classes
 class BasicBlock(Platform):
-
     def __init__(self, sprites, posX, posY):
-
-        #Load Images
-
+        # Load Images
         Platform.__init__(sprites, posX, posY, False, 0)
 
 
 class BreakableBlock(Platform):
-
     def __init__(self, sprites, posX, posY):
-
         # Load Images
-
         Platform.__init__(sprites, posX, posY, True, 0)
 
+
 class SpikesBlock(Platform):
-
     def __init__(self, sprites, posX, posY):
-
         # Load Images
-
         Platform.__init__(sprites, posX, posY, False, 5)
 
+
 class LavaBlock(Platform):
-
     def __init__(self, sprites, posX, posY):
-
         # Load Images
         image = (pygame.image.load('Images/Lava.png'))
-
         Platform.__init__(sprites, posX, posY, False, 5, image)
 
 
@@ -123,12 +117,10 @@ class Collectables(pygame.sprite.Sprite):
         self.xpos = xpos
         self.ypos = ypos
         self.rect.update(xpos, ypos, 100, 100)
-        self.image=pygame.image.load(image)
+        self.image = pygame.image.load(image)
 
     def is_collided_with(self, char):
-
         if self.rect.colliderect(char.rect):
-
             self.kill()
 
     def getname(self):
