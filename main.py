@@ -13,8 +13,9 @@ TILESIZE = 30
 FPS = 60
 GRAVITY = 1
 DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * TILESIZE))
+SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
-platform1 = LavaBlock(150, 250)
+platform1 = Platform(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 30, False, 0, pygame.image.load('Images/TestPlatform.png'))
 platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
 
@@ -30,7 +31,7 @@ def update_all():
         main_character.y_velocity += GRAVITY
         for platform in platform_group:
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
-                if main_character.rect.bottom + GRAVITY > platform.rect.top > main_character.rect.bottom:
+                if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom:
                     main_character.rect.bottom = platform.rect.top
                     main_character.y_velocity = 0
     for platform in platform_group:
