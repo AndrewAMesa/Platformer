@@ -1,13 +1,15 @@
 import pygame, sys
+
 pygame.init()
 import pygame
 import os
 
+
 ##################
-#Character Classes
+# Character Classes
 ##################
 
-#Main Character Class
+# Main Character Class
 class Character(pygame.sprite.Sprite):
     def __init__(self, sprites, posX, posY, health, damage, directionX, directionY):
 
@@ -22,7 +24,7 @@ class Character(pygame.sprite.Sprite):
             for i in range(len(self.sprites)):
                 self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
 
-        #position values
+        # position values
         self.rect = self.image.get_rect()
         self.posX = posX
         self.posY = posY
@@ -38,6 +40,7 @@ class Character(pygame.sprite.Sprite):
         #Character Damage on contact to player
         self.damage = damage
 
+        
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
 
@@ -47,6 +50,7 @@ class MainCharacter(Character):
 
         self.x_velocity = 0
         self.y_velocity = 0
+        self.jump_height = -15
 
         super().__init__(self.images, 0, 0, 10, 0, 1, 0)
 
@@ -71,67 +75,55 @@ class MainCharacter(Character):
 
 
 ##############
-#Block Classes
+# Block Classes
 ##############
 
-#Main Block Class
+# Main Block Class
 class Platform(pygame.sprite.Sprite):
+    def __init__(self, posX, posY, breakable, damage, image):
 
-    def __init__(self, sprite, posX, posY, breakable, damage):
         super().__init__()
-        self.image = sprite
+        self.image = image
 
-        #position values
+        # position values
         self.rect = self.image.get_rect()
         self.posX = posX
         self.posY = posY
-        self.rect.topleft = [posX, posY]
+        self.rect.center = (self.posX, self.posY)
 
-        #Object information
-        self.breakable = breakable           #If True, destroy block in response to any damage
-        self.damage = damage                 #For Blocks such as spikes and lava, amount of damage inflicted to the player
+        # Object information
+        self.breakable = breakable  # If True, destroy block in response to any damage
+        self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
 
     def update(self):
         pass
 
 
-#Lower Block Classes
+# Lower Block Classes
 class BasicBlock(Platform):
-
-    def __init__(self, posX, posY):
-
-        #Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
-
-        super().__init__(self.sprite, posX, posY, False, 0)
+    def __init__(self, sprites, posX, posY):
+        # Load Images
+        Platform.__init__(sprites, posX, posY, False, 0)
 
 
 class BreakableBlock(Platform):
-
-    def __init__(self, posX, posY):
-
+    def __init__(self, sprites, posX, posY):
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        Platform.__init__(sprites, posX, posY, True, 0)
 
-        super().__init__(self.sprite, posX, posY, True, 0)
 
 class SpikesBlock(Platform):
-
-    def __init__(self, posX, posY):
-
+    def __init__(self, sprites, posX, posY):
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        Platform.__init__(sprites, posX, posY, False, 5)
 
-        super().__init__(self.sprite, posX, posY, False, 5)
 
 class LavaBlock(Platform):
-
-    def __init__(self, posX, posY):
-
+    def __init__(self, sprites, posX, posY):
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        image = (pygame.image.load('Images/Lava.png'))
+        Platform.__init__(sprites, posX, posY, False, 5, image)
 
-        super().__init__(self.sprite, posX, posY, False, 5)
 
 
 class Collectables(pygame.sprite.Sprite):
@@ -141,12 +133,10 @@ class Collectables(pygame.sprite.Sprite):
         self.xpos = xpos
         self.ypos = ypos
         self.rect.update(xpos, ypos, 100, 100)
-        self.image=pygame.image.load(image)
+        self.image = pygame.image.load(image)
 
     def is_collided_with(self, char):
-
         if self.rect.colliderect(char.rect):
-
             self.kill()
 
     def getname(self):
