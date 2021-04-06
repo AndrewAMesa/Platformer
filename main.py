@@ -16,8 +16,10 @@ DISPLAYSURF = pygame.display.set_mode((DISPLAYWIDTH * TILESIZE, DISPLAYHEIGHT * 
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform1 = Platform(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 30, False, 0, pygame.image.load('Images/TestPlatform.png'))
+platform2 = Platform(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60, False, 0, pygame.image.load('Images/TestPlatform.png'))
 platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
+platform_group.add(platform2)
 
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
@@ -25,8 +27,15 @@ character_group.add(main_character)
 
 
 def update_all():
-    if checkStanding(main_character):
+    if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
+    elif main_character.y_velocity + GRAVITY < 0:
+        main_character.y_velocity += GRAVITY
+        for platform in platform_group:
+            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
+                if main_character.rect.top + main_character.y_velocity < platform.rect.bottom < main_character.rect.top:
+                    main_character.rect.top = platform.rect.bottom
+                    main_character.y_velocity = 0
     else:
         main_character.y_velocity += GRAVITY
         for platform in platform_group:
@@ -34,6 +43,7 @@ def update_all():
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom:
                     main_character.rect.bottom = platform.rect.top
                     main_character.y_velocity = 0
+
     for platform in platform_group:
         platform.update()
     for character in character_group:

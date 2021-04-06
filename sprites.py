@@ -44,6 +44,7 @@ class MainCharacter(pygame.sprite.Sprite):
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
         self.x_velocity = 0
         self.y_velocity = 0
+        self.jump_height = -15
 
     def update(self):
         self.x_velocity = 0
@@ -56,8 +57,7 @@ class MainCharacter(pygame.sprite.Sprite):
         self.rect.y += self.y_velocity
 
     def jump(self):
-        self.y_velocity = -10
-        self.rect.y += self.y_velocity
+        self.y_velocity = self.jump_height
 
 
 ##############
