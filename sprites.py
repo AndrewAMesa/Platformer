@@ -35,15 +35,26 @@ class Character(pygame.sprite.Sprite):
         self.directionX = directionX  # Can either be -1 or 1 (Left or Right)
         self.directionY = directionY  # Can either be -1, 0, or 1 (Down, Neutral, Up)
 
+        #Character Health
+        self.health = health
+        #Character Damage on contact to player
+        self.damage = damage
 
-class MainCharacter(pygame.sprite.Sprite):
+        
+class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
-        super().__init__()
-        self.image = pygame.image.load(os.path.join("Images", "Player.png"))
-        self.rect = self.image.get_rect()
-        self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
+
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load(os.path.join("Images", "Player.png")))
+
         self.x_velocity = 0
         self.y_velocity = 0
+
+        super().__init__(self.images, 0, 0, 10, 0, 1, 0)
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
     def update(self):
         self.x_velocity = 0
@@ -67,8 +78,9 @@ class MainCharacter(pygame.sprite.Sprite):
 # Main Block Class
 class Platform(pygame.sprite.Sprite):
     def __init__(self, posX, posY, breakable, damage, image):
+
         super().__init__()
-        self.image = image
+        self.image = sprite
 
         # position values
         self.rect = self.image.get_rect()
@@ -108,6 +120,7 @@ class LavaBlock(Platform):
         # Load Images
         image = (pygame.image.load('Images/Lava.png'))
         Platform.__init__(sprites, posX, posY, False, 5, image)
+
 
 
 class Collectables(pygame.sprite.Sprite):
