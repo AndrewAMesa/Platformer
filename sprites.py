@@ -62,7 +62,7 @@ class MainCharacter(pygame.sprite.Sprite):
 
 #Main Block Class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, DISPLAYSURF, posX, posY, breakable, damage, image):
+    def __init__(self, posX, posY, breakable, damage, image):
         super().__init__()
         self.image = image
 
@@ -70,7 +70,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.posX = posX
         self.posY = posY
-        self.rect.topleft = [posX, posY]
+        self.rect.center = (self.posX, self.posY)
 
         #Object information
         self.breakable = breakable           #If True, destroy block in response to any damage
@@ -87,7 +87,7 @@ class BasicBlock(Platform):
 
         #Load Images
 
-        super.__init__(sprites, posX, posY, False, 0)
+        Platform.__init__(sprites, posX, posY, False, 0)
 
 
 class BreakableBlock(Platform):
@@ -96,7 +96,7 @@ class BreakableBlock(Platform):
 
         # Load Images
 
-        super.__init__(sprites, posX, posY, True, 0)
+        Platform.__init__(sprites, posX, posY, True, 0)
 
 class SpikesBlock(Platform):
 
@@ -104,17 +104,16 @@ class SpikesBlock(Platform):
 
         # Load Images
 
-        super.__init__(sprites, posX, posY, False, 5)
+        Platform.__init__(sprites, posX, posY, False, 5)
 
 class LavaBlock(Platform):
 
     def __init__(self, sprites, posX, posY):
 
         # Load Images
-        self.sprites = []
-        self.sprites.append(pygame.image.load('Images/Lava.png'))
+        image = (pygame.image.load('Images/Lava.png'))
 
-        super.__init__(sprites, posX, posY, False, 5)
+        Platform.__init__(sprites, posX, posY, False, 5, image)
 
 
 class Collectables(pygame.sprite.Sprite):
