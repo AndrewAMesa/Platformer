@@ -70,10 +70,8 @@ class MainCharacter(Character):
         return self.x_velocity, self.y_velocity
 
     def jump(self, weapon):
-        self.y_velocity = -10
-        weapon.y_velocity = -10
-        self.rect.y += self.y_velocity
-        weapon.rect.y += weapon.y_velocity
+        self.y_velocity = self.jump_height
+        weapon.y_velocity = self.jump_height
 
 
 ##############
@@ -203,8 +201,7 @@ class Sword (pygame.sprite.Sprite):
             self.x_velocity = 5
         if keys[pygame.K_a]:
             self.x_velocity = -5
-        self.rect.x += self.x_velocity
-        self.rect.y += self.y_velocity
+
         self.attack()
     def attack(self):
         if self.attacking == True:
