@@ -4,6 +4,7 @@ pygame.init()
 import pygame
 import os
 
+SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 ##################
 # Character Classes
@@ -102,6 +103,8 @@ class Platform(pygame.sprite.Sprite):
 
         super().__init__()
         self.image = image
+        if SCREEN_WIDTH == 1280:
+            self.image = pygame.transform.scale(self.image, (80, 80))
 
         # position values
         self.rect = self.image.get_rect()
