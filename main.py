@@ -27,7 +27,15 @@ platform_group = pygame.sprite.Group()
 platform_group.add(platform1)
 platform_group.add(platform2)
 
+healthcollectable= Collectables('health', SCREEN_WIDTH/2+30, SCREEN_HEIGHT/2, 'Images/Health.png')
+doublejump= Collectables('doublejump', SCREEN_WIDTH/2-30, SCREEN_HEIGHT/2, 'Images/DoubleJump.png')
+collectable_group= pygame.sprite.Group()
+collectable_group.add(doublejump)
+collectable_group.add(healthcollectable)
+
+
 main_character = MainCharacter(DISPLAYSURF)
+print(main_character.health)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
@@ -62,6 +70,9 @@ def update_all():
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
     sword.update()
+    for collectable in collectable_group:
+        collectable.is_collided_with(main_character)
+    main_character.displayhealth(DISPLAYSURF)
 
 def checkStanding(character):
     for platform in platform_group:
@@ -77,14 +88,15 @@ def main():
         update_all()
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
+        collectable_group.draw(DISPLAYSURF)
+                sys.exit()
+            if event.type == KEYDOWN:
         current_weapon.draw(DISPLAYSURF)
 
         # Event Loop
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
 
                 if event.key == K_ESCAPE:
                     pygame.quit()
@@ -103,7 +115,6 @@ def main():
         pygame.display.update()
 
         fpsClock.tick(FPS)
-
 
 def readFile(levelNum):
     timeStr = ""
