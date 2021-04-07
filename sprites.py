@@ -18,7 +18,8 @@ class Character(pygame.sprite.Sprite):
         self.sprites = sprites
         self.currentSprite = 0
         self.image = self.sprites[self.currentSprite]
-
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
         if directionX != 0:
             # For when the sprite is reversed
             self.sprites1 = []
@@ -104,7 +105,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.image = image
         if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (80, 80))
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
 
         # position values
         self.rect = self.image.get_rect()
@@ -210,6 +211,8 @@ class Sword (pygame.sprite.Sprite):
     def __init__(self, _left, _top, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
         self.rect.update(_left, _top, self.rect.width, self.rect.height)
         self.x_velocity = 0
