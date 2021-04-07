@@ -64,8 +64,10 @@ class MainCharacter(Character):
             self.x_velocity = 5
         if keys[pygame.K_a]:
             self.x_velocity = -5
-        self.rect.x += self.x_velocity
-        self.rect.y += self.y_velocity
+
+
+    def getShift(self):
+        return self.x_velocity, self.y_velocity
 
     def jump(self, weapon):
         self.y_velocity = -10
@@ -95,8 +97,11 @@ class Platform(pygame.sprite.Sprite):
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
 
-    def update(self):
-        pass
+    def update(self, shiftX, shiftY):
+        self.posX -= shiftX
+        self.posY -= shiftY
+
+        self.rect.center = (self.posX, self.posY)
 
 
 #Lower Block Classes
