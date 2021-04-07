@@ -162,11 +162,15 @@ def readFile(levelNum):
                 startingPosX = i
                 startingPosY = j
                 exit
+                
+    shiftSize = 120
+    if infoObject.current_h == 720:
+        shiftSize = 80
 
     for i in range(lenX):
         for j in range(lenY):
             if b[i][j] == "L":
-                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * 120), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * 120)))
+                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 
 
 main()

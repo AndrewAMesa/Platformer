@@ -4,6 +4,7 @@ pygame.init()
 import pygame
 import os
 
+infoObject = pygame.display.Info()
 
 ##################
 # Character Classes
@@ -102,6 +103,8 @@ class Platform(pygame.sprite.Sprite):
 
         super().__init__()
         self.image = image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (80, 80))
 
         # position values
         self.rect = self.image.get_rect()
