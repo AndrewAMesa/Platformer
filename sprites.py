@@ -62,11 +62,7 @@ class MainCharacter(Character):
             self.x_velocity = 5
         if keys[pygame.K_a]:
             self.x_velocity = -5
-        self.rect.x += self.x_velocity
-        self.rect.y += self.y_velocity
 
-    def jump(self):
-        self.y_velocity = self.jump_height
     def addhealth(self):
         if self.health<100:
             self.health+=10
@@ -87,6 +83,15 @@ class MainCharacter(Character):
             pygame.draw.rect(DISPLAYSURF, tuple, (i*15+10, 10, 10, 10))
             i+=1
 
+    def getShift(self):
+        return self.x_velocity, self.y_velocity
+
+    def jump(self, weapon):
+        self.y_velocity = -10
+        weapon.y_velocity = -10
+        self.rect.y += self.y_velocity
+        weapon.rect.y += weapon.y_velocity
+
 
 
 ##############
@@ -95,7 +100,7 @@ class MainCharacter(Character):
 
 # Main Block Class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, posX, posY, breakable, damage, image):
+    def __init__(self, image, posX, posY, breakable, damage):
 
         super().__init__()
         self.image = image
@@ -110,34 +115,59 @@ class Platform(pygame.sprite.Sprite):
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
 
-    def update(self):
-        pass
+    def update(self, shiftX, shiftY):
+        self.posX -= shiftX
+        self.posY -= shiftY
+
+        self.rect.center = (self.posX, self.posY)
 
 
-# Lower Block Classes
+#Lower Block Classes
 class BasicBlock(Platform):
-    def __init__(self, sprites, posX, posY):
-        # Load Images
-        Platform.__init__(sprites, posX, posY, False, 0)
+
+    def __init__(self, posX, posY):
+
+        #Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0)
 
 
 class BreakableBlock(Platform):
-    def __init__(self, sprites, posX, posY):
-        # Load Images
-        Platform.__init__(sprites, posX, posY, True, 0)
 
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, True, 0)
 
 class SpikesBlock(Platform):
-    def __init__(self, sprites, posX, posY):
-        # Load Images
-        Platform.__init__(sprites, posX, posY, False, 5)
 
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 5)
 
 class LavaBlock(Platform):
-    def __init__(self, sprites, posX, posY):
+
+    def __init__(self, posX, posY):
+
         # Load Images
-        image = (pygame.image.load('Images/Lava.png'))
-        Platform.__init__(sprites, posX, posY, False, 5, image)
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 5)
+
+class DoorBlock(Platform):
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0)
 
 
 
@@ -171,3 +201,43 @@ class Collectables(pygame.sprite.Sprite):
 
     def getposy(self):
         return self.posy
+
+##############
+#Weapons
+##############
+class Sword (pygame.sprite.Sprite):
+    def __init__(self, _left, _top, _image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        self.rect = self.image.get_rect()
+        self.rect.update(_left, _top, self.rect.width, self.rect.height)
+        self.x_velocity = 0
+        self.y_velocity = 0
+        self.xMove = 0
+        self.yMove = 0
+        self.xDirection = 2
+        self.yDirection = 0
+        self.attacking = False
+        self.attackingCount = 8
+    def update(self):
+        self.x_velocity = 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d]:
+            self.x_velocity = 5
+        if keys[pygame.K_a]:
+            self.x_velocity = -5
+        self.rect.x += self.x_velocity
+        self.rect.y += self.y_velocity
+        self.attack()
+    def attack(self):
+        if self.attacking == True:
+            self.rect.x += self.xDirection
+            self.rect.y += self.yDirection
+            self.attackingCount -= 1
+            if self.attackingCount == 0:
+                self.attacking = False
+                self.attackingCount = 8
+                self.xDirection = 2
+            elif self.attackingCount <= 4:
+                self.xDirection = -2
+
