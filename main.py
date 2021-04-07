@@ -71,7 +71,7 @@ def update_all():
     sword.update()
     for collectable in collectable_group:
         collectable.is_collided_with(main_character)
-    main_character.displayhealth(DISPLAYSURF)
+
 
 def checkStanding(character):
     for platform in platform_group:
@@ -85,26 +85,22 @@ def main():
     while True:
         DISPLAYSURF.fill((0, 0, 0))
         update_all()
-        character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
+        character_group.draw(DISPLAYSURF)
         collectable_group.draw(DISPLAYSURF)
-                sys.exit()
-            if event.type == KEYDOWN:
         current_weapon.draw(DISPLAYSURF)
+        main_character.displayhealth(DISPLAYSURF)
 
         # Event Loop
         for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-
+            if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-
                 if event.key == K_w:
                     if checkStanding(main_character):
                         main_character.jump(sword)
-            if event.type == MOUSEBUTTONDOWN:
+            elif event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed(3) == (True, False, False):
                     sword.attacking = True
 
