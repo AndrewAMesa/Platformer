@@ -47,7 +47,7 @@ class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load(os.path.join("Images", "Player.png")))
+        self.images.append(pygame.image.load(os.path.join("Images", "Player2.png")))
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -15
@@ -64,7 +64,8 @@ class MainCharacter(Character):
             self.x_velocity = 5
         if keys[pygame.K_a]:
             self.x_velocity = -5
-
+        if infoObject.current_h == 720:
+            self.x_velocity = int(self.x_velocity * 0.667)
     def addhealth(self):
         if self.health<100:
             self.health+=10
@@ -86,12 +87,15 @@ class MainCharacter(Character):
             i+=1
 
     def getShift(self):
+        print(self.y_velocity)
         return self.x_velocity, self.y_velocity
 
     def jump(self, weapon):
         self.y_velocity = self.jump_height
         weapon.y_velocity = self.jump_height
-
+        if infoObject.current_h == 720:
+            self.y_velocity = int(self.y_velocity * 0.667)
+            weapon.y_velocity = int(weapon.y_velocity * 0.667)
 
 
 ##############

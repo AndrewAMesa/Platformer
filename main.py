@@ -11,11 +11,11 @@ fpsClock = pygame.time.Clock()
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
 
-DISPLAYWIDTH = 15
-DISPLAYHEIGHT = 15
 TILESIZE = 30
 FPS = 60
 GRAVITY = 1
+if infoObject.current_h == 720:
+    GRAVITY = GRAVITY * 0.667
 infoObject = pygame.display.Info()
 DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
@@ -34,7 +34,6 @@ collectable_group.add(healthcollectable)
 
 
 main_character = MainCharacter(DISPLAYSURF)
-print(main_character.health)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
@@ -43,6 +42,12 @@ current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
 
 def update_all():
+    character_group.update()
+    shiftX, shiftY = main_character.getShift()
+    platform_group.update(shiftX, shiftY)
+    sword.update()
+    for collectable in collectable_group:
+        collectable.is_collided_with(main_character)
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
         sword.y_velocity = 0
@@ -65,12 +70,7 @@ def update_all():
                     main_character.y_velocity = 0
                     sword.y_velocity = 0
 
-    character_group.update()
-    shiftX, shiftY = main_character.getShift()
-    platform_group.update(shiftX, shiftY)
-    sword.update()
-    for collectable in collectable_group:
-        collectable.is_collided_with(main_character)
+
 
 
 def checkStanding(character):
