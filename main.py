@@ -46,8 +46,7 @@ def update_all():
                     main_character.y_velocity = 0
     character_group.update()
     shiftX, shiftY = main_character.getShift()
-    for platform in platform_group:
-        platform.update(shiftX, shiftY)
+    platform_group.update(shiftX, shiftY)
 
 def checkStanding(character):
     for platform in platform_group:
