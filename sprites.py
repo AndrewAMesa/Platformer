@@ -247,4 +247,3 @@ class Sword (pygame.sprite.Sprite):
                 self.xDirection = 2
             elif self.attackingCount <= 4:
                 self.xDirection = -2
-
