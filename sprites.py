@@ -43,17 +43,15 @@ class Character(pygame.sprite.Sprite):
         
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
-
         #Pass sprites as arrays to allow for easier animations
         self.images = []
         self.images.append(pygame.image.load(os.path.join("Images", "Player.png")))
-
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -15
-
+        self.can_double_jump=False
         super().__init__(self.images, 0, 0, 10, 0, 1, 0)
-
+        self.health=100
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
@@ -65,6 +63,25 @@ class MainCharacter(Character):
         if keys[pygame.K_a]:
             self.x_velocity = -5
 
+    def addhealth(self):
+        if self.health<100:
+            self.health+=10
+    def losehealth(self):
+        if self.health>0:
+            self.health-=10
+    def doubleJump(self):
+        self.can_double_jump=True
+    def displayhealth(self, DISPLAYSURF):
+        if 30<self.health<60:
+            tuple=(255,235,59)
+        elif self.health<30:
+            tuple=(255,0,0)
+        else:
+            tuple=(0,255,0)
+        i=0
+        while i<self.health/10:
+            pygame.draw.rect(DISPLAYSURF, tuple, (i*15+10, 10, 10, 10))
+            i+=1
 
     def getShift(self):
         return self.x_velocity, self.y_velocity
@@ -72,6 +89,7 @@ class MainCharacter(Character):
     def jump(self, weapon):
         self.y_velocity = self.jump_height
         weapon.y_velocity = self.jump_height
+
 
 
 ##############
@@ -157,12 +175,17 @@ class Collectables(pygame.sprite.Sprite):
         self.name = string
         self.xpos = xpos
         self.ypos = ypos
-        self.rect.update(xpos, ypos, 100, 100)
         self.image = pygame.image.load(image)
+        self.rect = self.image.get_rect()
+        self.rect.update(xpos, ypos, 11,11)
 
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
             self.kill()
+            if self.name=="health":
+                char.addhealth()
+            elif self.name=="doublejump":
+                char.doubleJump()
 
     def getname(self):
         return self.name
