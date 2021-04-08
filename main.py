@@ -26,13 +26,6 @@ platform_group = pygame.sprite.Group()
 #platform_group.add(platform1)
 #platform_group.add(platform2)
 
-healthcollectable= Collectables('health', SCREEN_WIDTH/2+30, SCREEN_HEIGHT/2, 'Images/Health.png')
-doublejump= Collectables('doublejump', SCREEN_WIDTH/2-30, SCREEN_HEIGHT/2, 'Images/DoubleJump.png')
-collectable_group= pygame.sprite.Group()
-collectable_group.add(doublejump)
-collectable_group.add(healthcollectable)
-
-
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
@@ -46,8 +39,8 @@ def update_all():
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
     sword.update()
-    for collectable in collectable_group:
-        collectable.is_collided_with(main_character)
+    #for collectable in collectable_group:
+    #    collectable.is_collided_with(main_character)
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
         sword.y_velocity = 0
@@ -57,7 +50,6 @@ def update_all():
         for platform in platform_group:
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
                 if main_character.rect.top + main_character.y_velocity < platform.rect.bottom < main_character.rect.top:
-                    #main_character.rect.top = platform.rect.bottom
                     main_character.y_velocity = 0
                     sword.y_velocity = 0
     else:
@@ -66,7 +58,6 @@ def update_all():
         for platform in platform_group:
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom:
-                    #main_character.rect.bottom = platform.rect.top
                     main_character.y_velocity = 0
                     sword.y_velocity = 0
 
@@ -87,7 +78,6 @@ def main():
         update_all()
         platform_group.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
-        collectable_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
 
@@ -171,6 +161,11 @@ def readFile(levelNum):
         for j in range(lenY):
             if b[i][j] == "L":
                 platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "J":
+                platform_group.add(DoubleUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "A":
+                platform_group.add(AddHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+
 
 
 main()

@@ -58,6 +58,7 @@ class MainCharacter(Character):
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
     def update(self):
+
         self.x_velocity = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
@@ -66,6 +67,7 @@ class MainCharacter(Character):
             self.x_velocity = -5
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
+
     def addhealth(self):
         if self.health<100:
             self.health+=10
@@ -104,7 +106,7 @@ class MainCharacter(Character):
 
 # Main Block Class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, image, posX, posY, breakable, damage):
+    def __init__(self, image, posX, posY, breakable, damage, walkthrough):
 
         super().__init__()
         self.image = image
@@ -120,6 +122,7 @@ class Platform(pygame.sprite.Sprite):
         # Object information
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
+        self.walkthrough = walkthrough
 
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
@@ -136,7 +139,7 @@ class BasicBlock(Platform):
         #Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 0)
+        super().__init__(self.sprite, posX, posY, False, 0, False)
 
 
 class BreakableBlock(Platform):
@@ -146,7 +149,7 @@ class BreakableBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, True, 0)
+        super().__init__(self.sprite, posX, posY, True, 0, False)
 
 class SpikesBlock(Platform):
 
@@ -155,16 +158,18 @@ class SpikesBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5)
+        super().__init__(self.sprite, posX, posY, False, 5, True)
 
 class LavaBlock(Platform):
+
+    #  L
 
     def __init__(self, posX, posY):
 
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5)
+        super().__init__(self.sprite, posX, posY, False, 5, True)
 
 class DoorBlock(Platform):
 
@@ -173,19 +178,16 @@ class DoorBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 0)
+        super().__init__(self.sprite, posX, posY, False, 0, False)
 
 
 
-class Collectables(pygame.sprite.Sprite):
-    def __init__(self, string, xpos, ypos, image):
-        super().__init__()
-        self.name = string
-        self.xpos = xpos
-        self.ypos = ypos
-        self.image = pygame.image.load(image)
-        self.rect = self.image.get_rect()
-        self.rect.update(xpos, ypos, 11,11)
+class Collectables(Platform):
+    def __init__(self, name, xpos, ypos, image):
+
+        self.name = name
+
+        super().__init__(image, xpos, ypos, False, 0, True)
 
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
@@ -207,6 +209,27 @@ class Collectables(pygame.sprite.Sprite):
 
     def getposy(self):
         return self.posy
+
+
+class DoubleUpgrade(Collectables):
+
+    # J
+
+    def __init__(self, xpos, ypos):
+
+        image = pygame.image.load('Images/DoubleJump.png')
+
+        super().__init__("doublejump", xpos, ypos, image)
+
+class AddHealth(Collectables):
+
+    # A
+
+    def __init__(self, xpos, ypos):
+
+        image = pygame.image.load('Images/Health.png')
+
+        super().__init__("health", xpos, ypos, image)
 
 ##############
 #Weapons
