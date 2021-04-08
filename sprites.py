@@ -185,7 +185,7 @@ class Collectables(pygame.sprite.Sprite):
         self.ypos = ypos
         self.image = pygame.image.load(image)
         self.rect = self.image.get_rect()
-        self.rect.update(xpos, ypos, 11,11)
+        self.rect.update(xpos, ypos, 60,60)
 
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
