@@ -169,7 +169,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, True)
+        super().__init__(self.sprite, posX, posY, False, 5, False)
 
 class DoorBlock(Platform):
 

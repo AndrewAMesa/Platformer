@@ -49,7 +49,7 @@ def update_all():
         sword.y_velocity += GRAVITY
         for platform in platform_group:
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
-                if main_character.rect.top + main_character.y_velocity < platform.rect.bottom < main_character.rect.top:
+                if main_character.rect.top + main_character.y_velocity < platform.rect.bottom < main_character.rect.top and not platform.walkthrough:
                     main_character.y_velocity = 0
                     sword.y_velocity = 0
     else:
@@ -57,7 +57,7 @@ def update_all():
         sword.y_velocity += GRAVITY
         for platform in platform_group:
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
-                if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom:
+                if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom and not platform.walkthrough:
                     main_character.y_velocity = 0
                     sword.y_velocity = 0
 
@@ -67,7 +67,7 @@ def update_all():
 def checkStanding(character):
     for platform in platform_group:
         if character.rect.bottom == platform.rect.top:
-            if character.rect.left < platform.rect.right and character.rect.right > platform.rect.left:
+            if character.rect.left < platform.rect.right and character.rect.right > platform.rect.left and not platform.walkthrough:
                 return True
 
 
@@ -87,7 +87,7 @@ def main():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                if event.key == K_w:
+                if event.key == K_SPACE:
                     if checkStanding(main_character):
                         main_character.jump(sword)
             elif event.type == MOUSEBUTTONDOWN:
