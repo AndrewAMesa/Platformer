@@ -50,7 +50,7 @@ class MainCharacter(Character):
         self.images.append(pygame.image.load(os.path.join("Images", "Player2.png")))
         self.x_velocity = 0
         self.y_velocity = 0
-        self.jump_height = -15
+        self.jump_height = -18
         self.can_double_jump=False
         super().__init__(self.images, 0, 0, 10, 0, 1, 0)
         self.health=100
