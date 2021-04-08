@@ -18,7 +18,8 @@ class Character(pygame.sprite.Sprite):
         self.sprites = sprites
         self.currentSprite = 0
         self.image = self.sprites[self.currentSprite]
-
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
         if directionX != 0:
             # For when the sprite is reversed
             self.sprites1 = []
@@ -46,10 +47,10 @@ class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load(os.path.join("Images", "Player.png")))
+        self.images.append(pygame.image.load(os.path.join("Images", "Player2.png")))
         self.x_velocity = 0
         self.y_velocity = 0
-        self.jump_height = -15
+        self.jump_height = -18
         self.can_double_jump=False
         super().__init__(self.images, 0, 0, 10, 0, 1, 0)
         self.health=100
@@ -63,7 +64,8 @@ class MainCharacter(Character):
             self.x_velocity = 5
         if keys[pygame.K_a]:
             self.x_velocity = -5
-
+        if infoObject.current_h == 720:
+            self.x_velocity = int(self.x_velocity * 0.667)
     def addhealth(self):
         if self.health<100:
             self.health+=10
@@ -85,12 +87,15 @@ class MainCharacter(Character):
             i+=1
 
     def getShift(self):
+        print(self.y_velocity)
         return self.x_velocity, self.y_velocity
 
     def jump(self, weapon):
         self.y_velocity = self.jump_height
         weapon.y_velocity = self.jump_height
-
+        if infoObject.current_h == 720:
+            self.y_velocity = int(self.y_velocity * 0.667)
+            weapon.y_velocity = int(weapon.y_velocity * 0.667)
 
 
 ##############
@@ -104,7 +109,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.image = image
         if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (80, 80))
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
 
         # position values
         self.rect = self.image.get_rect()
@@ -210,6 +215,8 @@ class Sword (pygame.sprite.Sprite):
     def __init__(self, _left, _top, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
         self.rect.update(_left, _top, self.rect.width, self.rect.height)
         self.x_velocity = 0
@@ -240,4 +247,3 @@ class Sword (pygame.sprite.Sprite):
                 self.xDirection = 2
             elif self.attackingCount <= 4:
                 self.xDirection = -2
-
