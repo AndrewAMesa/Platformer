@@ -42,6 +42,13 @@ class Character(pygame.sprite.Sprite):
         #Character Damage on contact to player
         self.damage = damage
 
+    def update(self, direction):
+
+        if direction == -1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
         
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
@@ -57,16 +64,22 @@ class MainCharacter(Character):
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
+        self.direction = 1
+
     def update(self):
 
         self.x_velocity = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             self.x_velocity = 5
+            self.direction = 1
         if keys[pygame.K_a]:
             self.x_velocity = -5
+            self.direction = -1
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
+
+        super().update(self.direction)
 
     def addhealth(self):
         if self.health<100:
@@ -153,10 +166,12 @@ class BreakableBlock(Platform):
 
 class SpikesBlock(Platform):
 
+    #  S
+
     def __init__(self, posX, posY):
 
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        self.sprite = pygame.image.load('Images/Spikes.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, True)
 

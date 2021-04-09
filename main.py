@@ -76,8 +76,8 @@ def main():
     while True:
         DISPLAYSURF.fill((0, 0, 0))
         update_all()
-        platform_group.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
+        platform_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
 
@@ -166,6 +166,8 @@ def readFile(levelNum):
                 platform_group.add(DoubleUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "A":
                 platform_group.add(AddHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "S":
+                platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 
 
 
