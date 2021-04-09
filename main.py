@@ -90,9 +90,10 @@ def main():
                 if event.key == K_SPACE:
                     if checkStanding(main_character):
                         main_character.jump(sword)
-            elif event.type == MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed(3) == (True, False, False):
-                    sword.attacking = True
+                if event.key == K_RETURN:
+                        sword.attacking = True
+
+
 
 
 
