@@ -147,6 +147,8 @@ class Platform(pygame.sprite.Sprite):
 #Lower Block Classes
 class BasicBlock(Platform):
 
+    #  B
+
     def __init__(self, posX, posY):
 
         #Load Images
@@ -156,6 +158,8 @@ class BasicBlock(Platform):
 
 
 class BreakableBlock(Platform):
+
+    #  C
 
     def __init__(self, posX, posY):
 
@@ -187,6 +191,8 @@ class LavaBlock(Platform):
         super().__init__(self.sprite, posX, posY, False, 5, False)
 
 class DoorBlock(Platform):
+
+    #  D
 
     def __init__(self, posX, posY):
 
