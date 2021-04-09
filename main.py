@@ -30,7 +30,7 @@ main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
-sword = Sword(DISPLAYSURF.get_width() / 2 + 5, DISPLAYSURF.get_height() / 2 - 5, sword_image)
+sword = Sword(DISPLAYSURF.get_width()/2+29, DISPLAYSURF.get_height()/2+18, sword_image)
 current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
 

@@ -47,7 +47,7 @@ class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load(os.path.join("Images", "Player2.png")))
+        self.images.append(pygame.image.load(os.path.join("Images", "Character.png")))
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
