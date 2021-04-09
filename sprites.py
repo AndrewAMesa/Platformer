@@ -238,8 +238,10 @@ class Sword (pygame.sprite.Sprite):
     def __init__(self, _left, _top, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
+        self.originalImage = _image
         if infoObject.current_h == 720:
             self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+            self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
         self.rect.update(_left, _top, self.rect.width, self.rect.height)
         self.x_velocity = 0
@@ -250,13 +252,26 @@ class Sword (pygame.sprite.Sprite):
         self.yDirection = 0
         self.attacking = False
         self.attackingCount = 8
+        self.top1 = 355
+        self.left1 = 645
+        self.left2 = 590
     def update(self):
         self.x_velocity = 0
+        print(self.rect.left)
+        print(self.rect.top)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             self.x_velocity = 5
+            if self.rect.left != self.left1:
+                self.image = self.originalImage
+                self.rect.left = self.left1
+                self.rect.top = self.top1
         if keys[pygame.K_a]:
             self.x_velocity = -5
+            if self.rect.left != self.left2:
+                self.image = pygame.transform.rotate(self.originalImage, 180)
+                self.rect.left = self.left2
+                self.rect.top = self.top1
 
         self.attack()
     def attack(self):
