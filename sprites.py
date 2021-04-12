@@ -67,18 +67,8 @@ class MainCharacter(Character):
         self.direction = 1
 
     def update(self):
-
-        self.x_velocity = 0
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            self.x_velocity = 5
-            self.direction = 1
-        if keys[pygame.K_a]:
-            self.x_velocity = -5
-            self.direction = -1
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
-
         super().update(self.direction)
 
     def addhealth(self):
@@ -102,7 +92,6 @@ class MainCharacter(Character):
             i+=1
 
     def getShift(self):
-        print(self.y_velocity)
         return self.x_velocity, self.y_velocity
 
     def jump(self, weapon):
@@ -278,8 +267,6 @@ class Sword (pygame.sprite.Sprite):
         self.left2 = 590
     def update(self):
         self.x_velocity = 0
-        print(self.rect.left)
-        print(self.rect.top)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             self.x_velocity = 5

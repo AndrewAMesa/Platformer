@@ -41,6 +41,10 @@ def update_all():
     sword.update()
     #for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
+    check_y_collisions()
+
+
+def check_y_collisions():
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
         sword.y_velocity = 0
@@ -62,6 +66,17 @@ def update_all():
                     sword.y_velocity = 0
 
 
+def check_x_collisions():
+    if main_character.x_velocity != 0:
+        for platform in platform_group:
+            if main_character.rect.bottom > platform.rect.top and main_character.rect.top < platform.rect.bottom:
+                if main_character.x_velocity > 0:
+                    if main_character.rect.right + main_character.x_velocity >= platform.rect.left >= main_character.rect.right:
+                        return "Right"
+                if main_character.x_velocity < 0:
+                    if main_character.rect.left + main_character.x_velocity <= platform.rect.right <= main_character.rect.left:
+                        return "Left"
+    return "None"
 
 
 def checkStanding(character):
@@ -81,6 +96,17 @@ def main():
         current_weapon.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d]:
+            main_character.x_velocity = 5
+            if check_x_collisions() == "Right":
+                main_character.x_velocity = 0
+        elif keys[pygame.K_a]:
+            main_character.x_velocity = -5
+            if check_x_collisions() == "Left":
+                main_character.x_velocity = 0
+        else:
+            main_character.x_velocity = 0
         # Event Loop
         for event in pygame.event.get():
             if event.type == KEYDOWN:
