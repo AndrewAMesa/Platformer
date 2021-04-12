@@ -27,10 +27,11 @@ class Character(pygame.sprite.Sprite):
         if infoObject.current_h == 720:
             for x in range(len(self.sprites)):
                 self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.6667), int(self.sprites[x].get_height() * 0.6667)))
+            for x in range(len(self.sprites1)):
                 self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
 
         self.image = self.sprites[self.currentSprite]
-
+        
         # position values
         self.rect = self.image.get_rect()
         self.posX = posX
