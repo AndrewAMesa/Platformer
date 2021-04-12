@@ -90,7 +90,7 @@ def checkStanding(character):
 def main():
     readFile(0)
     while True:
-        DISPLAYSURF.fill((0, 0, 0))
+        DISPLAYSURF.fill((0, 69, 69))
         update_all()
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
@@ -99,11 +99,13 @@ def main():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
+            main_character.isMoving = True
             main_character.direction = 1
             main_character.x_velocity = 5
             if check_x_collisions() == "Right":
                 main_character.x_velocity = 0
         elif keys[pygame.K_a]:
+            main_character.isMoving = True
             main_character.direction = -1
             main_character.x_velocity = -5
             if check_x_collisions() == "Left":
