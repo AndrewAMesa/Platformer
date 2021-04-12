@@ -18,13 +18,17 @@ class Character(pygame.sprite.Sprite):
         self.sprites = sprites
         self.currentSprite = 0
         self.image = self.sprites[self.currentSprite]
-        if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+
         if directionX != 0:
             # For when the sprite is reversed
             self.sprites1 = []
             for i in range(len(self.sprites)):
                 self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
+
+        if infoObject.current_h == 720:
+            for x in range(len(self.sprites)):
+                self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.6667), int(self.sprites[x].get_height() * 0.6667)))
+                self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
 
         # position values
         self.rect = self.image.get_rect()
@@ -69,6 +73,7 @@ class MainCharacter(Character):
     def update(self):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
+
         super().update(self.direction)
 
     def addhealth(self):
