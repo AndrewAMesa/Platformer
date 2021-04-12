@@ -71,10 +71,11 @@ def check_x_collisions():
         for platform in platform_group:
             if main_character.rect.bottom > platform.rect.top and main_character.rect.top < platform.rect.bottom:
                 if main_character.x_velocity > 0:
-                    if main_character.rect.right + main_character.x_velocity >= platform.rect.left >= main_character.rect.right:
+                    if main_character.rect.right + main_character.x_velocity >= platform.rect.left >= main_character.rect.right and not platform.walkthrough:
                         return "Right"
                 if main_character.x_velocity < 0:
-                    if main_character.rect.left + main_character.x_velocity <= platform.rect.right <= main_character.rect.left:
+                    if main_character.rect.left + main_character.x_velocity <= platform.rect.right <= main_character.rect.left and not platform.walkthrough:
+
                         return "Left"
     return "None"
 
@@ -98,10 +99,12 @@ def main():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
+            main_character.direction = 1
             main_character.x_velocity = 5
             if check_x_collisions() == "Right":
                 main_character.x_velocity = 0
         elif keys[pygame.K_a]:
+            main_character.direction = -1
             main_character.x_velocity = -5
             if check_x_collisions() == "Left":
                 main_character.x_velocity = 0
