@@ -42,6 +42,13 @@ class Character(pygame.sprite.Sprite):
         #Character Damage on contact to player
         self.damage = damage
 
+    def update(self, direction):
+
+        if direction == -1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
         
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
@@ -57,11 +64,12 @@ class MainCharacter(Character):
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
+        self.direction = 1
+
     def update(self):
-
-
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
+        super().update(self.direction)
 
     def addhealth(self):
         if self.health<100:
@@ -128,6 +136,8 @@ class Platform(pygame.sprite.Sprite):
 #Lower Block Classes
 class BasicBlock(Platform):
 
+    #  B
+
     def __init__(self, posX, posY):
 
         #Load Images
@@ -138,6 +148,8 @@ class BasicBlock(Platform):
 
 class BreakableBlock(Platform):
 
+    #  C
+
     def __init__(self, posX, posY):
 
         # Load Images
@@ -147,10 +159,12 @@ class BreakableBlock(Platform):
 
 class SpikesBlock(Platform):
 
+    #  S
+
     def __init__(self, posX, posY):
 
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        self.sprite = pygame.image.load('Images/Spikes.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, True)
 
@@ -166,6 +180,8 @@ class LavaBlock(Platform):
         super().__init__(self.sprite, posX, posY, False, 5, False)
 
 class DoorBlock(Platform):
+
+    #  D
 
     def __init__(self, posX, posY):
 
