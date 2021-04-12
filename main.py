@@ -71,10 +71,10 @@ def check_x_collisions():
         for platform in platform_group:
             if main_character.rect.bottom > platform.rect.top and main_character.rect.top < platform.rect.bottom:
                 if main_character.x_velocity > 0:
-                    if main_character.rect.right + main_character.x_velocity >= platform.rect.left:
+                    if main_character.rect.right + main_character.x_velocity >= platform.rect.left >= main_character.rect.right:
                         return "Right"
                 if main_character.x_velocity < 0:
-                    if main_character.rect.left + main_character.x_velocity <= platform.rect.right:
+                    if main_character.rect.left + main_character.x_velocity <= platform.rect.right <= main_character.rect.left:
                         return "Left"
     return "None"
 
@@ -96,13 +96,15 @@ def main():
         current_weapon.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
 
-        main_character.x_velocity = 0
-        print(check_x_collisions())
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d] and check_x_collisions() != "Right":
+        if keys[pygame.K_d]:
             main_character.x_velocity = 5
-        elif keys[pygame.K_a] and check_x_collisions() != "Left":
+            if check_x_collisions() == "Right":
+                main_character.x_velocity = 0
+        elif keys[pygame.K_a]:
             main_character.x_velocity = -5
+            if check_x_collisions() == "Left":
+                main_character.x_velocity = 0
         else:
             main_character.x_velocity = 0
         # Event Loop
