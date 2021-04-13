@@ -56,7 +56,9 @@ class MainCharacter(Character):
         self.health=100
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
-
+        self.maxhealth=100
+    def addmaxhealth(self):
+        self.maxhealth+=10
     def update(self):
 
 
@@ -64,7 +66,7 @@ class MainCharacter(Character):
             self.x_velocity = int(self.x_velocity * 0.667)
 
     def addhealth(self):
-        if self.health<100:
+        if self.health<self.maxhealth:
             self.health+=10
     def losehealth(self):
         if self.health>0:
@@ -117,6 +119,11 @@ class Platform(pygame.sprite.Sprite):
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
         self.walkthrough = walkthrough
+    def checkcollision(self, char, group):
+        collided_sprites=pygame.sprite.spritecollide(char, group, False, collided= None)
+        for sprite in collided_sprites:
+            if sprite.collectable==True:
+                sprite.is_collected_with()
 
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
@@ -135,7 +142,7 @@ class BasicBlock(Platform):
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
 
-
+        collectable=False
 class BreakableBlock(Platform):
 
     def __init__(self, posX, posY):
@@ -144,6 +151,7 @@ class BreakableBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
+        self.collectable=False
 
 class SpikesBlock(Platform):
 
@@ -153,7 +161,7 @@ class SpikesBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, True)
-
+        self.collectable=False
 class LavaBlock(Platform):
 
     #  L
@@ -164,7 +172,7 @@ class LavaBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, False)
-
+        self.collectable=False
 class DoorBlock(Platform):
 
     def __init__(self, posX, posY):
@@ -173,7 +181,7 @@ class DoorBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
-
+        self.collectable=False
 
 
 class Collectables(Platform):
@@ -183,13 +191,7 @@ class Collectables(Platform):
 
         super().__init__(image, xpos, ypos, False, 0, True)
 
-    def is_collided_with(self, char):
-        if self.rect.colliderect(char.rect):
-            self.kill()
-            if self.name=="health":
-                char.addhealth()
-            elif self.name=="doublejump":
-                char.doubleJump()
+
 
     def getname(self):
         return self.name
@@ -214,7 +216,26 @@ class DoubleUpgrade(Collectables):
         image = pygame.image.load('Images/DoubleJump.png')
 
         super().__init__("doublejump", xpos, ypos, image)
+        self.collectable=True
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.doubleJump()
+class MaxHealth(Collectables):
 
+    # J
+
+    def __init__(self, xpos, ypos):
+
+        image = pygame.image.load('Images/MaxHealth.png')
+
+        super().__init__("maxhealth", xpos, ypos, image)
+        self.collectable=True
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.addmaxhealth()
+            char.addhealth()
 class AddHealth(Collectables):
 
     # A
@@ -224,6 +245,11 @@ class AddHealth(Collectables):
         image = pygame.image.load('Images/Health.png')
 
         super().__init__("health", xpos, ypos, image)
+        self.collectable = True
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.addhealth()
 
 ##############
 #Weapons
