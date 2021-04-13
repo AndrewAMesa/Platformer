@@ -55,7 +55,11 @@ def update_all():
     #for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
     check_y_collisions()
-
+def checkcollision( char, group):
+    collided_sprites=pygame.sprite.spritecollide(char, group, False, collided= None)
+    for sprite in collided_sprites:
+        if sprite.collectable==True:
+            sprite.is_collided_with(char)
 
 def check_y_collisions():
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
@@ -101,8 +105,9 @@ def main():
     milliseconds = 0
     readFile(0)
     while True:
-        DISPLAYSURF.fill((0, 0, 0))
-        update_all()
+        DISPLAYSURF.fill((0, 69, 69))
+        update_all() 
+        checkcollision(main_character, platform_group)  
         current_weapon.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
@@ -111,11 +116,13 @@ def main():
         display_time(milliseconds)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
+            main_character.isMoving = True
             main_character.direction = 1
             main_character.x_velocity = 5
             if check_x_collisions() == "Right":
                 main_character.x_velocity = 0
         elif keys[pygame.K_a]:
+            main_character.isMoving = True
             main_character.direction = -1
             main_character.x_velocity = -5
             if check_x_collisions() == "Left":
@@ -206,8 +213,11 @@ def readFile(levelNum):
                 platform_group.add(DoubleUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "A":
                 platform_group.add(AddHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j]=="M":
+                platform_group.add(MaxHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "S":
                 platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+
 
 
 

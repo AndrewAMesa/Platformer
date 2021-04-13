@@ -12,12 +12,11 @@ infoObject = pygame.display.Info()
 
 # Main Character Class
 class Character(pygame.sprite.Sprite):
-    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY):
+    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY, animationSpeed):
 
         super().__init__()
         self.sprites = sprites
         self.currentSprite = 0
-
 
         if directionX != 0:
             # For when the sprite is reversed
@@ -30,7 +29,9 @@ class Character(pygame.sprite.Sprite):
                 self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.6667), int(self.sprites[x].get_height() * 0.6667)))
             for x in range(len(self.sprites1)):
                 self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
+
         self.image = self.sprites[self.currentSprite]
+        
         # position values
         self.rect = self.image.get_rect()
         self.posX = posX
@@ -46,47 +47,73 @@ class Character(pygame.sprite.Sprite):
         self.health = health
         #Character Damage on contact to player
         self.damage = damage
+        self.animationSpeed = animationSpeed
+        self.isMoving = False
         self.currentDirection = 1
-    def update(self, direction, sword):
+        
+
+    def update(self, direction):
+        if self.isMoving:
+            self.currentSprite += self.animationSpeed
+
+            if self.currentSprite >= len(self.sprites):
+                self.currentSprite = 0
+        else:
+            self.currentSprite = 0
         if direction != self.currentDirection:
-            self.currentDirection = direction
-            if direction == -1:
-                self.image = self.sprites1[int(self.currentSprite)]
-                if sword.rect.left != sword.left2:
-                    sword.image = pygame.transform.flip(sword.originalImage, True, False)
-                    sword.rect.left = sword.left2
-                    sword.xDirection = -2
-                    sword.attacking = False
-            else:
-                self.image = self.sprites[int(self.currentSprite)]
-                if sword.rect.left != sword.left1:
-                    sword.image = sword.originalImage
-                    sword.rect.left = sword.left1
-                    sword.xDirection = 2
-                    sword.attacking = False
-            sword.update()
+          self.currentDirection = direction
+          if direction == -1:
+              self.image = self.sprites1[int(self.currentSprite)]
+              if sword.rect.left != sword.left2:
+                  sword.image = pygame.transform.flip(sword.originalImage, True, False)
+                  sword.rect.left = sword.left2
+                  sword.xDirection = -2
+                  sword.attacking = False
+          else:
+              self.image = self.sprites[int(self.currentSprite)]
+              if sword.rect.left != sword.left1:
+                  sword.image = sword.originalImage
+                  sword.rect.left = sword.left1
+                  sword.xDirection = 2
+                  sword.attacking = False
+
+
+
+        
+
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load(os.path.join("Images", "Character.png")))
+        self.images.append(pygame.image.load(os.path.join("Images", "Character0.png")))
+        self.images.append(pygame.image.load(os.path.join("Images", "Character1.png")))
+        self.images.append(pygame.image.load(os.path.join("Images", "Character2.png")))
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
-        self.can_double_jump=False
-        super().__init__(self.images, 0, 0, 10, 0, 1, 0)
+        self.can_double_jump = False
+        super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25)
         self.health=100
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
-
+        self.maxhealth=100
         self.direction = 1
-    def update(self, sword):
+        
+    def addmaxhealth(self):
+        self.maxhealth+=10
+  
+    def update(self):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
+
+        if self.x_velocity == 0 or self.y_velocity != 0:
+            self.isMoving = False
+
         super().update(self.direction, sword)
 
+
     def addhealth(self):
-        if self.health<100:
+        if self.health<self.maxhealth:
             self.health+=10
     def losehealth(self):
         if self.health>0:
@@ -187,6 +214,11 @@ class Platform(pygame.sprite.Sprite):
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
         self.walkthrough = walkthrough
+    def checkcollision(self, char, group):
+        collided_sprites=pygame.sprite.spritecollide(char, group, False, collided= None)
+        for sprite in collided_sprites:
+            if sprite.collectable==True:
+                sprite.is_collected_with()
 
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
@@ -207,7 +239,7 @@ class BasicBlock(Platform):
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
 
-
+        collectable=False
 class BreakableBlock(Platform):
 
     #  C
@@ -218,6 +250,7 @@ class BreakableBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
+        self.collectable=False
 
 class SpikesBlock(Platform):
 
@@ -229,7 +262,7 @@ class SpikesBlock(Platform):
         self.sprite = pygame.image.load('Images/Spikes.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, True)
-
+        self.collectable=False
 class LavaBlock(Platform):
 
     #  L
@@ -240,7 +273,7 @@ class LavaBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, False)
-
+        self.collectable=False
 class DoorBlock(Platform):
 
     #  D
@@ -251,7 +284,7 @@ class DoorBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
-
+        self.collectable=False
 
 
 class Collectables(Platform):
@@ -261,13 +294,7 @@ class Collectables(Platform):
 
         super().__init__(image, xpos, ypos, False, 0, True)
 
-    def is_collided_with(self, char):
-        if self.rect.colliderect(char.rect):
-            self.kill()
-            if self.name=="health":
-                char.addhealth()
-            elif self.name=="doublejump":
-                char.doubleJump()
+
 
     def getname(self):
         return self.name
@@ -292,7 +319,26 @@ class DoubleUpgrade(Collectables):
         image = pygame.image.load('Images/DoubleJump.png')
 
         super().__init__("doublejump", xpos, ypos, image)
+        self.collectable=True
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.doubleJump()
+class MaxHealth(Collectables):
 
+    # J
+
+    def __init__(self, xpos, ypos):
+
+        image = pygame.image.load('Images/MaxHealth.png')
+
+        super().__init__("maxhealth", xpos, ypos, image)
+        self.collectable=True
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.addmaxhealth()
+            char.addhealth()
 class AddHealth(Collectables):
 
     # A
@@ -302,6 +348,11 @@ class AddHealth(Collectables):
         image = pygame.image.load('Images/Health.png')
 
         super().__init__("health", xpos, ypos, image)
+        self.collectable = True
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.addhealth()
 
 ##############
 #Weapons
