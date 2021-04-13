@@ -84,6 +84,8 @@ class MainCharacter(Character):
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
         self.maxhealth=100
+        self.direction = 1
+        
     def addmaxhealth(self):
         self.maxhealth+=10
   
