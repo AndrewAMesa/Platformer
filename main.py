@@ -36,11 +36,13 @@ main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
+enemy = BasicEnemy(DISPLAYSURF, DISPLAYSURF.get_width() + 50, int(DISPLAYSURF.get_height()/2), 30, 30)
+
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
 timeLeft = 500
 
 def display_time(milliseconds):
-    clockSurfaceObj = clockObj.render("TimeLeft: " + str(timeLeft - int(milliseconds/400)), True, (255, 255, 255))
+    clockSurfaceObj = clockObj.render("TimeLeft: " + str(timeLeft - int(milliseconds/60)), True, (255, 255, 255))
     DISPLAYSURF.blit(clockSurfaceObj, (DISPLAYSURF.get_width() - 143, 10))
 def update_all():
     sword.update()
@@ -137,7 +139,7 @@ def main():
         # Update the Screen
         pygame.display.update()
         fpsClock.tick(FPS)
-        milliseconds += fpsClock.tick_busy_loop(60)
+        milliseconds += fpsClock.tick_busy_loop(560)
 def readFile(levelNum):
     timeStr = ""
     lvlTime = -1
