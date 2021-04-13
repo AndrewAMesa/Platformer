@@ -47,12 +47,12 @@ class Character(pygame.sprite.Sprite):
         #Character Damage on contact to player
         self.damage = damage
 
-    def update(self, direction):
-
-        if direction == -1:
-            self.image = self.sprites1[int(self.currentSprite)]
-        else:
-            self.image = self.sprites[int(self.currentSprite)]
+    def update(self, direction, sword):
+        if sword.attacking == False:
+            if direction == -1:
+                self.image = self.sprites1[int(self.currentSprite)]
+            else:
+                self.image = self.sprites[int(self.currentSprite)]
 
         
 class MainCharacter(Character):
@@ -70,12 +70,10 @@ class MainCharacter(Character):
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
 
         self.direction = 1
-
-    def update(self):
+    def update(self, sword):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
-
-        super().update(self.direction)
+        super().update(self.direction, sword)
 
     def addhealth(self):
         if self.health<100:
@@ -260,42 +258,34 @@ class Sword (pygame.sprite.Sprite):
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
         self.rect.update(_left, _top, self.rect.width, self.rect.height)
-        self.x_velocity = 0
         self.y_velocity = 0
-        self.xMove = 0
-        self.yMove = 0
         self.xDirection = 2
-        self.yDirection = 0
         self.attacking = False
         self.attackingCount = 8
-        self.top1 = 355
-        self.left1 = 645
-        self.left2 = 590
+        self.left1 = _left
+        self.left2 = 603
     def update(self):
-        self.x_velocity = 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            self.x_velocity = 5
-            if self.rect.left != self.left1:
-                self.image = self.originalImage
-                self.rect.left = self.left1
-                self.rect.top = self.top1
-        if keys[pygame.K_a]:
-            self.x_velocity = -5
-            if self.rect.left != self.left2:
-                self.image = pygame.transform.rotate(self.originalImage, 180)
-                self.rect.left = self.left2
-                self.rect.top = self.top1
+        if self.attacking == False:
+            if keys[pygame.K_d]:
+                if self.rect.left != self.left1:
+                    self.image = self.originalImage
+                    self.rect.left = self.left1
+                    self.xDirection = 2
+            if keys[pygame.K_a]:
+                if self.rect.left != self.left2:
+                    self.image = pygame.transform.flip(self.originalImage, True, False)
+                    self.rect.left = self.left2
+                    self.xDirection = -2
 
         self.attack()
     def attack(self):
         if self.attacking == True:
             self.rect.x += self.xDirection
-            self.rect.y += self.yDirection
             self.attackingCount -= 1
             if self.attackingCount == 0:
                 self.attacking = False
                 self.attackingCount = 8
-                self.xDirection = 2
-            elif self.attackingCount <= 4:
-                self.xDirection = -2
+                self.xDirection = self.xDirection * -1
+            elif self.attackingCount == 4:
+                self.xDirection = self.xDirection * -1
