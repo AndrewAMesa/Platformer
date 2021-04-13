@@ -218,6 +218,17 @@ class DoorBlock(Platform):
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
 
+class MovingBlock(Platform):
+
+    #  D
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0, False)
+
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image):
 
