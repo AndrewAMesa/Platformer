@@ -42,7 +42,11 @@ def update_all():
     #for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
     check_y_collisions()
-
+def checkcollision( char, group):
+    collided_sprites=pygame.sprite.spritecollide(char, group, False, collided= None)
+    for sprite in collided_sprites:
+        if sprite.collectable==True:
+            sprite.is_collided_with(char)
 
 def check_y_collisions():
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
@@ -92,6 +96,7 @@ def main():
     while True:
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
+        checkcollision(main_character, platform_group)  
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
@@ -197,8 +202,11 @@ def readFile(levelNum):
                 platform_group.add(DoubleUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "A":
                 platform_group.add(AddHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j]=="M":
+                platform_group.add(MaxHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "S":
                 platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+
 
 
 
