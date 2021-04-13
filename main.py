@@ -39,13 +39,12 @@ def update_all():
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
     sword.update()
-    #for collectable in collectable_group:
-    #    collectable.is_collided_with(main_character)
     check_y_collisions()
+
 def checkcollision( char, group):
-    collided_sprites=pygame.sprite.spritecollide(char, group, False, collided= None)
+    collided_sprites=pygame.sprite.spritecollide(char, group, False, collided=None)
     for sprite in collided_sprites:
-        if sprite.collectable==True:
+        if sprite.collectable:
             sprite.is_collided_with(char)
 
 def check_y_collisions():
