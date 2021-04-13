@@ -3,7 +3,7 @@ import pygame, sys
 pygame.init()
 import pygame
 import os
-
+from pygame.sprite import *
 infoObject = pygame.display.Info()
 
 ##################
@@ -47,11 +47,12 @@ class Character(pygame.sprite.Sprite):
         self.health = health
         #Character Damage on contact to player
         self.damage = damage
-
         self.animationSpeed = animationSpeed
         self.isMoving = False
+        self.currentDirection = 1
+        
 
-    def update(self, direction):
+    def update(self, direction, sword):
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -59,15 +60,29 @@ class Character(pygame.sprite.Sprite):
                 self.currentSprite = 0
         else:
             self.currentSprite = 0
-
         if direction == -1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
             self.image = self.sprites[int(self.currentSprite)]
+        if direction != self.currentDirection:
+          self.currentDirection = direction
+          if direction == -1:
+              if sword.rect.left != sword.left2:
+                  sword.image = pygame.transform.flip(sword.originalImage, True, False)
+                  sword.rect.left = sword.left2
+                  sword.xDirection = -2
+                  sword.attacking = False
+          else:
+              if sword.rect.left != sword.left1:
+                  sword.image = sword.originalImage
+                  sword.rect.left = sword.left1
+                  sword.xDirection = 2
+                  sword.attacking = False
 
 
 
         
+
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
@@ -89,14 +104,15 @@ class MainCharacter(Character):
     def addmaxhealth(self):
         self.maxhealth+=10
   
-    def update(self):
+    def update(self, sword):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
 
-        super().update(self.direction)
+        super().update(self.direction, sword)
+
 
     def addhealth(self):
         if self.health<self.maxhealth:
@@ -129,6 +145,54 @@ class MainCharacter(Character):
             weapon.y_velocity = int(weapon.y_velocity * 0.667)
 
 
+##############
+# Enemy Classes
+##############
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, sprites, directionX):
+        super().__init__()
+        self.sprites = sprites
+        self.currentSprite = 0
+        if directionX != 0:
+            # For when the sprite is reversed
+            self.sprites1 = []
+            for i in range(len(self.sprites)):
+                self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
+        if infoObject.current_h == 720:
+            for x in range(len(self.sprites)):
+                self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.6667), int(self.sprites[x].get_height() * 0.6667)))
+            for x in range(len(self.sprites1)):
+                self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
+        self.image = self.sprites[self.currentSprite]
+        # position values
+        self.rect = self.image.get_rect()
+        self.currentDirection = 1
+
+
+    def update(self, direction):
+        if direction != self.currentDirection:
+            self.currentDirection = direction
+            if direction == -1:
+                self.image = self.sprites1[int(self.currentSprite)]
+            else:
+                self.image = self.sprites[int(self.currentSprite)]
+
+    ##############
+class BasicEnemy(Enemy):
+    def __init__(self, DISPLAYSURF, posX, posY, health, damage):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Character0.png"))
+        self.x_velocity = 0
+        self.y_velocity = 0
+        self.jump_height = -18
+        self.health = 100
+        super().__init__(self.images, 1)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [posX, posY]
+        self.direction = 1
+        self.health = health
+        self.damage = damage
 ##############
 # Block Classes
 ##############
@@ -311,42 +375,25 @@ class Sword (pygame.sprite.Sprite):
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
         self.rect.update(_left, _top, self.rect.width, self.rect.height)
-        self.x_velocity = 0
         self.y_velocity = 0
-        self.xMove = 0
-        self.yMove = 0
         self.xDirection = 2
-        self.yDirection = 0
         self.attacking = False
         self.attackingCount = 8
-        self.top1 = 355
-        self.left1 = 645
-        self.left2 = 590
-    def update(self):
-        self.x_velocity = 0
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            self.x_velocity = 5
-            if self.rect.left != self.left1:
-                self.image = self.originalImage
-                self.rect.left = self.left1
-                self.rect.top = self.top1
-        if keys[pygame.K_a]:
-            self.x_velocity = -5
-            if self.rect.left != self.left2:
-                self.image = pygame.transform.rotate(self.originalImage, 180)
-                self.rect.left = self.left2
-                self.rect.top = self.top1
-
-        self.attack()
-    def attack(self):
+        self.swordDamage = 10
+        self.left1 = _left
+        self.left2 = 603
+    def attack(self, enemyGroup):
         if self.attacking == True:
             self.rect.x += self.xDirection
-            self.rect.y += self.yDirection
             self.attackingCount -= 1
             if self.attackingCount == 0:
                 self.attacking = False
                 self.attackingCount = 8
-                self.xDirection = 2
-            elif self.attackingCount <= 4:
-                self.xDirection = -2
+                self.xDirection = self.xDirection * -1
+            elif self.attackingCount == 4:
+                self.xDirection = self.xDirection * -1
+            spriteGroup = spritecollide(self, enemyGroup, False)
+            for x in range(len(spriteGroup)):
+                spriteGroup[x].health -= self.swordDamage
+                if spriteGroup[x].health <= 0:
+                    spriteGroup[x].kill()

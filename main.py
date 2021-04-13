@@ -14,6 +14,7 @@ sword_image = pygame.image.load("Images/Sword.png")
 TILESIZE = 30
 FPS = 60
 GRAVITY = 1
+
 if infoObject.current_h == 720:
     GRAVITY = GRAVITY * 0.667
 infoObject = pygame.display.Info()
@@ -22,19 +23,32 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform_group = pygame.sprite.Group()
 
+
+sword = Sword(DISPLAYSURF.get_width()/2+21, DISPLAYSURF.get_height()/2+14, sword_image)
+current_weapon = pygame.sprite.Group()
+current_weapon.add(sword)
+
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
-sword = Sword(DISPLAYSURF.get_width()/2+29, DISPLAYSURF.get_height()/2+18, sword_image)
-current_weapon = pygame.sprite.Group()
-current_weapon.add(sword)
+enemy = BasicEnemy(DISPLAYSURF, 670, 350, 90, 30)
+enemy_group = pygame.sprite.Group()
+enemy_group.add(enemy)
 
+clockObj = pygame.font.Font('freesansbold.ttf', 20)
+timeLeft = 500
+
+def display_time(milliseconds):
+    clockSurfaceObj = clockObj.render("TimeLeft: " + str(timeLeft - int(milliseconds/60)), True, (255, 255, 255))
+    DISPLAYSURF.blit(clockSurfaceObj, (DISPLAYSURF.get_width() - 143, 10))
 def update_all():
-    character_group.update()
+    sword.attack(enemy_group)
+    character_group.update(sword)
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
-    sword.update()
+    #for collectable in collectable_group:
+    #    collectable.is_collided_with(main_character)
     check_y_collisions()
 
 def checkcollision( char, group):
@@ -46,15 +60,13 @@ def checkcollision( char, group):
 def check_y_collisions():
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
-        sword.y_velocity = 0
     elif main_character.y_velocity + GRAVITY < 0:
         main_character.y_velocity += GRAVITY
-        sword.y_velocity += GRAVITY
         for platform in platform_group:
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
                 if main_character.rect.top + main_character.y_velocity < platform.rect.bottom < main_character.rect.top and not platform.walkthrough:
                     main_character.y_velocity = 0
-                    sword.y_velocity = 0
+
     else:
         main_character.y_velocity += GRAVITY
         sword.y_velocity += GRAVITY
@@ -62,7 +74,7 @@ def check_y_collisions():
             if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom and not platform.walkthrough:
                     main_character.y_velocity = 0
-                    sword.y_velocity = 0
+
 
 
 def check_x_collisions():
@@ -74,7 +86,6 @@ def check_x_collisions():
                         return "Right"
                 if main_character.x_velocity < 0:
                     if main_character.rect.left + main_character.x_velocity <= platform.rect.right <= main_character.rect.left and not platform.walkthrough:
-
                         return "Left"
     return "None"
 
@@ -87,16 +98,18 @@ def checkStanding(character):
 
 
 def main():
+    milliseconds = 0
     readFile(0)
     while True:
         DISPLAYSURF.fill((0, 69, 69))
-        update_all()
+        update_all() 
         checkcollision(main_character, platform_group)  
+        current_weapon.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
-        current_weapon.draw(DISPLAYSURF)
+        enemy_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
-
+        display_time(milliseconds)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             main_character.isMoving = True
@@ -130,9 +143,8 @@ def main():
 
         # Update the Screen
         pygame.display.update()
-
         fpsClock.tick(FPS)
-
+        milliseconds += fpsClock.tick_busy_loop(560)
 def readFile(levelNum):
     timeStr = ""
     lvlTime = -1
