@@ -323,8 +323,6 @@ class Sword (pygame.sprite.Sprite):
         self.swordDamage = 10
         self.left1 = _left
         self.left2 = 603
-    def update(self):
-        self.attack()
     def attack(self, enemyGroup):
         if self.attacking == True:
             self.rect.x += self.xDirection
@@ -335,7 +333,7 @@ class Sword (pygame.sprite.Sprite):
                 self.xDirection = self.xDirection * -1
             elif self.attackingCount == 4:
                 self.xDirection = self.xDirection * -1
-            spriteGroup = spritecollide(self.sword, enemyGroup, False)
+            spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.swordDamage
                 if spriteGroup[x].health <= 0:

@@ -36,7 +36,9 @@ main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
-enemy = BasicEnemy(DISPLAYSURF, DISPLAYSURF.get_width() + 50, int(DISPLAYSURF.get_height()/2), 30, 30)
+enemy = BasicEnemy(DISPLAYSURF, 670, 350, 90, 30)
+enemy_group = pygame.sprite.Group()
+enemy_group.add(enemy)
 
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
 timeLeft = 500
@@ -45,7 +47,7 @@ def display_time(milliseconds):
     clockSurfaceObj = clockObj.render("TimeLeft: " + str(timeLeft - int(milliseconds/60)), True, (255, 255, 255))
     DISPLAYSURF.blit(clockSurfaceObj, (DISPLAYSURF.get_width() - 143, 10))
 def update_all():
-    sword.update()
+    sword.attack(enemy_group)
     character_group.update(sword)
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
@@ -104,7 +106,7 @@ def main():
         current_weapon.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
-
+        enemy_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
         display_time(milliseconds)
         keys = pygame.key.get_pressed()
