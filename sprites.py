@@ -52,7 +52,7 @@ class Character(pygame.sprite.Sprite):
         self.currentDirection = 1
         
 
-    def update(self, direction):
+    def update(self, direction, sword):
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -102,7 +102,7 @@ class MainCharacter(Character):
     def addmaxhealth(self):
         self.maxhealth+=10
   
-    def update(self):
+    def update(self, sword):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
@@ -180,7 +180,7 @@ class BasicEnemy(Enemy):
     def __init__(self, DISPLAYSURF, posX, posY, health, damage):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load("Images/Character.png"))
+        self.images.append(pygame.image.load("Images/Character0.png"))
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
