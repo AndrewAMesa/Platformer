@@ -60,17 +60,19 @@ class Character(pygame.sprite.Sprite):
                 self.currentSprite = 0
         else:
             self.currentSprite = 0
+        if direction == -1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
         if direction != self.currentDirection:
           self.currentDirection = direction
           if direction == -1:
-              self.image = self.sprites1[int(self.currentSprite)]
               if sword.rect.left != sword.left2:
                   sword.image = pygame.transform.flip(sword.originalImage, True, False)
                   sword.rect.left = sword.left2
                   sword.xDirection = -2
                   sword.attacking = False
           else:
-              self.image = self.sprites[int(self.currentSprite)]
               if sword.rect.left != sword.left1:
                   sword.image = sword.originalImage
                   sword.rect.left = sword.left1
