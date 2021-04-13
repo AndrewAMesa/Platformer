@@ -216,11 +216,8 @@ class Platform(pygame.sprite.Sprite):
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
         self.walkthrough = walkthrough
-    def checkcollision(self, char, group):
-        collided_sprites=pygame.sprite.spritecollide(char, group, False, collided= None)
-        for sprite in collided_sprites:
-            if sprite.collectable==True:
-                sprite.is_collected_with()
+
+        self.collectable = False
 
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
@@ -241,7 +238,6 @@ class BasicBlock(Platform):
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
 
-        collectable=False
 class BreakableBlock(Platform):
 
     #  C
@@ -252,7 +248,6 @@ class BreakableBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
-        self.collectable=False
 
 class SpikesBlock(Platform):
 
@@ -264,7 +259,7 @@ class SpikesBlock(Platform):
         self.sprite = pygame.image.load('Images/Spikes.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, True)
-        self.collectable=False
+
 class LavaBlock(Platform):
 
     #  L
@@ -275,7 +270,7 @@ class LavaBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 5, False)
-        self.collectable=False
+
 class DoorBlock(Platform):
 
     #  D
@@ -286,8 +281,17 @@ class DoorBlock(Platform):
         self.sprite = pygame.image.load('Images/Lava.png')
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
-        self.collectable=False
 
+class MovingBlock(Platform):
+
+    #  D
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/Lava.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0, False)
 
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image):
@@ -296,7 +300,7 @@ class Collectables(Platform):
 
         super().__init__(image, xpos, ypos, False, 0, True)
 
-
+        self.collectable = True
 
     def getname(self):
         return self.name
@@ -321,11 +325,12 @@ class DoubleUpgrade(Collectables):
         image = pygame.image.load('Images/DoubleJump.png')
 
         super().__init__("doublejump", xpos, ypos, image)
-        self.collectable=True
+
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
             self.kill()
             char.doubleJump()
+
 class MaxHealth(Collectables):
 
     # J
@@ -335,12 +340,13 @@ class MaxHealth(Collectables):
         image = pygame.image.load('Images/MaxHealth.png')
 
         super().__init__("maxhealth", xpos, ypos, image)
-        self.collectable=True
+
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
             self.kill()
             char.addmaxhealth()
             char.addhealth()
+
 class AddHealth(Collectables):
 
     # A
@@ -350,7 +356,7 @@ class AddHealth(Collectables):
         image = pygame.image.load('Images/Health.png')
 
         super().__init__("health", xpos, ypos, image)
-        self.collectable = True
+
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
             self.kill()
