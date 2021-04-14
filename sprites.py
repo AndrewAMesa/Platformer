@@ -388,7 +388,7 @@ class Sword (pygame.sprite.Sprite):
             self.left1 = int(DISPLAYSURF.get_width() / 2) + (20*1.667)
             self.left2 = int(DISPLAYSURF.get_width() / 2) - (36*1.667)
         if infoObject.current_h != 720:
-            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.667)
+            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.5)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
 
     def attack(self, enemyGroup):
