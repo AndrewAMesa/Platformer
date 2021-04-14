@@ -377,14 +377,21 @@ class Sword (pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
-        self.rect.update(int(DISPLAYSURF.get_width()/2) + 20, int(DISPLAYSURF.get_height()/2) + 14, self.rect.width, self.rect.height)
         self.y_velocity = 0
         self.xDirection = 2
         self.attacking = False
         self.attackingCount = 8
         self.swordDamage = 10
-        self.left1 = int(DISPLAYSURF.get_width()/2) + 20
-        self.left2 = int(DISPLAYSURF.get_width()/2) - 36
+        self.left1 = int(DISPLAYSURF.get_width() / 2) + 20
+        self.left2 = int(DISPLAYSURF.get_width() / 2) - 36
+        if infoObject.current_h != 720:
+            self.left1 *= 1.667
+            self.left2 *= 1.667
+        self.height =int(DISPLAYSURF.get_height()/2) + 14
+        if infoObject.current_h != 720:
+            self.height *= 1.667
+        self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
+
     def attack(self, enemyGroup):
         if self.attacking == True:
             self.rect.x += self.xDirection
