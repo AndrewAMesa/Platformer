@@ -182,7 +182,7 @@ class Enemy(pygame.sprite.Sprite):
 
     ##############
 class BasicEnemy(Enemy):
-    def __init__(self, DISPLAYSURF, posX, posY, health, damage):
+    def __init__(self, posX, posY, health, damage):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
         self.images.append(pygame.image.load("Images/Character0.png"))
@@ -387,6 +387,7 @@ class Sword (pygame.sprite.Sprite):
         if infoObject.current_h != 720:
             self.left1 = int(DISPLAYSURF.get_width() / 2) + (20*1.667)
             self.left2 = int(DISPLAYSURF.get_width() / 2) - (36*1.667)
+        self.height = int(DISPLAYSURF.get_height() / 2) + (14)
         if infoObject.current_h != 720:
             self.height =int(DISPLAYSURF.get_height()/2) + (14*1.5)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)

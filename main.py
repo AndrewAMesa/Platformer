@@ -31,9 +31,9 @@ main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
-enemy = BasicEnemy(DISPLAYSURF, 670, 350, 90, 30)
+
 enemy_group = pygame.sprite.Group()
-enemy_group.add(enemy)
+
 
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
 timeLeft = 500
@@ -223,6 +223,7 @@ def readFile(levelNum):
             elif b[i][j] == "S":
                 platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
-
-
+            elif b[i][j] == "E":
+                enemy_group.add(BasicEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize), 30, 30))
 main()
