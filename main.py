@@ -23,7 +23,7 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform_group = pygame.sprite.Group()
 
-sword = Sword(DISPLAYSURF.get_width() / 2 + 21, DISPLAYSURF.get_height() / 2 + 14, sword_image)
+sword = Sword(DISPLAYSURF, sword_image)
 current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
 
