@@ -369,7 +369,7 @@ class AddHealth(Collectables):
 #Weapons
 ##############
 class Sword (pygame.sprite.Sprite):
-    def __init__(self, _left, _top, _image):
+    def __init__(self, DISPLAYSURF, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
         self.originalImage = _image
@@ -377,14 +377,14 @@ class Sword (pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
         self.rect = self.image.get_rect()
-        self.rect.update(_left, _top, self.rect.width, self.rect.height)
+        self.rect.update(int(DISPLAYSURF.get_width()/2) + 20, int(DISPLAYSURF.get_height()/2) + 14, self.rect.width, self.rect.height)
         self.y_velocity = 0
         self.xDirection = 2
         self.attacking = False
         self.attackingCount = 8
         self.swordDamage = 10
-        self.left1 = _left
-        self.left2 = 603
+        self.left1 = int(DISPLAYSURF.get_width()/2) + 20
+        self.left2 = int(DISPLAYSURF.get_width()/2) - 36
     def attack(self, enemyGroup):
         if self.attacking == True:
             self.rect.x += self.xDirection
