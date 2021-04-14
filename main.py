@@ -7,7 +7,7 @@ pygame.init()
 fpsClock = pygame.time.Clock()
 
 ##############
-#Image
+# Image
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
 
@@ -23,8 +23,7 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform_group = pygame.sprite.Group()
 
-
-sword = Sword(DISPLAYSURF.get_width()/2+21, DISPLAYSURF.get_height()/2+14, sword_image)
+sword = Sword(DISPLAYSURF.get_width() / 2 + 21, DISPLAYSURF.get_height() / 2 + 14, sword_image)
 current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
 
@@ -39,23 +38,28 @@ enemy_group.add(enemy)
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
 timeLeft = 500
 
+
 def display_time(milliseconds):
-    clockSurfaceObj = clockObj.render("TimeLeft: " + str(timeLeft - int(milliseconds/60)), True, (255, 255, 255))
+    clockSurfaceObj = clockObj.render("TimeLeft: " + str(timeLeft - int(milliseconds / 60)), True, (255, 255, 255))
     DISPLAYSURF.blit(clockSurfaceObj, (DISPLAYSURF.get_width() - 143, 10))
+
+
 def update_all():
     sword.attack(enemy_group)
     character_group.update(sword)
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
-    #for collectable in collectable_group:
+    # for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
     check_y_collisions()
 
-def checkcollision( char, group):
-    collided_sprites=pygame.sprite.spritecollide(char, group, False, collided=None)
+
+def checkcollision(char, group):
+    collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
     for sprite in collided_sprites:
         if sprite.collectable:
             sprite.is_collided_with(char)
+
 
 def check_y_collisions():
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
@@ -76,7 +80,6 @@ def check_y_collisions():
                     main_character.y_velocity = 0
 
 
-
 def check_x_collisions():
     if main_character.x_velocity != 0:
         for platform in platform_group:
@@ -94,6 +97,7 @@ def checkStanding(character):
     for platform in platform_group:
         if character.rect.bottom == platform.rect.top:
             if character.rect.left < platform.rect.right and character.rect.right > platform.rect.left and not platform.walkthrough:
+                main_character.jumped = False
                 return True
 
 
@@ -102,8 +106,8 @@ def main():
     readFile(0)
     while True:
         DISPLAYSURF.fill((0, 69, 69))
-        update_all() 
-        checkcollision(main_character, platform_group)  
+        update_all()
+        checkcollision(main_character, platform_group)
         current_weapon.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
@@ -134,17 +138,18 @@ def main():
                 if event.key == K_SPACE:
                     if checkStanding(main_character):
                         main_character.jump(sword)
+                    elif main_character.can_double_jump is True and main_character.hasDoubleJumped() is False:
+                        main_character.jump(sword)
+                        main_character.jumped = True
                 if event.key == K_RETURN:
-                        sword.attacking = True
-
-
-
-
+                    sword.attacking = True
 
         # Update the Screen
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
+
+
 def readFile(levelNum):
     timeStr = ""
     lvlTime = -1
@@ -196,7 +201,7 @@ def readFile(levelNum):
                 startingPosX = i
                 startingPosY = j
                 exit
-                
+
     shiftSize = 120
     if infoObject.current_h == 720:
         shiftSize = 80
@@ -204,17 +209,20 @@ def readFile(levelNum):
     for i in range(lenX):
         for j in range(lenY):
             if b[i][j] == "L":
-                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+                platform_group.add(LavaBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "J":
-                platform_group.add(DoubleUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+                platform_group.add(DoubleUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                                 (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "A":
-                platform_group.add(AddHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
-            elif b[i][j]=="M":
-                platform_group.add(MaxHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+                platform_group.add(AddHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "M":
+                platform_group.add(MaxHealth((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "S":
-                platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize), (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
-
-
+                platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 
 
 main()
