@@ -100,6 +100,7 @@ class MainCharacter(Character):
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
         self.maxhealth=100
         self.direction = 1
+        self.jumped = False
         
     def addmaxhealth(self):
         self.maxhealth+=10
@@ -122,6 +123,8 @@ class MainCharacter(Character):
             self.health-=10
     def doubleJump(self):
         self.can_double_jump=True
+    def hasDoubleJumped(self):
+        return self.jumped
     def displayhealth(self, DISPLAYSURF):
         if 30<self.health<60:
             tuple=(255,235,59)
