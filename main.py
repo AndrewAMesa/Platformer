@@ -67,7 +67,7 @@ def check_y_collisions():
     elif main_character.y_velocity + GRAVITY < 0:
         main_character.y_velocity += GRAVITY
         for platform in platform_group:
-            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
+            if main_character.rect.left + main_character.x_velocity < platform.rect.right and main_character.rect.right + main_character.x_velocity > platform.rect.left:
                 if main_character.rect.top + main_character.y_velocity < platform.rect.bottom < main_character.rect.top and not platform.walkthrough:
                     main_character.y_velocity = 0
 
@@ -75,7 +75,7 @@ def check_y_collisions():
         main_character.y_velocity += GRAVITY
         sword.y_velocity += GRAVITY
         for platform in platform_group:
-            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left:
+            if main_character.rect.left + main_character.x_velocity < platform.rect.right and main_character.rect.right + main_character.x_velocity > platform.rect.left:
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom and not platform.walkthrough:
                     main_character.y_velocity = 0
 
