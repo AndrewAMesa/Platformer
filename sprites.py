@@ -192,10 +192,17 @@ class BasicEnemy(Enemy):
         self.health = 100
         super().__init__(self.images, 1)
         self.rect = self.image.get_rect()
-        self.rect.topleft = [posX, posY]
+        self.posX = posX
+        self.posY = posY
+        self.rect.center = [self.posX, self.posY]
         self.direction = 1
         self.health = health
         self.damage = damage
+    def update(self, shiftX, shiftY):
+        self.posX -= shiftX
+        self.posY -= shiftY
+
+        self.rect.center = (self.posX, self.posY)
 ##############
 # Block Classes
 ##############
@@ -386,7 +393,7 @@ class Sword (pygame.sprite.Sprite):
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 36
         if infoObject.current_h != 720:
             self.left1 = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
-            self.left2 = int(DISPLAYSURF.get_width() / 2) - (36*1.4)
+            self.left2 = int(DISPLAYSURF.get_width() / 2) - (36*1.45)
         self.height = int(DISPLAYSURF.get_height() / 2) + (14)
         if infoObject.current_h != 720:
             self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)

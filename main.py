@@ -49,6 +49,7 @@ def update_all():
     character_group.update(sword)
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
+    enemy_group.update(shiftX, shiftY)
     # for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
     check_y_collisions()
