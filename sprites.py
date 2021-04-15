@@ -152,7 +152,7 @@ class MainCharacter(Character):
 # Enemy Classes
 ##############
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, sprites, health, damage, directionX, velocityX, velocityY, animationSpeed):
+    def __init__(self, sprites, posX, posY, health, damage, directionX, velocityX, velocityY, animationSpeed):
         super().__init__()
         self.sprites = sprites
         self.currentSprite = 0
@@ -187,15 +187,13 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, shiftX, shiftY):
 
-        if self.isMoving:
-            self.currentSprite += self.animationSpeed
+        self.currentSprite += self.animationSpeed
 
-            if self.currentSprite >= len(self.sprites):
+        if self.currentSprite >= len(self.sprites):
                 self.currentSprite = 0
-        else:
-            self.currentSprite = 0
 
-        if self.currentDirection == -1:
+
+        if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
             self.image = self.sprites[int(self.currentSprite)]
@@ -210,12 +208,12 @@ class BatEnemy(Enemy):
     def __init__(self, posX, posY):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load("Images/Bat.png"))
+        #self.images.append(pygame.image.load("Images/Bat.png"))
         self.images.append(pygame.image.load("Images/Bat1.png"))
         self.images.append(pygame.image.load("Images/Bat2.png"))
         self.images.append(pygame.image.load("Images/Bat3.png"))
 
-        super().__init__(self.images, 20, 10, 1, 4, 0, 0.25)
+        super().__init__(self.images, posX, posY, 20, 10, -1, 4, 0, 0.18)
 
 class BugEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -225,28 +223,18 @@ class BugEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bug2.png"))
 
 
-        super().__init__(self.images, 10, 10, -1, 0, 4, 0.50)
-
-class BugEnemy(Enemy):
-    def __init__(self, posX, posY):
-        #Pass sprites as arrays to allow for easier animations
-        self.images = []
-        self.images.append(pygame.image.load("Images/Bug1.png"))
-        self.images.append(pygame.image.load("Images/Bug2.png"))
-
-
-        super().__init__(self.images, 10, 10, -1, 0, 4, 0.50)
+        super().__init__(self.images, posX, posY, 10, 10, -1, 0, 4, 0.25)
 
 class ElephantEnemy(Enemy):
     def __init__(self, posX, posY):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load("Images/Elephant.png"))
+        #self.images.append(pygame.image.load("Images/Elephant.png"))
         self.images.append(pygame.image.load("Images/Elephant1.png"))
         self.images.append(pygame.image.load("Images/Elephant2.png"))
 
 
-        super().__init__(self.images, 50, 20, -1, 3, 0, 0.25)
+        super().__init__(self.images, posX, posY, 50, 20, -1, 3, 0, 0.10)
 
 class FrogEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -256,7 +244,7 @@ class FrogEnemy(Enemy):
         self.images.append(pygame.image.load("Images/frog2.png"))
 
 
-        super().__init__(self.images, 50, 20, -1, 0, 0, 0.25)
+        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
 
@@ -271,9 +259,19 @@ class MushroomEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Mushroom3.png"))
 
 
-        super().__init__(self.images, 50, 20, -1, 0, 0, 0.25)
+        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
+
+class RunningEnemy(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/RunningThing1.png"))
+        self.images.append(pygame.image.load("Images/RunningThing2.png"))
+
+
+        super().__init__(self.images, posX, posY, 50, 20, -1, 3, 0, 0.12)
 ##############
 # Block Classes
 ##############
