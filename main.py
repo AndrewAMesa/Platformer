@@ -10,6 +10,7 @@ fpsClock = pygame.time.Clock()
 # Image
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
+gun_image = pygame.image.load("Images/Gun.png")
 
 TILESIZE = 30
 FPS = 60
@@ -24,8 +25,11 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 platform_group = pygame.sprite.Group()
 
 sword = Sword(DISPLAYSURF, sword_image)
+gun = Gun(DISPLAYSURF, gun_image)
 current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
+
+
 
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
@@ -46,7 +50,7 @@ def display_time(milliseconds):
 
 def update_all():
     sword.attack(enemy_group)
-    character_group.update(sword)
+    character_group.update(current_weapon.sprites()[0])
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
     enemy_group.update(shiftX, shiftY)
@@ -109,8 +113,8 @@ def main():
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
-        current_weapon.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
+        current_weapon.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
@@ -144,6 +148,15 @@ def main():
                         main_character.jumped = True
                 if event.key == K_RETURN:
                     sword.attacking = True
+                if event.key == K_e:
+                    spriteArray = current_weapon.sprites()
+                    if spriteArray[0].isSword == True:
+                        current_weapon.remove(spriteArray[0])
+                        current_weapon.add(gun)
+                    else:
+                        current_weapon.remove(spriteArray[0])
+                        current_weapon.add(sword)
+
 
         # Update the Screen
         pygame.display.update()
