@@ -12,7 +12,7 @@ fpsClock = pygame.time.Clock()
 sword_image = pygame.image.load("Images/Sword.png")
 
 TILESIZE = 30
-FPS = 60
+FPS = 180
 GRAVITY = 1
 
 if infoObject.current_h == 720:
