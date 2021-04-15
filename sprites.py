@@ -152,7 +152,7 @@ class MainCharacter(Character):
 # Enemy Classes
 ##############
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, sprites, directionX):
+    def __init__(self, sprites, health, damage, directionX, velocityX, velocityY, animationSpeed):
         super().__init__()
         self.sprites = sprites
         self.currentSprite = 0
@@ -169,40 +169,111 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.sprites[self.currentSprite]
         # position values
         self.rect = self.image.get_rect()
-        self.currentDirection = 1
-
-
-    def update(self, direction):
-        if direction != self.currentDirection:
-            self.currentDirection = direction
-            if direction == -1:
-                self.image = self.sprites1[int(self.currentSprite)]
-            else:
-                self.image = self.sprites[int(self.currentSprite)]
-
-    ##############
-class BasicEnemy(Enemy):
-    def __init__(self, posX, posY, health, damage):
-        #Pass sprites as arrays to allow for easier animations
-        self.images = []
-        self.images.append(pygame.image.load("Images/Character0.png"))
-        self.x_velocity = 0
-        self.y_velocity = 0
-        self.jump_height = -18
-        self.health = 100
-        super().__init__(self.images, 1)
-        self.rect = self.image.get_rect()
         self.posX = posX
         self.posY = posY
-        self.rect.center = [self.posX, self.posY]
-        self.direction = 1
+        self.rect.center = (self.posX, self.posY)
+
         self.health = health
         self.damage = damage
+
+        self.animationSpeed = animationSpeed
+
+        self.jumping = False
+
+        self.velocityX = velocityX
+        self.velocityY = velocityY
+
+        self.currentDirection = directionX
+
     def update(self, shiftX, shiftY):
+
+        if self.isMoving:
+            self.currentSprite += self.animationSpeed
+
+            if self.currentSprite >= len(self.sprites):
+                self.currentSprite = 0
+        else:
+            self.currentSprite = 0
+
+        if self.currentDirection == -1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
         self.posX -= shiftX
         self.posY -= shiftY
 
         self.rect.center = (self.posX, self.posY)
+
+    ##############
+class BatEnemy(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Bat.png"))
+        self.images.append(pygame.image.load("Images/Bat1.png"))
+        self.images.append(pygame.image.load("Images/Bat2.png"))
+        self.images.append(pygame.image.load("Images/Bat3.png"))
+
+        super().__init__(self.images, 20, 10, 1, 4, 0, 0.25)
+
+class BugEnemy(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Bug1.png"))
+        self.images.append(pygame.image.load("Images/Bug2.png"))
+
+
+        super().__init__(self.images, 10, 10, -1, 0, 4, 0.50)
+
+class BugEnemy(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Bug1.png"))
+        self.images.append(pygame.image.load("Images/Bug2.png"))
+
+
+        super().__init__(self.images, 10, 10, -1, 0, 4, 0.50)
+
+class ElephantEnemy(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Elephant.png"))
+        self.images.append(pygame.image.load("Images/Elephant1.png"))
+        self.images.append(pygame.image.load("Images/Elephant2.png"))
+
+
+        super().__init__(self.images, 50, 20, -1, 3, 0, 0.25)
+
+class FrogEnemy(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/frog1.png"))
+        self.images.append(pygame.image.load("Images/frog2.png"))
+
+
+        super().__init__(self.images, 50, 20, -1, 0, 0, 0.25)
+
+        self.jumping = True
+
+
+class MushroomEnemy(Enemy):
+    def __init__(self, posX, posY):
+        # Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Mushroom.png"))
+        self.images.append(pygame.image.load("Images/Mushroom1.png"))
+        self.images.append(pygame.image.load("Images/Mushroom2.png"))
+        self.images.append(pygame.image.load("Images/Mushroom3.png"))
+
+
+        super().__init__(self.images, 50, 20, -1, 0, 0, 0.25)
+
+        self.jumping = True
 ##############
 # Block Classes
 ##############
@@ -340,6 +411,7 @@ class DoubleUpgrade(Collectables):
         if self.rect.colliderect(char.rect):
             self.kill()
             char.doubleJump()
+
 class Glide(Collectables):
     def __init__(self, xpos, ypos):
 
