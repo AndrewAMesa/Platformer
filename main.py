@@ -227,7 +227,22 @@ def readFile(levelNum):
             elif b[i][j] == "G":
                 platform_group.add(Glide((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
-            elif b[i][j] == "E":
-                enemy_group.add(BasicEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
-                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize), 30, 30))
+            elif b[i][j] == "a":
+                enemy_group.add(BatEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "b":
+                enemy_group.add(BugEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "c":
+                enemy_group.add(ElephantEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "d":
+                enemy_group.add(FrogEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "e":
+                enemy_group.add(MushroomEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "f":
+                enemy_group.add(RunningEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()
