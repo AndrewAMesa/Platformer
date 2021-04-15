@@ -224,6 +224,9 @@ def readFile(levelNum):
             elif b[i][j] == "S":
                 platform_group.add(SpikesBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "G":
+                platform_group.add(Glide((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "E":
                 enemy_group.add(BasicEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize), 30, 30))
