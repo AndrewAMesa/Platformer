@@ -346,6 +346,16 @@ class DoubleUpgrade(Collectables):
         if self.rect.colliderect(char.rect):
             self.kill()
             char.doubleJump()
+class Glide(Collectables):
+    def __init__(self, xpos, ypos):
+
+        image = pygame.image.load('Images/Glide.png')
+
+        super().__init__("glide", xpos, ypos, image)
+
+    def is_collided_with(self, char):
+        print('collided')
+        ###Brian Finish this!!
 
 class MaxHealth(Collectables):
 
