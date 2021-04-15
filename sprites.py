@@ -185,7 +185,7 @@ class BasicEnemy(Enemy):
     def __init__(self, posX, posY, health, damage):
         #Pass sprites as arrays to allow for easier animations
         self.images = []
-        self.images.append(pygame.image.load("Images/Character0.png"))
+        self.images.append(pygame.image.load("Images/Elephant.png"))
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
