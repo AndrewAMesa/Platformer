@@ -425,7 +425,6 @@ class Glide(Collectables):
 
     def is_collided_with(self, char):
         self.kill()
-        ###Brian Finish this!!
 
 class MaxHealth(Collectables):
 
