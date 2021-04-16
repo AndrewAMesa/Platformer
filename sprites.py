@@ -418,7 +418,8 @@ class Glide(Collectables):
         super().__init__("glide", xpos, ypos, image)
 
     def is_collided_with(self, char):
-        print('collided')
+        pass
+        # print('collided')
         ###Brian Finish this!!
 
 class MaxHealth(Collectables):
