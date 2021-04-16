@@ -45,6 +45,7 @@ def display_time(milliseconds):
 
 
 def update_all():
+    check_y_collisions()
     sword.attack(enemy_group)
     character_group.update(sword)
     shiftX, shiftY = main_character.getShift()
@@ -52,7 +53,6 @@ def update_all():
     enemy_group.update(shiftX, shiftY)
     # for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
-    check_y_collisions()
 
 
 def checkcollision(char, group):
@@ -141,6 +141,7 @@ def main():
                         main_character.jump(sword)
                     elif main_character.can_double_jump is True and main_character.hasDoubleJumped() is False:
                         main_character.jump(sword)
+                        check_y_collisions()
                         main_character.jumped = True
                 if event.key == K_RETURN:
                     sword.attacking = True
