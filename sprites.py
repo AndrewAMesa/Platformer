@@ -179,6 +179,8 @@ class Enemy(pygame.sprite.Sprite):
         self.animationSpeed = animationSpeed
 
         self.jumping = False
+        self.jump_height = -1
+        self.isJumping = False
 
         self.velocityX = velocityX
         self.velocityY = velocityY
@@ -199,7 +201,7 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.sprites[int(self.currentSprite)]
 
         self.posX -= shiftX
-        self.posY -= shiftY
+        self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
 
@@ -247,6 +249,32 @@ class FrogEnemy(Enemy):
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
+        self.jump_height = -18
+
+    def update(self, shiftX, shiftY):
+
+        if self.isJumping:
+            self.currentSprite = 1
+        else:
+            self.currentSprite = 0
+
+
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - self.velocityX
+        self.posY -= shiftY - self.velocityY
+
+        self.rect.center = (self.posX, self.posY)
+
+    def jump(self):
+        self.isJumping = True
+        self.velocityY = self.jump_height
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * 0.667)
 
 
 class MushroomEnemy(Enemy):
@@ -262,6 +290,30 @@ class MushroomEnemy(Enemy):
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
+        self.jump_height = -18
+
+    def update(self, shiftX, shiftY):
+
+        if self.isJumping:
+            self.currentSprite = 1
+        else:
+            self.currentSprite = 0
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - self.velocityX
+        self.posY -= shiftY - self.velocityY
+
+        self.rect.center = (self.posX, self.posY)
+
+    def jump(self):
+        self.isJumping = True
+        self.velocityY = self.jump_height
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * 0.667)
 
 class RunningEnemy(Enemy):
     def __init__(self, posX, posY):
