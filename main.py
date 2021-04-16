@@ -50,7 +50,7 @@ def display_time(milliseconds):
 
 def update_all():
     sword.attack(enemy_group)
-    character_group.update(current_weapon.sprites()[0])
+    character_group.update(sword, gun)
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
     enemy_group.update(shiftX, shiftY)

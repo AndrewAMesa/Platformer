@@ -52,7 +52,7 @@ class Character(pygame.sprite.Sprite):
         self.currentDirection = 1
         
 
-    def update(self, direction, currentWeapon):
+    def update(self, direction, weapon1, weapon2):
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -67,17 +67,23 @@ class Character(pygame.sprite.Sprite):
         if direction != self.currentDirection:
           self.currentDirection = direction
           if direction == -1:
-              if currentWeapon.rect.left != currentWeapon.left2:
-                  currentWeapon.image = pygame.transform.flip(currentWeapon.originalImage, True, False)
-                  currentWeapon.rect.left = currentWeapon.left2
-                  currentWeapon.xDirection = -2
-                  currentWeapon.attacking = False
+              if weapon1.rect.left != weapon1.left2:
+                  weapon1.image = pygame.transform.flip(weapon1.originalImage, True, False)
+                  weapon1.rect.left = weapon1.left2
+                  weapon1.xDirection = -2
+                  weapon1.attacking = False
+                  weapon2.image = pygame.transform.flip(weapon2.originalImage, True, False)
+                  weapon2.rect.left = weapon2.left2
+                  weapon2.xDirection = -2
           else:
-              if currentWeapon.rect.left != currentWeapon.left1:
-                  currentWeapon.image = currentWeapon.originalImage
-                  currentWeapon.rect.left = currentWeapon.left1
-                  currentWeapon.xDirection = 2
-                  currentWeapon.attacking = False
+              if weapon1.rect.left != weapon1.left1:
+                  weapon1.image = weapon1.originalImage
+                  weapon1.rect.left = weapon1.left1
+                  weapon1.xDirection = 2
+                  weapon1.attacking = False
+                  weapon2.image = weapon2.originalImage
+                  weapon2.rect.left = weapon2.left1
+                  weapon2.xDirection = 2
 
 
 
@@ -105,14 +111,14 @@ class MainCharacter(Character):
     def addmaxhealth(self):
         self.maxhealth+=10
   
-    def update(self, currentWeapon):
+    def update(self, weapon1, weapon2):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
 
-        super().update(self.direction, currentWeapon)
+        super().update(self.direction, weapon1, weapon2)
 
 
     def addhealth(self):
