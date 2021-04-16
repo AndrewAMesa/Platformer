@@ -28,7 +28,7 @@ sword = Sword(DISPLAYSURF, sword_image)
 gun = Gun(DISPLAYSURF, gun_image)
 current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
-
+bullet_group = pygame.sprite.Group()
 
 
 main_character = MainCharacter(DISPLAYSURF)
@@ -49,6 +49,9 @@ def display_time(milliseconds):
 
 
 def update_all():
+    spriteGroup = bullet_group.sprites()
+    for x in range (len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group)
     sword.attack(enemy_group)
     character_group.update(sword, gun)
     shiftX, shiftY = main_character.getShift()
@@ -115,6 +118,7 @@ def main():
         checkcollision(main_character, platform_group)
         character_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
+        bullet_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
@@ -147,7 +151,10 @@ def main():
                         main_character.jump(sword)
                         main_character.jumped = True
                 if event.key == K_RETURN:
-                    sword.attacking = True
+                    if current_weapon.sprites()[0].isSword == True:
+                        sword.attacking = True
+                    else:
+                        current_weapon.sprites()[0].attack(bullet_group, DISPLAYSURF)
                 if event.key == K_e:
                     spriteArray = current_weapon.sprites()
                     if spriteArray[0].isSword == True:

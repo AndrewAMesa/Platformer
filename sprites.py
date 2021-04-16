@@ -421,7 +421,35 @@ class Sword(pygame.sprite.Sprite):
                 spriteGroup[x].health -= self.swordDamage
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, DISPLAYSURF, _image, left, direction, damage):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+        self.rect = self.image.get_rect()
+        self.left = left
+        if infoObject.current_h != 720:
+            self.left = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
+        self.height = int(DISPLAYSURF.get_height() / 2) + (14)
+        if infoObject.current_h != 720:
+            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
+        self.rect.update(self.left, self.height, self.rect.width, self.rect.height)
+        self.direction = direction
+        self.damage = damage
+    def move(self, platformGroup, enemyGroup):
+        self.rect.left += self.direction * 10
+        spriteGroup = spritecollide(self, platformGroup, False)
+        if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
+            self.remove(self.groups())
+        if pygame.sprite.spritecollideany(self, enemyGroup):
+            spriteGroup = spritecollide(self, enemyGroup, False)
+            for x in range(len(spriteGroup)):
+                spriteGroup[x].health -= self.damage
 
+                if spriteGroup[x].health <= 0:
+                    spriteGroup[x].kill()
+            self.remove(self.groups())
 class Gun(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image):
         pygame.sprite.Sprite.__init__(self)
@@ -446,3 +474,9 @@ class Gun(pygame.sprite.Sprite):
         if infoObject.current_h != 720:
             self.height = int(DISPLAYSURF.get_height() / 2) + (14 * 1.4)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
+    def attack(self, bulletGroup, DISPLAYSURF):
+        if self.rect.centerx > 640:
+            spawnLeft = self.rect.left + 50
+        else:
+            spawnLeft = self.rect.left - 85
+        bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Background0.png"), spawnLeft, self.xDirection, self.gunDamage))
