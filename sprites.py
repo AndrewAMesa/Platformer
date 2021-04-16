@@ -52,7 +52,7 @@ class Character(pygame.sprite.Sprite):
         self.currentDirection = 1
         
 
-    def update(self, direction, sword):
+    def update(self, direction, weapon1, weapon2):
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -67,17 +67,23 @@ class Character(pygame.sprite.Sprite):
         if direction != self.currentDirection:
           self.currentDirection = direction
           if direction == -1:
-              if sword.rect.left != sword.left2:
-                  sword.image = pygame.transform.flip(sword.originalImage, True, False)
-                  sword.rect.left = sword.left2
-                  sword.xDirection = -2
-                  sword.attacking = False
+              if weapon1.rect.left != weapon1.left2:
+                  weapon1.image = pygame.transform.flip(weapon1.originalImage, True, False)
+                  weapon1.rect.left = weapon1.left2
+                  weapon1.xDirection = -2
+                  weapon1.attacking = False
+                  weapon2.image = pygame.transform.flip(weapon2.originalImage, True, False)
+                  weapon2.rect.left = weapon2.left2
+                  weapon2.xDirection = -2
           else:
-              if sword.rect.left != sword.left1:
-                  sword.image = sword.originalImage
-                  sword.rect.left = sword.left1
-                  sword.xDirection = 2
-                  sword.attacking = False
+              if weapon1.rect.left != weapon1.left1:
+                  weapon1.image = weapon1.originalImage
+                  weapon1.rect.left = weapon1.left1
+                  weapon1.xDirection = 2
+                  weapon1.attacking = False
+                  weapon2.image = weapon2.originalImage
+                  weapon2.rect.left = weapon2.left1
+                  weapon2.xDirection = 2
 
 
 
@@ -105,14 +111,14 @@ class MainCharacter(Character):
     def addmaxhealth(self):
         self.maxhealth+=10
   
-    def update(self, sword):
+    def update(self, weapon1, weapon2):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
 
-        super().update(self.direction, sword)
+        super().update(self.direction, weapon1, weapon2)
 
 
     def addhealth(self):
@@ -169,6 +175,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.sprites[self.currentSprite]
         # position values
         self.rect = self.image.get_rect()
+
         self.posX = posX
         self.posY = posY
         self.rect.center = (self.posX, self.posY)
@@ -455,11 +462,12 @@ class AddHealth(Collectables):
 ##############
 #Weapons
 ##############
-class Sword (pygame.sprite.Sprite):
+class Sword(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
         self.originalImage = _image
+        self.isSword = True
         if infoObject.current_h == 720:
             self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
@@ -494,3 +502,28 @@ class Sword (pygame.sprite.Sprite):
                 spriteGroup[x].health -= self.swordDamage
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
+
+class Gun(pygame.sprite.Sprite):
+    def __init__(self, DISPLAYSURF, _image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        self.originalImage = _image
+        self.isSword = False
+        self.xDirection = 2
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (
+            int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+            self.originalImage = pygame.transform.scale(self.originalImage, (
+            int(self.originalImage.get_width() * 0.6667),
+            int(self.originalImage.get_height() * 0.6667)))
+        self.rect = self.image.get_rect()
+        self.gunDamage = 10
+        self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
+        self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
+        if infoObject.current_h != 720:
+            self.left1 = int(DISPLAYSURF.get_width() / 2) + (20 * 1.4)
+            self.left2 = int(DISPLAYSURF.get_width() / 2) - (36 * 1.45)
+        self.height = int(DISPLAYSURF.get_height() / 2) + (14)
+        if infoObject.current_h != 720:
+            self.height = int(DISPLAYSURF.get_height() / 2) + (14 * 1.4)
+        self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
