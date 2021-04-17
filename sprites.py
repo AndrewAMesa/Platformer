@@ -612,4 +612,4 @@ class Gun(pygame.sprite.Sprite):
             spawnLeft = self.rect.left + 50
         else:
             spawnLeft = self.rect.left - 85
-        bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Background0.png"), spawnLeft, self.xDirection, self.gunDamage))
+        bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
