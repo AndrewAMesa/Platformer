@@ -70,6 +70,25 @@ def checkcollision(char, group):
 
 
 def check_y_collisions():
+    #check enemy collisions
+    for enemy in enemy_group:
+        if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
+            enemy.velocityY = 0
+            enemy.isJumping = False
+        elif enemy.velocityY + GRAVITY < 0:
+            enemy.velocityY += GRAVITY
+            for platform in platform_group:
+                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                    if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                        enemy.velocityY = 0
+
+        else:
+            enemy.velocityY += GRAVITY
+            for platform in platform_group:
+                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                    if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                        enemy.velocityY = 0
+    #check character collisions
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
     elif main_character.y_velocity + GRAVITY < 0:
@@ -105,7 +124,7 @@ def checkStanding(character):
     for platform in platform_group:
         if character.rect.bottom == platform.rect.top:
             if character.rect.left < platform.rect.right and character.rect.right > platform.rect.left and not platform.walkthrough:
-                main_character.jumped = False
+                character.jumped = False
                 return True
 
 
@@ -156,6 +175,9 @@ def main():
                         sword.attacking = True
                     else:
                         current_weapon.sprites()[0].attack(bullet_group, DISPLAYSURF)
+                    for enemy in enemy_group:
+                        if enemy.jumping:
+                            enemy.jump()
                 if event.key == K_e:
                     spriteArray = current_weapon.sprites()
                     if spriteArray[0].isSword == True:
