@@ -175,6 +175,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.sprites[self.currentSprite]
         # position values
         self.rect = self.image.get_rect()
+
         self.posX = posX
         self.posY = posY
         self.rect.center = (self.posX, self.posY)
@@ -185,7 +186,6 @@ class Enemy(pygame.sprite.Sprite):
         self.animationSpeed = animationSpeed
 
         self.jumping = False
-
         self.jump_height = -1
         self.isJumping = False
 
@@ -193,7 +193,6 @@ class Enemy(pygame.sprite.Sprite):
         self.velocityY = velocityY
 
         self.currentDirection = directionX
-
 
     def update(self, shiftX, shiftY):
 
@@ -312,71 +311,6 @@ class MushroomEnemy(Enemy):
         else:
             self.image = self.sprites[int(self.currentSprite)]
 
-
-        self.posX -= shiftX
-        self.posY -= shiftY
-
-        self.rect.center = (self.posX, self.posY)
-
-    ##############
-class BatEnemy(Enemy):
-    def __init__(self, posX, posY):
-        #Pass sprites as arrays to allow for easier animations
-        self.images = []
-        #self.images.append(pygame.image.load("Images/Bat.png"))
-        self.images.append(pygame.image.load("Images/Bat1.png"))
-        self.images.append(pygame.image.load("Images/Bat2.png"))
-        self.images.append(pygame.image.load("Images/Bat3.png"))
-
-        super().__init__(self.images, posX, posY, 20, 10, -1, 4, 0, 0.18)
-
-class BugEnemy(Enemy):
-    def __init__(self, posX, posY):
-        #Pass sprites as arrays to allow for easier animations
-        self.images = []
-        self.images.append(pygame.image.load("Images/Bug1.png"))
-        self.images.append(pygame.image.load("Images/Bug2.png"))
-
-
-        super().__init__(self.images, posX, posY, 10, 10, -1, 0, 4, 0.25)
-
-class ElephantEnemy(Enemy):
-    def __init__(self, posX, posY):
-        #Pass sprites as arrays to allow for easier animations
-        self.images = []
-        #self.images.append(pygame.image.load("Images/Elephant.png"))
-        self.images.append(pygame.image.load("Images/Elephant1.png"))
-        self.images.append(pygame.image.load("Images/Elephant2.png"))
-
-
-        super().__init__(self.images, posX, posY, 50, 20, -1, 3, 0, 0.10)
-
-class FrogEnemy(Enemy):
-    def __init__(self, posX, posY):
-        #Pass sprites as arrays to allow for easier animations
-        self.images = []
-        self.images.append(pygame.image.load("Images/frog1.png"))
-        self.images.append(pygame.image.load("Images/frog2.png"))
-
-
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
-
-        self.jumping = True
-        
-     def update(self, shiftX, shiftY):
-
-        if self.isJumping:
-            self.currentSprite = 1
-        else:
-            self.currentSprite = 0
-
-
-
-        if self.currentDirection == 1:
-            self.image = self.sprites1[int(self.currentSprite)]
-        else:
-            self.image = self.sprites[int(self.currentSprite)]
-
         self.posX -= shiftX - self.velocityX
         self.posY -= shiftY - self.velocityY
 
@@ -387,48 +321,6 @@ class FrogEnemy(Enemy):
         self.velocityY = self.jump_height
         if infoObject.current_h == 720:
             self.velocityY = int(self.velocityY * 0.667)
-
-class MushroomEnemy(Enemy):
-    def __init__(self, posX, posY):
-        # Pass sprites as arrays to allow for easier animations
-        self.images = []
-        self.images.append(pygame.image.load("Images/Mushroom.png"))
-        self.images.append(pygame.image.load("Images/Mushroom1.png"))
-        self.images.append(pygame.image.load("Images/Mushroom2.png"))
-        self.images.append(pygame.image.load("Images/Mushroom3.png"))
-
-
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
-
-        self.jumping = True
-        self.posX -= shiftX - self.velocityX
-        self.posY -= shiftY - self.velocityY
-
-        self.rect.center = (self.posX, self.posY)
-
-    def update(self, shiftX, shiftY):
-
-        if self.isJumping:
-            self.currentSprite = 1
-        else:
-            self.currentSprite = 0
-
-        if self.currentDirection == 1:
-            self.image = self.sprites1[int(self.currentSprite)]
-        else:
-            self.image = self.sprites[int(self.currentSprite)]
-
-        self.posX -= shiftX - self.velocityX
-        self.posY -= shiftY - self.velocityY
-
-        self.rect.center = (self.posX, self.posY)
-
-    def jump(self):
-        self.isJumping = True
-        self.velocityY = self.jump_height
-        if infoObject.current_h == 720:
-            self.velocityY = int(self.velocityY * 0.667)
-
 
 class RunningEnemy(Enemy):
     def __init__(self, posX, posY):
