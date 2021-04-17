@@ -245,4 +245,10 @@ def readFile(levelNum):
             elif b[i][j] == "f":
                 enemy_group.add(RunningEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "B":
+                platform_group.add(BasicBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "C":
+                platform_group.add(BreakableBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()
