@@ -372,7 +372,7 @@ class BasicBlock(Platform):
     def __init__(self, posX, posY):
 
         #Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        self.sprite = pygame.image.load('Images/Grass.png')
 
         super().__init__(self.sprite, posX, posY, False, 0, False)
 
@@ -383,7 +383,7 @@ class BreakableBlock(Platform):
     def __init__(self, posX, posY):
 
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        self.sprite = pygame.image.load('Images/BreakableBlock.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
 
