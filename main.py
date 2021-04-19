@@ -56,10 +56,34 @@ def update_all():
     sword.attack(enemy_group)
     character_group.update(sword, gun)
     shiftX, shiftY = main_character.getShift()
-    platform_group.update(shiftX, shiftY)
+    for enemy in enemy_group:
+        if enemy.velocityX != 0:
+            for platform in platform_group:
+                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
+                    if enemy.currentDirection > 0:
+                        if enemy.rect.right + (enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                    if enemy.currentDirection < 0:
+                        if enemy.rect.left + (enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+        if enemy.jump_height == 0:
+            if enemy.velocityY < 0:
+                for platform in platform_group:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                            enemy.velocityY *= -1
+            elif enemy.velocityY > 0:
+                for platform in platform_group:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                            enemy.velocityY *= -1
     enemy_group.update(shiftX, shiftY)
-    # for collectable in collectable_group:
-    #    collectable.is_collided_with(main_character)
+    platform_group.update(shiftX, shiftY)
+
+
+
+
+
 
 
 def checkcollision(char, group):
@@ -72,7 +96,7 @@ def checkcollision(char, group):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
+        if checkStanding(enemy) and enemy.velocityY != enemy.jump_height and enemy.jump_height != 0:
             enemy.velocityY = 0
             enemy.isJumping = False
         elif enemy.velocityY + GRAVITY < 0:
@@ -142,8 +166,8 @@ def main():
         character_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
-        platform_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
+        platform_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
         display_time(milliseconds)
         keys = pygame.key.get_pressed()

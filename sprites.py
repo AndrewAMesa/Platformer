@@ -202,6 +202,10 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, shiftX, shiftY):
 
+        if infoObject.current_h == 720:
+            self.velocityX = int(self.velocityX * 0.667)
+            self.velocityY = int(self.velocityY * 0.667)
+
         self.currentSprite += self.animationSpeed
 
         if self.currentSprite >= len(self.sprites):
@@ -213,7 +217,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.image = self.sprites[int(self.currentSprite)]
 
-        self.posX -= shiftX
+        self.posX -= shiftX - (self.currentDirection * self.velocityX)
         self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
@@ -228,7 +232,9 @@ class BatEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bat2.png"))
         self.images.append(pygame.image.load("Images/Bat3.png"))
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, 4, 0, 0.18)
+        super().__init__(self.images, posX, posY, 20, 10, -1, 0, 4, 0.18)
+
+        self.jump_height = 0
 
 class BugEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -337,6 +343,7 @@ class RunningEnemy(Enemy):
 
 
         super().__init__(self.images, posX, posY, 50, 20, -1, 3, 0, 0.12)
+        
 ##############
 # Block Classes
 ##############
@@ -413,7 +420,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, False)
+        super().__init__(self.sprite, posX, posY, False, 5, True)
 
 class DoorBlock(Platform):
 
