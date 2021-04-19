@@ -52,7 +52,7 @@ class Character(pygame.sprite.Sprite):
         self.currentDirection = 1
         
 
-    def update(self, direction, sword):
+    def update(self, direction, weapon1, weapon2):
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -67,17 +67,23 @@ class Character(pygame.sprite.Sprite):
         if direction != self.currentDirection:
           self.currentDirection = direction
           if direction == -1:
-              if sword.rect.left != sword.left2:
-                  sword.image = pygame.transform.flip(sword.originalImage, True, False)
-                  sword.rect.left = sword.left2
-                  sword.xDirection = -2
-                  sword.attacking = False
+              if weapon1.rect.left != weapon1.left2:
+                  weapon1.image = pygame.transform.flip(weapon1.originalImage, True, False)
+                  weapon1.rect.left = weapon1.left2
+                  weapon1.xDirection = -2
+                  weapon1.attacking = False
+                  weapon2.image = pygame.transform.flip(weapon2.originalImage, True, False)
+                  weapon2.rect.left = weapon2.left2
+                  weapon2.xDirection = -2
           else:
-              if sword.rect.left != sword.left1:
-                  sword.image = sword.originalImage
-                  sword.rect.left = sword.left1
-                  sword.xDirection = 2
-                  sword.attacking = False
+              if weapon1.rect.left != weapon1.left1:
+                  weapon1.image = weapon1.originalImage
+                  weapon1.rect.left = weapon1.left1
+                  weapon1.xDirection = 2
+                  weapon1.attacking = False
+                  weapon2.image = weapon2.originalImage
+                  weapon2.rect.left = weapon2.left1
+                  weapon2.xDirection = 2
 
 
 
@@ -105,14 +111,14 @@ class MainCharacter(Character):
     def addmaxhealth(self):
         self.maxhealth+=10
   
-    def update(self, sword):
+    def update(self, weapon1, weapon2):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
 
-        super().update(self.direction, sword)
+        super().update(self.direction, weapon1, weapon2)
 
 
     def addhealth(self):
@@ -169,6 +175,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.sprites[self.currentSprite]
         # position values
         self.rect = self.image.get_rect()
+
         self.posX = posX
         self.posY = posY
         self.rect.center = (self.posX, self.posY)
@@ -179,6 +186,8 @@ class Enemy(pygame.sprite.Sprite):
         self.animationSpeed = animationSpeed
 
         self.jumping = False
+        self.jump_height = -1
+        self.isJumping = False
 
         self.velocityX = velocityX
         self.velocityY = velocityY
@@ -199,7 +208,7 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.sprites[int(self.currentSprite)]
 
         self.posX -= shiftX
-        self.posY -= shiftY
+        self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
 
@@ -247,6 +256,32 @@ class FrogEnemy(Enemy):
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
+        self.jump_height = -18
+
+    def update(self, shiftX, shiftY):
+
+        if self.isJumping:
+            self.currentSprite = 1
+        else:
+            self.currentSprite = 0
+
+
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - self.velocityX
+        self.posY -= shiftY - self.velocityY
+
+        self.rect.center = (self.posX, self.posY)
+
+    def jump(self):
+        self.isJumping = True
+        self.velocityY = self.jump_height
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * 0.667)
 
 
 class MushroomEnemy(Enemy):
@@ -262,6 +297,30 @@ class MushroomEnemy(Enemy):
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
+        self.jump_height = -18
+
+    def update(self, shiftX, shiftY):
+
+        if self.isJumping:
+            self.currentSprite = 1
+        else:
+            self.currentSprite = 0
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - self.velocityX
+        self.posY -= shiftY - self.velocityY
+
+        self.rect.center = (self.posX, self.posY)
+
+    def jump(self):
+        self.isJumping = True
+        self.velocityY = self.jump_height
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * 0.667)
 
 class RunningEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -455,11 +514,12 @@ class AddHealth(Collectables):
 ##############
 #Weapons
 ##############
-class Sword (pygame.sprite.Sprite):
+class Sword(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
         self.originalImage = _image
+        self.isSword = True
         if infoObject.current_h == 720:
             self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
@@ -494,3 +554,62 @@ class Sword (pygame.sprite.Sprite):
                 spriteGroup[x].health -= self.swordDamage
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, DISPLAYSURF, _image, left, direction, damage):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+        self.rect = self.image.get_rect()
+        self.left = left
+        if infoObject.current_h != 720:
+            self.left = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
+        self.height = int(DISPLAYSURF.get_height() / 2) + (14)
+        if infoObject.current_h != 720:
+            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
+        self.rect.update(self.left, self.height, self.rect.width, self.rect.height)
+        self.direction = direction
+        self.damage = damage
+    def move(self, platformGroup, enemyGroup):
+        self.rect.left += self.direction * 10
+        spriteGroup = spritecollide(self, platformGroup, False)
+        if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
+            self.remove(self.groups())
+        if pygame.sprite.spritecollideany(self, enemyGroup):
+            spriteGroup = spritecollide(self, enemyGroup, False)
+            for x in range(len(spriteGroup)):
+                spriteGroup[x].health -= self.damage
+
+                if spriteGroup[x].health <= 0:
+                    spriteGroup[x].kill()
+            self.remove(self.groups())
+class Gun(pygame.sprite.Sprite):
+    def __init__(self, DISPLAYSURF, _image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        self.originalImage = _image
+        self.isSword = False
+        self.xDirection = 2
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (
+            int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+            self.originalImage = pygame.transform.scale(self.originalImage, (
+            int(self.originalImage.get_width() * 0.6667),
+            int(self.originalImage.get_height() * 0.6667)))
+        self.rect = self.image.get_rect()
+        self.gunDamage = 10
+        self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
+        self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
+        if infoObject.current_h != 720:
+            self.left1 = int(DISPLAYSURF.get_width() / 2) + (20 * 1.4)
+            self.left2 = int(DISPLAYSURF.get_width() / 2) - (36 * 1.45)
+        self.height = int(DISPLAYSURF.get_height() / 2) + (14)
+        if infoObject.current_h != 720:
+            self.height = int(DISPLAYSURF.get_height() / 2) + (14 * 1.4)
+        self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
+    def attack(self, bulletGroup, DISPLAYSURF):
+        if self.rect.centerx > 640:
+            spawnLeft = self.rect.left + 50
+        else:
+            spawnLeft = self.rect.left - 85
+        bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))

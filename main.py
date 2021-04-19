@@ -10,6 +10,7 @@ fpsClock = pygame.time.Clock()
 # Image
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
+gun_image = pygame.image.load("Images/Gun.png")
 
 TILESIZE = 30
 FPS = 60
@@ -24,8 +25,11 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 platform_group = pygame.sprite.Group()
 
 sword = Sword(DISPLAYSURF, sword_image)
+gun = Gun(DISPLAYSURF, gun_image)
 current_weapon = pygame.sprite.Group()
 current_weapon.add(sword)
+bullet_group = pygame.sprite.Group()
+
 
 main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
@@ -45,14 +49,17 @@ def display_time(milliseconds):
 
 
 def update_all():
+    spriteGroup = bullet_group.sprites()
+    for x in range (len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group)
+    check_y_collisions()
     sword.attack(enemy_group)
-    character_group.update(sword)
+    character_group.update(sword, gun)
     shiftX, shiftY = main_character.getShift()
     platform_group.update(shiftX, shiftY)
     enemy_group.update(shiftX, shiftY)
     # for collectable in collectable_group:
     #    collectable.is_collided_with(main_character)
-    check_y_collisions()
 
 
 def checkcollision(char, group):
@@ -63,6 +70,25 @@ def checkcollision(char, group):
 
 
 def check_y_collisions():
+    #check enemy collisions
+    for enemy in enemy_group:
+        if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
+            enemy.velocityY = 0
+            enemy.isJumping = False
+        elif enemy.velocityY + GRAVITY < 0:
+            enemy.velocityY += GRAVITY
+            for platform in platform_group:
+                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                    if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                        enemy.velocityY = 0
+
+        else:
+            enemy.velocityY += GRAVITY
+            for platform in platform_group:
+                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                    if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                        enemy.velocityY = 0
+    #check character collisions
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
     elif main_character.y_velocity + GRAVITY < 0:
@@ -98,7 +124,7 @@ def checkStanding(character):
     for platform in platform_group:
         if character.rect.bottom == platform.rect.top:
             if character.rect.left < platform.rect.right and character.rect.right > platform.rect.left and not platform.walkthrough:
-                main_character.jumped = False
+                character.jumped = False
                 return True
 
 
@@ -109,8 +135,9 @@ def main():
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
-        current_weapon.draw(DISPLAYSURF)
         character_group.draw(DISPLAYSURF)
+        current_weapon.draw(DISPLAYSURF)
+        bullet_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
@@ -141,9 +168,25 @@ def main():
                         main_character.jump(sword)
                     elif main_character.can_double_jump is True and main_character.hasDoubleJumped() is False:
                         main_character.jump(sword)
+                        check_y_collisions()
                         main_character.jumped = True
                 if event.key == K_RETURN:
-                    sword.attacking = True
+                    if current_weapon.sprites()[0].isSword == True:
+                        sword.attacking = True
+                    else:
+                        current_weapon.sprites()[0].attack(bullet_group, DISPLAYSURF)
+                    for enemy in enemy_group:
+                        if enemy.jumping:
+                            enemy.jump()
+                if event.key == K_e:
+                    spriteArray = current_weapon.sprites()
+                    if spriteArray[0].isSword == True:
+                        current_weapon.remove(spriteArray[0])
+                        current_weapon.add(gun)
+                    else:
+                        current_weapon.remove(spriteArray[0])
+                        current_weapon.add(sword)
+
 
         # Update the Screen
         pygame.display.update()
