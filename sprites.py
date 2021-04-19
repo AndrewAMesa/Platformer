@@ -31,7 +31,7 @@ class Character(pygame.sprite.Sprite):
                 self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
 
         self.image = self.sprites[self.currentSprite]
-        
+
         # position values
         self.rect = self.image.get_rect()
         self.posX = posX
@@ -50,7 +50,7 @@ class Character(pygame.sprite.Sprite):
         self.animationSpeed = animationSpeed
         self.isMoving = False
         self.currentDirection = 1
-        
+
 
     def update(self, direction, weapon1, weapon2):
         if self.isMoving:
@@ -87,7 +87,7 @@ class Character(pygame.sprite.Sprite):
 
 
 
-        
+
 
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
@@ -107,10 +107,12 @@ class MainCharacter(Character):
         self.maxhealth=100
         self.direction = 1
         self.jumped = False
-        
+        self.can_glide = False
+        self.gliding = False
+
     def addmaxhealth(self):
         self.maxhealth+=10
-  
+
     def update(self, weapon1, weapon2):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
@@ -127,10 +129,14 @@ class MainCharacter(Character):
     def losehealth(self):
         if self.health>0:
             self.health-=10
+    def activateGlide(self):
+        self.can_glide = True
     def doubleJump(self):
         self.can_double_jump=True
     def hasDoubleJumped(self):
         return self.jumped
+    def glide(self):
+        self.gliding = True
     def displayhealth(self, DISPLAYSURF):
         if 30<self.health<60:
             tuple=(255,235,59)
@@ -478,7 +484,7 @@ class Glide(Collectables):
 
     def is_collided_with(self, char):
         self.kill()
-        ###Brian Finish this!!
+        char.activateGlide()
 
 class MaxHealth(Collectables):
 

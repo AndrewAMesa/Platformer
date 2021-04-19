@@ -99,8 +99,12 @@ def check_y_collisions():
                     main_character.y_velocity = 0
 
     else:
-        main_character.y_velocity += GRAVITY
-        sword.y_velocity += GRAVITY
+        if main_character.gliding and main_character.y_velocity >= 3:
+            main_character.y_velocity = 3
+            sword.y_velocity += 3
+        else:
+            main_character.y_velocity += GRAVITY
+            sword.y_velocity += GRAVITY
         for platform in platform_group:
             if main_character.rect.left + main_character.x_velocity < platform.rect.right and main_character.rect.right + main_character.x_velocity > platform.rect.left:
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom and not platform.walkthrough:
@@ -157,6 +161,10 @@ def main():
                 main_character.x_velocity = 0
         else:
             main_character.x_velocity = 0
+        if keys[pygame.K_LSHIFT] and main_character.can_glide:
+            main_character.gliding = True
+        else:
+            main_character.gliding = False
         # Event Loop
         for event in pygame.event.get():
             if event.type == KEYDOWN:
