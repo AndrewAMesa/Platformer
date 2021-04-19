@@ -26,9 +26,9 @@ class Character(pygame.sprite.Sprite):
 
         if infoObject.current_h == 720:
             for x in range(len(self.sprites)):
-                self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.6667), int(self.sprites[x].get_height() * 0.6667)))
+                self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * .667), int(self.sprites[x].get_height() * 0.667)))
             for x in range(len(self.sprites1)):
-                self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
+                self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.667), int(self.sprites1[x].get_height() * 0.667)))
 
         self.image = self.sprites[self.currentSprite]
 
@@ -99,6 +99,8 @@ class MainCharacter(Character):
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
+        if infoObject.current_h == 720:
+            self.jump_height = int(self.jump_height * .667)
         self.can_double_jump = False
         super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25)
         self.health=100
@@ -155,9 +157,7 @@ class MainCharacter(Character):
     def jump(self, weapon):
         self.y_velocity = self.jump_height
         weapon.y_velocity = self.jump_height
-        if infoObject.current_h == 720:
-            self.y_velocity = int(self.y_velocity * 0.667)
-            weapon.y_velocity = int(weapon.y_velocity * 0.667)
+
 
 
 ##############
@@ -175,9 +175,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.sprites1.append(pygame.transform.flip(self.sprites[i], True, False))
         if infoObject.current_h == 720:
             for x in range(len(self.sprites)):
-                self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.6667), int(self.sprites[x].get_height() * 0.6667)))
+                self.sprites[x] = pygame.transform.scale(self.sprites[x], (int(self.sprites[x].get_width() * 0.667), int(self.sprites[x].get_height() * 0.667)))
             for x in range(len(self.sprites1)):
-                self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.6667), int(self.sprites1[x].get_height() * 0.6667)))
+                self.sprites1[x] = pygame.transform.scale(self.sprites1[x], (int(self.sprites1[x].get_width() * 0.667), int(self.sprites1[x].get_height() * 0.667)))
         self.image = self.sprites[self.currentSprite]
         # position values
         self.rect = self.image.get_rect()
@@ -201,7 +201,9 @@ class Enemy(pygame.sprite.Sprite):
         self.currentDirection = directionX
 
     def update(self, shiftX, shiftY):
-
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * .667)
+            self.velocityX = int(self.velocityX * .667)
         self.currentSprite += self.animationSpeed
 
         if self.currentSprite >= len(self.sprites):
@@ -228,7 +230,7 @@ class BatEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bat2.png"))
         self.images.append(pygame.image.load("Images/Bat3.png"))
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, 4, 0, 0.18)
+        super().__init__(self.images, posX, posY, 20, 10, -1, 0, 4, 0.18)
 
 class BugEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -263,7 +265,6 @@ class FrogEnemy(Enemy):
 
         self.jumping = True
         self.jump_height = -18
-
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
@@ -271,7 +272,9 @@ class FrogEnemy(Enemy):
         else:
             self.currentSprite = 0
 
-
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * .667)
+            self.velocityX = int(self.velocityX * .667)
 
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
@@ -305,13 +308,16 @@ class MushroomEnemy(Enemy):
         self.jumping = True
         self.jump_height = -18
 
+
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
             self.currentSprite = 1
         else:
             self.currentSprite = 0
-
+        if infoObject.current_h == 720:
+            self.velocityY = int(self.velocityY * .667)
+            self.velocityX = int(self.velocityX * .667)
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
@@ -348,7 +354,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.image = image
         if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
 
         # position values
         self.rect = self.image.get_rect()
@@ -527,8 +533,8 @@ class Sword(pygame.sprite.Sprite):
         self.originalImage = _image
         self.isSword = True
         if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
-            self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.6667), int(self.originalImage.get_height() * 0.6667)))
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
+            self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.667), int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.y_velocity = 0
         self.xDirection = 2
@@ -565,7 +571,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
         if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.left = left
         if infoObject.current_h != 720:
@@ -598,10 +604,10 @@ class Gun(pygame.sprite.Sprite):
         self.xDirection = 2
         if infoObject.current_h == 720:
             self.image = pygame.transform.scale(self.image, (
-            int(self.image.get_width() * 0.6667), int(self.image.get_height() * 0.6667)))
+            int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
             self.originalImage = pygame.transform.scale(self.originalImage, (
-            int(self.originalImage.get_width() * 0.6667),
-            int(self.originalImage.get_height() * 0.6667)))
+            int(self.originalImage.get_width() * 0.667),
+            int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.gunDamage = 10
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13

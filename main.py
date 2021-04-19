@@ -72,6 +72,7 @@ def checkcollision(char, group):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
+        print(enemy.velocityY)
         if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
             enemy.velocityY = 0
             enemy.isJumping = False
