@@ -95,16 +95,15 @@ def checkcollision(char, group):
     for sprite in collided_sprites:
         if sprite.collectable:
             sprite.is_collided_with(char)
-        elif type(sprite) is Enemy:
-            main_character.losehealth(sprite.damage)
 
-def checkEnemyCollision(char, group):
+def damageCollision(char, group):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
     for sprite in collided_sprites:
-        if not main_character.isInvincible:
-            main_character.losehealth(sprite.damage)
-            main_character.isInvincible = True
-            main_character.invincibilityTime = 120
+        if sprite.damage != 0:
+            if not main_character.isInvincible:
+                main_character.losehealth(sprite.damage)
+                main_character.isInvincible = True
+                main_character.invincibilityTime = 120
 
 def update_gun(milliseconds):
     if int(milliseconds / 60) >= 1 and gun.canAttack == False:
@@ -185,12 +184,17 @@ def main():
     milliseconds = 0
     gunMilliseconds = 0
     readFile(0)
-    while True:
+
+    lose = False
+    win = False
+
+    while not lose and not win:
 
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
-        checkEnemyCollision(main_character, enemy_group)
+        damageCollision(main_character, enemy_group)
+        damageCollision(main_character, platform_group)
         character_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
@@ -248,6 +252,9 @@ def main():
                         current_weapon.remove(spriteArray[0])
                         current_weapon.add(sword)
 
+
+        if main_character.health <= 0:
+            lose = True
 
         # Update the Screen
         pygame.display.update()
