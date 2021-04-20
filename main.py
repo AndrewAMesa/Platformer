@@ -16,8 +16,8 @@ TILESIZE = 30
 FPS = 60
 GRAVITY = 1
 
-if infoObject.current_h == 720:
-    GRAVITY = GRAVITY * 0.667
+#if infoObject.current_h == 720:
+ #   GRAVITY = GRAVITY * 0.667
 infoObject = pygame.display.Info()
 DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
