@@ -614,7 +614,7 @@ class Gun(pygame.sprite.Sprite):
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
         if infoObject.current_h != 720:
-            self.left1 = int(DISPLAYSURF.get_width() / 2) + (20 * 1.4)
+            self.left1 = int(DISPLAYSURF.get_width() / 2) - (17 * 1.4)
             self.left2 = int(DISPLAYSURF.get_width() / 2) - (36 * 1.45)
         self.height = int(DISPLAYSURF.get_height() / 2) + (14)
         if infoObject.current_h != 720:
