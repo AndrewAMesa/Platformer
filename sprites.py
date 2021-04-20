@@ -206,7 +206,8 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, shiftX, shiftY):
         if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * .667)
-            self.velocityX = int(self.velocityX * .667)
+            if self.velocityX != 0:
+                self.velocityX = 2
         self.currentSprite += self.animationSpeed
 
         if self.currentSprite >= len(self.sprites):
@@ -218,7 +219,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.image = self.sprites[int(self.currentSprite)]
 
-        self.posX -= shiftX
+        self.posX -= shiftX - (self.currentDirection * self.velocityX)
         self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
@@ -422,7 +423,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, False)
+        super().__init__(self.sprite, posX, posY, False, 5, True)
 
 class DoorBlock(Platform):
 
@@ -616,7 +617,7 @@ class Gun(pygame.sprite.Sprite):
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
         if infoObject.current_h != 720:
-            self.left1 = int(DISPLAYSURF.get_width() / 2) + (20 * 1.4)
+            self.left1 = int(DISPLAYSURF.get_width() / 2) - (17 * 1.4)
             self.left2 = int(DISPLAYSURF.get_width() / 2) - (36 * 1.45)
         self.height = int(DISPLAYSURF.get_height() / 2) + (14)
         if infoObject.current_h != 720:
