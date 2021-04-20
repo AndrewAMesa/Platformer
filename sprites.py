@@ -100,7 +100,8 @@ class MainCharacter(Character):
         self.y_velocity = 0
         self.jump_height = -18
         if infoObject.current_h == 720:
-            self.jump_height = int(self.jump_height * .667)
+        #    self.jump_height = int(self.jump_height * .667)
+            self.jump_height = -16
         self.can_double_jump = False
         super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25)
         self.health=100
@@ -195,6 +196,8 @@ class Enemy(pygame.sprite.Sprite):
         self.jump_height = -1
         self.isJumping = False
 
+        #if infoObject.current_h == 720:
+         #  self.jump_height = int(self.jump_height * 0.667)
         self.velocityX = velocityX
         self.velocityY = velocityY
 
@@ -202,7 +205,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, shiftX, shiftY):
         if infoObject.current_h == 720:
-            self.velocityY = int(self.velocityY * .667)
+         #   self.velocityY = int(self.velocityY * .667)
             self.velocityX = int(self.velocityX * .667)
         self.currentSprite += self.animationSpeed
 
@@ -273,7 +276,7 @@ class FrogEnemy(Enemy):
             self.currentSprite = 0
 
         if infoObject.current_h == 720:
-            self.velocityY = int(self.velocityY * .667)
+         #   self.velocityY = int(self.velocityY * .667)
             self.velocityX = int(self.velocityX * .667)
 
         if self.currentDirection == 1:
@@ -289,8 +292,8 @@ class FrogEnemy(Enemy):
     def jump(self):
         self.isJumping = True
         self.velocityY = self.jump_height
-        if infoObject.current_h == 720:
-            self.velocityY = int(self.velocityY * 0.667)
+        #if infoObject.current_h == 720:
+         #   self.velocityY = int(self.velocityY * 0.667)
 
 
 class MushroomEnemy(Enemy):
@@ -316,7 +319,7 @@ class MushroomEnemy(Enemy):
         else:
             self.currentSprite = 0
         if infoObject.current_h == 720:
-            self.velocityY = int(self.velocityY * .667)
+         #   self.velocityY = int(self.velocityY * .667)
             self.velocityX = int(self.velocityX * .667)
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
@@ -331,8 +334,8 @@ class MushroomEnemy(Enemy):
     def jump(self):
         self.isJumping = True
         self.velocityY = self.jump_height
-        if infoObject.current_h == 720:
-            self.velocityY = int(self.velocityY * 0.667)
+       # if infoObject.current_h == 720:
+        #    self.velocityY = int(self.velocityY * 0.667)
 
 class RunningEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -619,9 +622,12 @@ class Gun(pygame.sprite.Sprite):
         if infoObject.current_h != 720:
             self.height = int(DISPLAYSURF.get_height() / 2) + (14 * 1.4)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
+        self.canAttack = True
     def attack(self, bulletGroup, DISPLAYSURF):
-        if self.rect.centerx > 640:
-            spawnLeft = self.rect.left + 50
-        else:
-            spawnLeft = self.rect.left - 85
-        bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
+        if self.canAttack == True:
+            if self.rect.centerx > 640:
+                spawnLeft = self.rect.left + 30
+            else:
+                spawnLeft = self.rect.left + 15
+            bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
+            self.canAttack = False
