@@ -72,6 +72,7 @@ class Character(pygame.sprite.Sprite):
                   weapon1.rect.left = weapon1.left2
                   weapon1.xDirection = -2
                   weapon1.attacking = False
+                  weapon2.image = weapon2.originalImage
                   weapon2.image = pygame.transform.flip(weapon2.originalImage, True, False)
                   weapon2.rect.left = weapon2.left2
                   weapon2.xDirection = -2
@@ -82,10 +83,16 @@ class Character(pygame.sprite.Sprite):
                   weapon1.xDirection = 2
                   weapon1.attacking = False
                   weapon2.image = weapon2.originalImage
+                  weapon2.image = weapon2.originalImage
                   weapon2.rect.left = weapon2.left1
                   weapon2.xDirection = 2
-
-
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
+            weapon2.rect.left = weapon1.left1
+            weapon2.rect.top = weapon2.top1
+        elif keys[pygame.K_s]:
+            weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
 
 
 
@@ -616,6 +623,7 @@ class Gun(pygame.sprite.Sprite):
         self.gunDamage = 10
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
+        self.top1 = int(DISPLAYSURF.get_height() / 2) - 17
         if infoObject.current_h != 720:
             self.left1 = int(DISPLAYSURF.get_width() / 2) - (17 * 1.4)
             self.left2 = int(DISPLAYSURF.get_width() / 2) - (36 * 1.45)
