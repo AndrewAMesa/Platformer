@@ -48,6 +48,22 @@ def display_time(milliseconds):
     DISPLAYSURF.blit(clockSurfaceObj, (DISPLAYSURF.get_width() - 143, 10))
 
 
+def enemyMovement():
+    for enemy in enemy_group:
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy):
+            for platform in platform_group:
+                if enemy.velocityY < 0:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
+                            print("Yes")
+                            enemy.velocityY *= -1
+                if enemy.velocityY > 0:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
+                            enemy.velocityY *= -1
+
+
+
 def update_all():
     spriteGroup = bullet_group.sprites()
     for x in range (len(spriteGroup)):
@@ -56,6 +72,7 @@ def update_all():
     sword.attack(enemy_group)
     character_group.update(sword, gun)
     shiftX, shiftY = main_character.getShift()
+    enemyMovement()
     platform_group.update(shiftX, shiftY)
     enemy_group.update(shiftX, shiftY)
     # for collectable in collectable_group:
@@ -81,23 +98,23 @@ def update_gun(milliseconds):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        print(enemy.velocityY)
-        if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
-            enemy.velocityY = 0
-            enemy.isJumping = False
-        elif enemy.velocityY + GRAVITY < 0:
-            enemy.velocityY += GRAVITY
-            for platform in platform_group:
-                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                    if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
-                        enemy.velocityY = 0
+        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy):
+            if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
+                enemy.velocityY = 0
+                enemy.isJumping = False
+            elif enemy.velocityY + GRAVITY < 0:
+                enemy.velocityY += GRAVITY
+                for platform in platform_group:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                            enemy.velocityY = 0
 
-        else:
-            enemy.velocityY += GRAVITY
-            for platform in platform_group:
-                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                    if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
-                        enemy.velocityY = 0
+            else:
+                enemy.velocityY += GRAVITY
+                for platform in platform_group:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                            enemy.velocityY = 0
     #check character collisions
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
