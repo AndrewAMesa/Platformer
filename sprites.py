@@ -233,7 +233,7 @@ class BatEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bat2.png"))
         self.images.append(pygame.image.load("Images/Bat3.png"))
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, 0, 4, 0.18)
+        super().__init__(self.images, posX, posY, 20, 10, -1, 0, -4, 0.18)
 
 class BugEnemy(Enemy):
     def __init__(self, posX, posY):
