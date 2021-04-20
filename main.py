@@ -66,17 +66,7 @@ def update_all():
                     if enemy.currentDirection < 0:
                         if enemy.rect.left + (enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                             enemy.currentDirection *= -1
-        if enemy.jump_height == 0:
-            if enemy.velocityY < 0:
-                for platform in platform_group:
-                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
-                            enemy.velocityY *= -1
-            elif enemy.velocityY > 0:
-                for platform in platform_group:
-                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
-                            enemy.velocityY *= -1
+
     enemy_group.update(shiftX, shiftY)
     platform_group.update(shiftX, shiftY)
 
