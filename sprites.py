@@ -622,9 +622,12 @@ class Gun(pygame.sprite.Sprite):
         if infoObject.current_h != 720:
             self.height = int(DISPLAYSURF.get_height() / 2) + (14 * 1.4)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
+        self.canAttack = True
     def attack(self, bulletGroup, DISPLAYSURF):
-        if self.rect.centerx > 640:
-            spawnLeft = self.rect.left + 50
-        else:
-            spawnLeft = self.rect.left - 85
-        bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
+        if self.canAttack == True:
+            if self.rect.centerx > 640:
+                spawnLeft = self.rect.left + 30
+            else:
+                spawnLeft = self.rect.left + 15
+            bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
+            self.canAttack = False

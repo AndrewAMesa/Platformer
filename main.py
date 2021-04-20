@@ -68,6 +68,15 @@ def checkcollision(char, group):
         if sprite.collectable:
             sprite.is_collided_with(char)
 
+def update_gun(milliseconds):
+    if int(milliseconds / 60) >= 1 and gun.canAttack == False:
+        gun.canAttack = True
+        return 0
+    else:
+        return milliseconds
+
+
+
 
 def check_y_collisions():
     #check enemy collisions
@@ -135,6 +144,7 @@ def checkStanding(character):
 
 def main():
     milliseconds = 0
+    gunMilliseconds = 0
     readFile(0)
     while True:
         DISPLAYSURF.fill((0, 69, 69))
@@ -147,6 +157,7 @@ def main():
         enemy_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
         display_time(milliseconds)
+        gunMilliseconds = update_gun(gunMilliseconds)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             main_character.isMoving = True
@@ -201,6 +212,8 @@ def main():
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
+        if gun.canAttack == False:
+            gunMilliseconds += fpsClock.tick_busy_loop(660)
 
 
 def readFile(levelNum):
