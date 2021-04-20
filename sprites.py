@@ -113,15 +113,24 @@ class MainCharacter(Character):
         self.can_glide = False
         self.gliding = False
 
+        self.invincibilityTime = 0
+        self.isInvincible = False
+
     def addmaxhealth(self):
         self.maxhealth+=10
 
-    def update(self, weapon1, weapon2):
+    def update(self, weapon1, weapon2, ms):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
+
+        if self.isInvincible:
+            self.invincibilityTime -= int(ms / 60)
+            if self.invincibilityTime < 0:
+                self.invincibilityTime = 0
+                self.isInvincible = False
 
         super().update(self.direction, weapon1, weapon2)
 
@@ -129,9 +138,9 @@ class MainCharacter(Character):
     def addhealth(self):
         if self.health<self.maxhealth:
             self.health+=10
-    def losehealth(self):
+    def losehealth(self, damageTaken):
         if self.health>0:
-            self.health-=10
+            self.health -= damageTaken
     def activateGlide(self):
         self.can_glide = True
     def doubleJump(self):

@@ -70,7 +70,7 @@ def update_all():
         spriteGroup[x].move(platform_group, enemy_group)
     check_y_collisions()
     sword.attack(enemy_group)
-    character_group.update(sword, gun)
+    character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
     for enemy in enemy_group:
@@ -95,6 +95,16 @@ def checkcollision(char, group):
     for sprite in collided_sprites:
         if sprite.collectable:
             sprite.is_collided_with(char)
+        elif type(sprite) is Enemy:
+            main_character.losehealth(sprite.damage)
+
+def checkEnemyCollision(char, group):
+    collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
+    for sprite in collided_sprites:
+        if not main_character.isInvincible:
+            main_character.losehealth(sprite.damage)
+            main_character.isInvincible = True
+            main_character.invincibilityTime = 120
 
 def update_gun(milliseconds):
     if int(milliseconds / 60) >= 1 and gun.canAttack == False:
@@ -171,13 +181,16 @@ def checkStanding(character):
 
 
 def main():
+    global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
     readFile(0)
     while True:
+
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
+        checkEnemyCollision(main_character, enemy_group)
         character_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
