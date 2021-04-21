@@ -64,6 +64,7 @@ class Character(pygame.sprite.Sprite):
             self.image = self.sprites1[int(self.currentSprite)]
         else:
             self.image = self.sprites[int(self.currentSprite)]
+        keys = pygame.key.get_pressed()
         if direction != self.currentDirection:
           self.currentDirection = direction
           if direction == -1:
@@ -75,7 +76,11 @@ class Character(pygame.sprite.Sprite):
                   weapon2.image = weapon2.originalImage
                   weapon2.image = pygame.transform.flip(weapon2.originalImage, True, False)
                   weapon2.rect.left = weapon2.left2
+                  weapon2.rect.top = weapon2.height
                   weapon2.xDirection = -2
+                  weapon2.yDirection = 0
+
+
           else:
               if weapon1.rect.left != weapon1.left1:
                   weapon1.image = weapon1.originalImage
@@ -85,14 +90,38 @@ class Character(pygame.sprite.Sprite):
                   weapon2.image = weapon2.originalImage
                   weapon2.image = weapon2.originalImage
                   weapon2.rect.left = weapon2.left1
+                  weapon2.rect.top = weapon2.height
                   weapon2.xDirection = 2
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
-            weapon2.rect.left = weapon1.left1
-            weapon2.rect.top = weapon2.top1
-        elif keys[pygame.K_s]:
-            weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
+                  weapon2.yDirection = 0
+        if direction == -1:
+            if keys[pygame.K_w]:
+                weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
+                weapon2.rect.left = weapon2.left3
+                weapon2.rect.top = weapon2.top1
+                weapon2.xDirection = 0
+                weapon2.yDirection = -2
+            elif keys[pygame.K_s]:
+                weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
+                weapon2.image = pygame.transform.flip(weapon2.image, True, False)
+                weapon2.rect.left = weapon2.left3
+                weapon2.rect.top = weapon2.top2
+                weapon2.xDirection = 0
+                weapon2.yDirection = 2
+        else:
+            if keys[pygame.K_w]:
+                weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
+                weapon2.image = pygame.transform.flip(weapon2.image, True, False)
+                weapon2.rect.left = weapon2.left4
+                weapon2.rect.top = weapon2.top1
+                weapon2.xDirection = 0
+                weapon2.yDirection = -2
+            elif keys[pygame.K_s]:
+                weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
+                weapon2.rect.left = weapon2.left4
+                weapon2.rect.top = weapon2.top2
+                weapon2.xDirection = 0
+                weapon2.yDirection = 2
+
 
 
 
@@ -578,7 +607,7 @@ class Sword(pygame.sprite.Sprite):
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, DISPLAYSURF, _image, left, direction, damage):
+    def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
         pygame.sprite.Sprite.__init__(self)
         self.image = _image
         if infoObject.current_h == 720:
@@ -587,14 +616,16 @@ class Bullet(pygame.sprite.Sprite):
         self.left = left
         if infoObject.current_h != 720:
             self.left = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
-        self.height = int(DISPLAYSURF.get_height() / 2) + (14)
+        self.height = top
         if infoObject.current_h != 720:
             self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
         self.rect.update(self.left, self.height, self.rect.width, self.rect.height)
-        self.direction = direction
+        self.directionx = directionx
+        self.directiony = directiony
         self.damage = damage
     def move(self, platformGroup, enemyGroup):
-        self.rect.left += self.direction * 10
+        self.rect.left += self.directionx * 10
+        self.rect.top += self.directiony * 10
         spriteGroup = spritecollide(self, platformGroup, False)
         if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
             self.remove(self.groups())
@@ -613,6 +644,7 @@ class Gun(pygame.sprite.Sprite):
         self.originalImage = _image
         self.isSword = False
         self.xDirection = 2
+        self.yDirection = 0
         if infoObject.current_h == 720:
             self.image = pygame.transform.scale(self.image, (
             int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
@@ -623,7 +655,10 @@ class Gun(pygame.sprite.Sprite):
         self.gunDamage = 10
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
-        self.top1 = int(DISPLAYSURF.get_height() / 2) - 17
+        self.left3 = int(DISPLAYSURF.get_width() / 2) - 26
+        self.left4 = int(DISPLAYSURF.get_width() / 2) + 18
+        self.top1 = int(DISPLAYSURF.get_height() / 2) - 15
+        self.top2 = int(DISPLAYSURF.get_height() / 2) - 3
         if infoObject.current_h != 720:
             self.left1 = int(DISPLAYSURF.get_width() / 2) - (17 * 1.4)
             self.left2 = int(DISPLAYSURF.get_width() / 2) - (36 * 1.45)
@@ -634,9 +669,23 @@ class Gun(pygame.sprite.Sprite):
         self.canAttack = True
     def attack(self, bulletGroup, DISPLAYSURF):
         if self.canAttack == True:
-            if self.rect.centerx > 640:
+            if self.rect.left == self.left1:
                 spawnLeft = self.rect.left + 30
-            else:
+                spawnTop = int(DISPLAYSURF.get_height() / 2) + (14)
+            elif self.rect.left == self.left2:
                 spawnLeft = self.rect.left + 15
-            bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
+                spawnTop = int(DISPLAYSURF.get_height() / 2) + (14)
+            elif self.rect.left == self.left3:
+                spawnLeft = self.rect.left
+                if self.yDirection > 0:
+                    spawnTop = int(DISPLAYSURF.get_height() / 2) + (3)
+                else:
+                    spawnTop = int(DISPLAYSURF.get_height() / 2) + 20
+            elif self.rect.left == self.left4:
+                spawnLeft = self.rect.left + 6
+                if self.yDirection > 0:
+                    spawnTop = int(DISPLAYSURF.get_height() / 2) + (20)
+                else:
+                    spawnTop = int(DISPLAYSURF.get_height() / 2) + 3
+            bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
