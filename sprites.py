@@ -310,7 +310,8 @@ class FrogEnemy(Enemy):
 
 
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
-
+        if infoObject.current_h == 720:
+            self.velocityX = self.velocityX - .5
         self.jumping = True
         self.jump_height = -18
         self.jump_distance = 5
@@ -321,9 +322,7 @@ class FrogEnemy(Enemy):
         else:
             self.currentSprite = 0
 
-        if infoObject.current_h == 720:
-         #   self.velocityY = int(self.velocityY * .667)
-            self.velocityX = int(self.velocityX * .667)
+
 
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
@@ -355,7 +354,8 @@ class MushroomEnemy(Enemy):
 
 
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
-
+        if infoObject.current_h == 720:
+            self.velocityX = self.velocityX - .5
         self.jumping = True
         self.jump_height = -18
 
@@ -366,9 +366,6 @@ class MushroomEnemy(Enemy):
             self.currentSprite = 1
         else:
             self.currentSprite = 0
-        if infoObject.current_h == 720:
-         #   self.velocityY = int(self.velocityY * .667)
-            self.velocityX = int(self.velocityX * .667)
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
@@ -724,6 +721,9 @@ class Gun(pygame.sprite.Sprite):
                 elif self.yDirection < 0:
                     print("in loop")
                     spawnTop = int(DISPLAYSURF.get_height() / 2)
+            else:
+                spawnLeft = 0
+                spawnTop = 0
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
 
@@ -734,15 +734,23 @@ class Parachute(pygame.sprite.Sprite):
         self.xcenter=WIDTH/2+8
         self.ycenter=HEIGHT/2-10
         self.originalImage = _image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * .667), int(self.image.get_height() * 0.667)))
+            self.originalImage = pygame.transform.scale(self.image,(int(self.originalImage.get_width() * .667), int(self.originalImage.get_height() * 0.667)))
+            self.xcenter += 4
+            self.ycenter += 4
         self.rect = self.image.get_rect()
         self.rect.center=(self.xcenter, self.ycenter)
     def update(self, direction):
         if direction == -1:
-            print('here')
+            #print('here')
             self.image= pygame.transform.flip(self.originalImage, True, False)
             self.rect.center = (self.xcenter-16, self.ycenter)
         else:
             self.image = self.originalImage
-            self.rect.center = (self.xcenter, self.ycenter)
+            if infoObject.current_h == 720:
+                self.rect.center = (self.xcenter - 6, self.ycenter)
+            else:
+                self.rect.center = (self.xcenter, self.ycenter)
 
 
