@@ -678,14 +678,16 @@ class Gun(pygame.sprite.Sprite):
             elif self.rect.left == self.left3:
                 spawnLeft = self.rect.left
                 if self.yDirection > 0:
-                    spawnTop = int(DISPLAYSURF.get_height() / 2) + (3)
-                else:
-                    spawnTop = int(DISPLAYSURF.get_height() / 2) + 20
+                    spawnTop = int(DISPLAYSURF.get_height() / 2) + (25)
+                elif self.yDirection < 0:
+                    spawnTop = int(DISPLAYSURF.get_height() / 2)
+                    print("in loop")
             elif self.rect.left == self.left4:
                 spawnLeft = self.rect.left + 6
                 if self.yDirection > 0:
-                    spawnTop = int(DISPLAYSURF.get_height() / 2) + (20)
-                else:
-                    spawnTop = int(DISPLAYSURF.get_height() / 2) + 3
+                    spawnTop = int(DISPLAYSURF.get_height() / 2) + (25)
+                elif self.yDirection < 0:
+                    print("in loop")
+                    spawnTop = int(DISPLAYSURF.get_height() / 2)
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
