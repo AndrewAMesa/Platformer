@@ -11,7 +11,6 @@ fpsClock = pygame.time.Clock()
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
 gun_image = pygame.image.load("Images/Gun.png")
-
 TILESIZE = 30
 FPS = 60
 GRAVITY = 1
@@ -35,6 +34,9 @@ main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
+parachute=Parachute(SCREEN_WIDTH, SCREEN_HEIGHT, pygame.image.load('Images/Parachute.png'))
+parachute_group=pygame.sprite.Group()
+parachute_group.add(parachute)
 
 enemy_group = pygame.sprite.Group()
 
@@ -149,7 +151,10 @@ def check_y_collisions():
         if main_character.gliding and main_character.y_velocity >= 3:
             main_character.y_velocity = 3
             sword.y_velocity += 3
+            parachute_group.update(main_character.direction)
+            parachute_group.draw(DISPLAYSURF)
         else:
+
             main_character.y_velocity += GRAVITY
             sword.y_velocity += GRAVITY
         for platform in platform_group:
@@ -257,6 +262,7 @@ def main():
             lose = True
 
         # Update the Screen
+
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
