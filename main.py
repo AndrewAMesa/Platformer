@@ -15,8 +15,8 @@ TILESIZE = 30
 FPS = 60
 GRAVITY = 1
 
-if infoObject.current_h == 720:
-    GRAVITY = GRAVITY * 0.667
+#if infoObject.current_h == 720:
+ #   GRAVITY = GRAVITY * 0.667
 infoObject = pygame.display.Info()
 DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
@@ -50,18 +50,46 @@ def display_time(milliseconds):
     DISPLAYSURF.blit(clockSurfaceObj, (DISPLAYSURF.get_width() - 143, 10))
 
 
+def enemyMovement():
+    for enemy in enemy_group:
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy):
+            for platform in platform_group:
+                if enemy.velocityY < 0:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
+                            print("Yes")
+                            enemy.velocityY *= -1
+                if enemy.velocityY > 0:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
+                            enemy.velocityY *= -1
+
+
+
 def update_all():
     spriteGroup = bullet_group.sprites()
     for x in range (len(spriteGroup)):
         spriteGroup[x].move(platform_group, enemy_group)
     check_y_collisions()
     sword.attack(enemy_group)
-    character_group.update(sword, gun)
+    character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
-    platform_group.update(shiftX, shiftY)
+    enemyMovement()
+    for enemy in enemy_group:
+        if enemy.velocityX != 0:
+            for platform in platform_group:
+                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
+                    if enemy.currentDirection > 0:
+                        if enemy.rect.right + (
+                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                    if enemy.currentDirection < 0:
+                        if enemy.rect.left + (
+                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            enemy.currentDirection *= -1
     enemy_group.update(shiftX, shiftY)
-    # for collectable in collectable_group:
-    #    collectable.is_collided_with(main_character)
+    platform_group.update(shiftX, shiftY)
+
 
 
 def checkcollision(char, group):
@@ -70,26 +98,45 @@ def checkcollision(char, group):
         if sprite.collectable:
             sprite.is_collided_with(char)
 
+def damageCollision(char, group):
+    collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
+    for sprite in collided_sprites:
+        if sprite.damage != 0:
+            if not main_character.isInvincible:
+                main_character.losehealth(sprite.damage)
+                main_character.isInvincible = True
+                main_character.invincibilityTime = 120
+
+def update_gun(milliseconds):
+    if int(milliseconds / 60) >= 1 and gun.canAttack == False:
+        gun.canAttack = True
+        return 0
+    else:
+        return milliseconds
+
+
+
 
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
-            enemy.velocityY = 0
-            enemy.isJumping = False
-        elif enemy.velocityY + GRAVITY < 0:
-            enemy.velocityY += GRAVITY
-            for platform in platform_group:
-                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                    if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
-                        enemy.velocityY = 0
+        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy):
+            if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
+                enemy.velocityY = 0
+                enemy.isJumping = False
+            elif enemy.velocityY + GRAVITY < 0:
+                enemy.velocityY += GRAVITY
+                for platform in platform_group:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                            enemy.velocityY = 0
 
-        else:
-            enemy.velocityY += GRAVITY
-            for platform in platform_group:
-                if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                    if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
-                        enemy.velocityY = 0
+            else:
+                enemy.velocityY += GRAVITY
+                for platform in platform_group:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                            enemy.velocityY = 0
     #check character collisions
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
@@ -138,19 +185,29 @@ def checkStanding(character):
 
 
 def main():
+    global milliseconds
     milliseconds = 0
+    gunMilliseconds = 0
     readFile(0)
-    while True:
+
+    lose = False
+    win = False
+
+    while not lose and not win:
+
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
+        damageCollision(main_character, enemy_group)
+        damageCollision(main_character, platform_group)
         character_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
-        platform_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
+        platform_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
         display_time(milliseconds)
+        gunMilliseconds = update_gun(gunMilliseconds)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             main_character.isMoving = True
@@ -201,11 +258,16 @@ def main():
                         current_weapon.add(sword)
 
 
+        if main_character.health <= 0:
+            lose = True
+
         # Update the Screen
 
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
+        if gun.canAttack == False:
+            gunMilliseconds += fpsClock.tick_busy_loop(660)
 
 
 def readFile(levelNum):
