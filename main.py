@@ -357,6 +357,9 @@ def readFile(levelNum):
             elif b[i][j] == "G":
                 platform_group.add(Glide((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "W":
+                platform_group.add(WeaponUpgrade((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                               (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "a":
                 enemy_group.add(BatEnemy((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                                (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
@@ -380,5 +383,8 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "C":
                 platform_group.add(BreakableBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "R":
+                platform_group.add(Rock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()
