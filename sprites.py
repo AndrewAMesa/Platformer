@@ -276,6 +276,9 @@ class FrogEnemy(Enemy):
         self.jumping = True
         self.jump_height = -18
         self.jump_distance = 5
+        self.jumpIncrement = 0
+        self.jumpIncrease = 0.02
+
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
@@ -302,6 +305,7 @@ class FrogEnemy(Enemy):
         self.isJumping = True
         self.velocityY = self.jump_height
         self.velocityX = self.jump_distance
+        self.jumpIncrement = 0
         #if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * 0.667)
 
@@ -319,33 +323,40 @@ class MushroomEnemy(Enemy):
         super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
 
         self.jumping = True
-        self.jump_height = -18
-
+        self.jump_height = -16
+        self.jump_distance = 4
+        self.jumpIncrement = 0
+        self.jumpIncrease = 0.05
 
     def update(self, shiftX, shiftY):
-
         if self.isJumping:
             self.currentSprite = 1
         else:
             self.currentSprite = 0
+
         if infoObject.current_h == 720:
-         #   self.velocityY = int(self.velocityY * .667)
+            #   self.velocityY = int(self.velocityY * .667)
             self.velocityX = int(self.velocityX * .667)
+
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
+
             self.image = self.sprites[int(self.currentSprite)]
 
-        self.posX -= shiftX - self.velocityX
+        self.posX -= shiftX - (self.currentDirection * self.velocityX)
         self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
 
+
     def jump(self):
         self.isJumping = True
         self.velocityY = self.jump_height
-       # if infoObject.current_h == 720:
-        #    self.velocityY = int(self.velocityY * 0.667)
+        self.velocityX = self.jump_distance
+        self.jumpIncrement = 0
+        # if infoObject.current_h == 720:
+        #   self.velocityY = int(self.velocityY * 0.667)
 
 class RunningEnemy(Enemy):
     def __init__(self, posX, posY):

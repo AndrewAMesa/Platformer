@@ -79,6 +79,11 @@ def enemyMovement():
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
+        if enemy.jumping:
+            if not enemy.isJumping and int(enemy.jumpIncrement) >= 1:
+                enemy.jump()
+            else:
+                enemy.jumpIncrement += enemy.jumpIncrease
 
 
 
@@ -256,9 +261,6 @@ def main():
                         sword.attacking = True
                     else:
                         current_weapon.sprites()[0].attack(bullet_group, DISPLAYSURF)
-                    for enemy in enemy_group:
-                        if enemy.jumping:
-                            enemy.jump()
                 if event.key == K_e:
                     spriteArray = current_weapon.sprites()
                     if spriteArray[0].isSword == True:
