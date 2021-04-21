@@ -12,7 +12,7 @@ infoObject = pygame.display.Info()
 
 # Main Character Class
 class Character(pygame.sprite.Sprite):
-    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY, animationSpeed):
+    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY, animationSpeed, gliding):
 
         super().__init__()
         self.sprites = sprites
@@ -37,7 +37,7 @@ class Character(pygame.sprite.Sprite):
         self.posX = posX
         self.posY = posY
         self.rect.topleft = [posX, posY]
-
+        self.gliding=gliding
         # Basic direction values for the character so that Andy can work on the weapons
         # These can be used as multipliers for speed when the character and other objects are moving
         self.directionX = directionX  # Can either be -1 or 1 (Left or Right)
@@ -53,6 +53,7 @@ class Character(pygame.sprite.Sprite):
 
 
     def update(self, direction, weapon1, weapon2):
+
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -84,11 +85,6 @@ class Character(pygame.sprite.Sprite):
                   weapon2.image = weapon2.originalImage
                   weapon2.rect.left = weapon2.left1
                   weapon2.xDirection = 2
-
-
-
-
-
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
@@ -96,20 +92,19 @@ class MainCharacter(Character):
         self.images.append(pygame.image.load(os.path.join("Images", "Character0.png")))
         self.images.append(pygame.image.load(os.path.join("Images", "Character1.png")))
         self.images.append(pygame.image.load(os.path.join("Images", "Character2.png")))
+        self.can_glide = False
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
         self.can_double_jump = False
-        super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25)
+        self.gliding = False
+        super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25,self.gliding)
         self.health=100
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
         self.maxhealth=100
         self.direction = 1
         self.jumped = False
-        self.can_glide = False
-        self.gliding = False
-
     def addmaxhealth(self):
         self.maxhealth+=10
 
@@ -389,7 +384,7 @@ class BreakableBlock(Platform):
     def __init__(self, posX, posY):
 
         # Load Images
-        self.sprite = pygame.image.load('Images/BreakableBlock.png')
+        self.sprite = pygame.image.load('Images/AnotherBlock.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
 
@@ -619,3 +614,22 @@ class Gun(pygame.sprite.Sprite):
         else:
             spawnLeft = self.rect.left - 85
         bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, self.xDirection, self.gunDamage))
+class Parachute(pygame.sprite.Sprite):
+    def __init__(self, WIDTH, HEIGHT, _image):
+
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = _image
+        self.xcenter=WIDTH/2+8
+        self.ycenter=HEIGHT/2-10
+        self.originalImage = _image
+        self.rect = self.image.get_rect()
+        self.rect.center=(self.xcenter, self.ycenter)
+    def update(self, direction):
+        if direction == -1:
+            print('here')
+            self.image= pygame.transform.flip(self.originalImage, True, False)
+            self.rect.center = (self.xcenter-16, self.ycenter)
+        else:
+            self.image = self.originalImage
+            self.rect.center = (self.xcenter, self.ycenter)
