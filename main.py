@@ -269,8 +269,8 @@ def main():
                         current_weapon.add(sword)
 
 
-        if main_character.health <= 0:
-            lose = True
+        #if main_character.health <= 0:
+        #    lose = True
 
         # Update the Screen
 

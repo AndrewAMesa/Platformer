@@ -250,7 +250,7 @@ class BugEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bug2.png"))
 
 
-        super().__init__(self.images, posX, posY, 10, 10, -1, 0, 4, 0.25)
+        super().__init__(self.images, posX, posY, 10, 10, -1, 4, 0, 0.25)
 
 class ElephantEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -527,6 +527,20 @@ class AddHealth(Collectables):
 
     def __init__(self, xpos, ypos):
 
+        image = pygame.image.load('Images/Health.png')
+
+        super().__init__("health", xpos, ypos, image)
+
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
+            char.addhealth()
+
+class WeaponUpgrade(Collectables):
+
+    # W
+
+    def __init__(self, xpos, ypos):
         image = pygame.image.load('Images/Health.png')
 
         super().__init__("health", xpos, ypos, image)
