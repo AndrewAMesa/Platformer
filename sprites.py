@@ -12,7 +12,7 @@ infoObject = pygame.display.Info()
 
 # Main Character Class
 class Character(pygame.sprite.Sprite):
-    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY, animationSpeed):
+    def __init__(self, sprites, posX, posY, health, damage, directionX, directionY, animationSpeed, gliding):
 
         super().__init__()
         self.sprites = sprites
@@ -37,7 +37,7 @@ class Character(pygame.sprite.Sprite):
         self.posX = posX
         self.posY = posY
         self.rect.topleft = [posX, posY]
-
+        self.gliding=gliding
         # Basic direction values for the character so that Andy can work on the weapons
         # These can be used as multipliers for speed when the character and other objects are moving
         self.directionX = directionX  # Can either be -1 or 1 (Left or Right)
@@ -53,6 +53,7 @@ class Character(pygame.sprite.Sprite):
 
 
     def update(self, direction, weapon1, weapon2):
+
         if self.isMoving:
             self.currentSprite += self.animationSpeed
 
@@ -122,9 +123,6 @@ class Character(pygame.sprite.Sprite):
                 weapon2.xDirection = 0
                 weapon2.yDirection = 2
 
-
-
-
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
         #Pass sprites as arrays to allow for easier animations
@@ -132,6 +130,7 @@ class MainCharacter(Character):
         self.images.append(pygame.image.load(os.path.join("Images", "Character0.png")))
         self.images.append(pygame.image.load(os.path.join("Images", "Character1.png")))
         self.images.append(pygame.image.load(os.path.join("Images", "Character2.png")))
+        self.can_glide = False
         self.x_velocity = 0
         self.y_velocity = 0
         self.jump_height = -18
@@ -139,7 +138,8 @@ class MainCharacter(Character):
         #    self.jump_height = int(self.jump_height * .667)
             self.jump_height = -16
         self.can_double_jump = False
-        super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25)
+        self.gliding = False
+        super().__init__(self.images, 0, 0, 10, 0, 1, 0, 0.25,self.gliding)
         self.health=100
         self.rect = self.image.get_rect()
         self.rect.center = (DISPLAYSURF.get_width() / 2, DISPLAYSURF.get_height() / 2)
@@ -148,16 +148,24 @@ class MainCharacter(Character):
         self.jumped = False
         self.can_glide = False
         self.gliding = False
+        self.invincibilityTime = 0
+        self.isInvincible = False
 
     def addmaxhealth(self):
         self.maxhealth+=10
 
-    def update(self, weapon1, weapon2):
+    def update(self, weapon1, weapon2, ms):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.667)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
+
+        if self.isInvincible:
+            self.invincibilityTime -= int(ms / 60)
+            if self.invincibilityTime < 0:
+                self.invincibilityTime = 0
+                self.isInvincible = False
 
         super().update(self.direction, weapon1, weapon2)
 
@@ -165,9 +173,9 @@ class MainCharacter(Character):
     def addhealth(self):
         if self.health<self.maxhealth:
             self.health+=10
-    def losehealth(self):
+    def losehealth(self, damageTaken):
         if self.health>0:
-            self.health-=10
+            self.health -= damageTaken
     def activateGlide(self):
         self.can_glide = True
     def doubleJump(self):
@@ -305,6 +313,7 @@ class FrogEnemy(Enemy):
 
         self.jumping = True
         self.jump_height = -18
+        self.jump_distance = 5
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
@@ -319,9 +328,10 @@ class FrogEnemy(Enemy):
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
+
             self.image = self.sprites[int(self.currentSprite)]
 
-        self.posX -= shiftX - self.velocityX
+        self.posX -= shiftX - (self.currentDirection * self.velocityX)
         self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
@@ -329,6 +339,7 @@ class FrogEnemy(Enemy):
     def jump(self):
         self.isJumping = True
         self.velocityY = self.jump_height
+        self.velocityX = self.jump_distance
         #if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * 0.667)
 
@@ -435,7 +446,7 @@ class BreakableBlock(Platform):
     def __init__(self, posX, posY):
 
         # Load Images
-        self.sprite = pygame.image.load('Images/BreakableBlock.png')
+        self.sprite = pygame.image.load('Images/AnotherBlock.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
 
@@ -691,3 +702,23 @@ class Gun(pygame.sprite.Sprite):
                     spawnTop = int(DISPLAYSURF.get_height() / 2)
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
+
+class Parachute(pygame.sprite.Sprite):
+    def __init__(self, WIDTH, HEIGHT, _image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        self.xcenter=WIDTH/2+8
+        self.ycenter=HEIGHT/2-10
+        self.originalImage = _image
+        self.rect = self.image.get_rect()
+        self.rect.center=(self.xcenter, self.ycenter)
+    def update(self, direction):
+        if direction == -1:
+            print('here')
+            self.image= pygame.transform.flip(self.originalImage, True, False)
+            self.rect.center = (self.xcenter-16, self.ycenter)
+        else:
+            self.image = self.originalImage
+            self.rect.center = (self.xcenter, self.ycenter)
+
+

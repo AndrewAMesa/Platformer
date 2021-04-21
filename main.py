@@ -11,7 +11,6 @@ fpsClock = pygame.time.Clock()
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
 gun_image = pygame.image.load("Images/Gun.png")
-
 TILESIZE = 30
 FPS = 60
 GRAVITY = 1
@@ -35,6 +34,9 @@ main_character = MainCharacter(DISPLAYSURF)
 character_group = pygame.sprite.Group()
 character_group.add(main_character)
 
+parachute=Parachute(SCREEN_WIDTH, SCREEN_HEIGHT, pygame.image.load('Images/Parachute.png'))
+parachute_group=pygame.sprite.Group()
+parachute_group.add(parachute)
 
 enemy_group = pygame.sprite.Group()
 
@@ -55,12 +57,29 @@ def enemyMovement():
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
                         if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
-                            #print("Yes")
                             enemy.velocityY *= -1
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY *= -1
+        if enemy.velocityX != 0:
+            for platform in platform_group:
+                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
+                    if enemy.currentDirection > 0:
+                        if enemy.rect.right + (
+                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                        if isinstance(enemy, FrogEnemy):
+                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                                enemy.currentDirection *= -1
+                    if enemy.currentDirection < 0:
+                        if enemy.rect.left + (
+                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                        if isinstance(enemy, FrogEnemy):
+                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                                enemy.currentDirection *= -1
+
 
 
 
@@ -70,21 +89,10 @@ def update_all():
         spriteGroup[x].move(platform_group, enemy_group)
     check_y_collisions()
     sword.attack(enemy_group)
-    character_group.update(sword, gun)
+    character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
-    for enemy in enemy_group:
-        if enemy.velocityX != 0:
-            for platform in platform_group:
-                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
-                    if enemy.currentDirection > 0:
-                        if enemy.rect.right + (
-                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
-                            enemy.currentDirection *= -1
-                    if enemy.currentDirection < 0:
-                        if enemy.rect.left + (
-                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
-                            enemy.currentDirection *= -1
+
     enemy_group.update(shiftX, shiftY)
     platform_group.update(shiftX, shiftY)
 
@@ -95,6 +103,15 @@ def checkcollision(char, group):
     for sprite in collided_sprites:
         if sprite.collectable:
             sprite.is_collided_with(char)
+
+def damageCollision(char, group):
+    collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
+    for sprite in collided_sprites:
+        if sprite.damage != 0:
+            if not main_character.isInvincible:
+                main_character.losehealth(sprite.damage)
+                main_character.isInvincible = True
+                main_character.invincibilityTime = 120
 
 def update_gun(milliseconds):
     if int(milliseconds / 60) >= 1 and gun.canAttack == False:
@@ -113,19 +130,24 @@ def check_y_collisions():
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
+                if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                    enemy.velocityX = 0
             elif enemy.velocityY + GRAVITY < 0:
                 enemy.velocityY += GRAVITY
                 for platform in platform_group:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                        if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
                             enemy.velocityY = 0
 
             else:
                 enemy.velocityY += GRAVITY
                 for platform in platform_group:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                        if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY = 0
+                            if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                                enemy.velocityX = 0
+                                enemy.isJumping = False
     #check character collisions
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
@@ -140,7 +162,10 @@ def check_y_collisions():
         if main_character.gliding and main_character.y_velocity >= 3:
             main_character.y_velocity = 3
             sword.y_velocity += 3
+            parachute_group.update(main_character.direction)
+            parachute_group.draw(DISPLAYSURF)
         else:
+
             main_character.y_velocity += GRAVITY
             sword.y_velocity += GRAVITY
         for platform in platform_group:
@@ -171,13 +196,21 @@ def checkStanding(character):
 
 
 def main():
+    global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
     readFile(0)
-    while True:
+
+    lose = False
+    win = False
+
+    while not lose and not win:
+
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
+        damageCollision(main_character, enemy_group)
+        damageCollision(main_character, platform_group)
         character_group.draw(DISPLAYSURF)
         current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
@@ -236,7 +269,11 @@ def main():
                         current_weapon.add(sword)
 
 
+        if main_character.health <= 0:
+            lose = True
+
         # Update the Screen
+
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
