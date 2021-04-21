@@ -278,6 +278,7 @@ class FrogEnemy(Enemy):
 
         self.jumping = True
         self.jump_height = -18
+        self.jump_distance = 5
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
@@ -292,9 +293,10 @@ class FrogEnemy(Enemy):
         if self.currentDirection == 1:
             self.image = self.sprites1[int(self.currentSprite)]
         else:
+
             self.image = self.sprites[int(self.currentSprite)]
 
-        self.posX -= shiftX - self.velocityX
+        self.posX -= shiftX - (self.currentDirection * self.velocityX)
         self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
@@ -302,6 +304,7 @@ class FrogEnemy(Enemy):
     def jump(self):
         self.isJumping = True
         self.velocityY = self.jump_height
+        self.velocityX = self.jump_distance
         #if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * 0.667)
 

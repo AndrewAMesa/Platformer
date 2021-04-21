@@ -55,12 +55,29 @@ def enemyMovement():
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
                         if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
-                            print("Yes")
                             enemy.velocityY *= -1
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY *= -1
+        if enemy.velocityX != 0:
+            for platform in platform_group:
+                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
+                    if enemy.currentDirection > 0:
+                        if enemy.rect.right + (
+                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                        if isinstance(enemy, FrogEnemy):
+                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                                enemy.currentDirection *= -1
+                    if enemy.currentDirection < 0:
+                        if enemy.rect.left + (
+                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                        if isinstance(enemy, FrogEnemy):
+                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                                enemy.currentDirection *= -1
+
 
 
 
@@ -73,18 +90,7 @@ def update_all():
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
-    for enemy in enemy_group:
-        if enemy.velocityX != 0:
-            for platform in platform_group:
-                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
-                    if enemy.currentDirection > 0:
-                        if enemy.rect.right + (
-                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
-                            enemy.currentDirection *= -1
-                    if enemy.currentDirection < 0:
-                        if enemy.rect.left + (
-                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
-                            enemy.currentDirection *= -1
+
     enemy_group.update(shiftX, shiftY)
     platform_group.update(shiftX, shiftY)
 
@@ -122,19 +128,24 @@ def check_y_collisions():
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
+                if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                    enemy.velocityX = 0
             elif enemy.velocityY + GRAVITY < 0:
                 enemy.velocityY += GRAVITY
                 for platform in platform_group:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.top + enemy.velocityY < platform.rect.bottom < enemy.rect.top and not platform.walkthrough:
+                        if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
                             enemy.velocityY = 0
 
             else:
                 enemy.velocityY += GRAVITY
                 for platform in platform_group:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.bottom + enemy.velocityY > platform.rect.top > enemy.rect.bottom and not platform.walkthrough:
+                        if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY = 0
+                            if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                                enemy.velocityX = 0
+                                enemy.isJumping = False
     #check character collisions
     if checkStanding(main_character) and main_character.y_velocity != main_character.jump_height:
         main_character.y_velocity = 0
