@@ -66,10 +66,25 @@ class Character(pygame.sprite.Sprite):
         else:
             self.image = self.sprites[int(self.currentSprite)]
         keys = pygame.key.get_pressed()
-        if direction != self.currentDirection:
+        if direction != self.currentDirection or weapon2.vert == True:
           self.currentDirection = direction
           if direction == -1:
-              if weapon1.rect.left != weapon1.left2:
+              if keys[pygame.K_w]:
+                  weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
+                  weapon2.rect.left = weapon2.left3
+                  weapon2.rect.top = weapon2.top1
+                  weapon2.xDirection = 0
+                  weapon2.yDirection = -2
+                  weapon2.vert = True
+              elif keys[pygame.K_s]:
+                  weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
+                  weapon2.image = pygame.transform.flip(weapon2.image, True, False)
+                  weapon2.rect.left = weapon2.left3
+                  weapon2.rect.top = weapon2.top2
+                  weapon2.xDirection = 0
+                  weapon2.yDirection = 2
+                  weapon2.vert = True
+              elif weapon2.rect.left != weapon2.left2:
                   weapon1.image = pygame.transform.flip(weapon1.originalImage, True, False)
                   weapon1.rect.left = weapon1.left2
                   weapon1.xDirection = -2
@@ -80,10 +95,23 @@ class Character(pygame.sprite.Sprite):
                   weapon2.rect.top = weapon2.height
                   weapon2.xDirection = -2
                   weapon2.yDirection = 0
-
-
           else:
-              if weapon1.rect.left != weapon1.left1:
+              if keys[pygame.K_w]:
+                  weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
+                  weapon2.image = pygame.transform.flip(weapon2.image, True, False)
+                  weapon2.rect.left = weapon2.left4
+                  weapon2.rect.top = weapon2.top1
+                  weapon2.xDirection = 0
+                  weapon2.yDirection = -2
+                  weapon2.vert = True
+              elif keys[pygame.K_s]:
+                  weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
+                  weapon2.rect.left = weapon2.left4
+                  weapon2.rect.top = weapon2.top2
+                  weapon2.xDirection = 0
+                  weapon2.yDirection = 2
+                  weapon2.vert = True
+              elif weapon2.rect.left != weapon2.left1:
                   weapon1.image = weapon1.originalImage
                   weapon1.rect.left = weapon1.left1
                   weapon1.xDirection = 2
@@ -94,34 +122,9 @@ class Character(pygame.sprite.Sprite):
                   weapon2.rect.top = weapon2.height
                   weapon2.xDirection = 2
                   weapon2.yDirection = 0
-        if direction == -1:
-            if keys[pygame.K_w]:
-                weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
-                weapon2.rect.left = weapon2.left3
-                weapon2.rect.top = weapon2.top1
-                weapon2.xDirection = 0
-                weapon2.yDirection = -2
-            elif keys[pygame.K_s]:
-                weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
-                weapon2.image = pygame.transform.flip(weapon2.image, True, False)
-                weapon2.rect.left = weapon2.left3
-                weapon2.rect.top = weapon2.top2
-                weapon2.xDirection = 0
-                weapon2.yDirection = 2
-        else:
-            if keys[pygame.K_w]:
-                weapon2.image = pygame.transform.rotate(weapon2.originalImage, 90)
-                weapon2.image = pygame.transform.flip(weapon2.image, True, False)
-                weapon2.rect.left = weapon2.left4
-                weapon2.rect.top = weapon2.top1
-                weapon2.xDirection = 0
-                weapon2.yDirection = -2
-            elif keys[pygame.K_s]:
-                weapon2.image = pygame.transform.rotate(weapon2.originalImage, -90)
-                weapon2.rect.left = weapon2.left4
-                weapon2.rect.top = weapon2.top2
-                weapon2.xDirection = 0
-                weapon2.yDirection = 2
+
+
+
 
 class MainCharacter(Character):
     def __init__(self, DISPLAYSURF):
@@ -677,6 +680,7 @@ class Gun(pygame.sprite.Sprite):
         self.isSword = False
         self.xDirection = 2
         self.yDirection = 0
+        self.vert = False
         if infoObject.current_h == 720:
             self.image = pygame.transform.scale(self.image, (
             int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
