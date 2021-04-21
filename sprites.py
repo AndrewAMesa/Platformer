@@ -409,6 +409,17 @@ class BreakableBlock(Platform):
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
 
+class Rock(Platform):
+
+    #  C
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/BreakableBlock.png')
+
+        super().__init__(self.sprite, posX, posY, True, 0, False)
+
 class SpikesBlock(Platform):
 
     #  S
@@ -490,6 +501,19 @@ class DoubleUpgrade(Collectables):
         if self.rect.colliderect(char.rect):
             self.kill()
             char.doubleJump()
+class WeaponUpgrade(Collectables):
+
+    # J
+
+    def __init__(self, xpos, ypos):
+
+        image = pygame.image.load('Images/WeaponUpgrade.png')
+
+        super().__init__("weaponupgrade", xpos, ypos, image)
+
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            self.kill()
 
 class Glide(Collectables):
     def __init__(self, xpos, ypos):
