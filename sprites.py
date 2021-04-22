@@ -724,6 +724,9 @@ class Gun(pygame.sprite.Sprite):
                 elif self.yDirection < 0:
                     print("in loop")
                     spawnTop = int(DISPLAYSURF.get_height() / 2)
+            else:
+                spawnLeft = 0
+                spawnTop = 0
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
 
