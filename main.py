@@ -11,12 +11,13 @@ fpsClock = pygame.time.Clock()
 ##############
 sword_image = pygame.image.load("Images/Sword.png")
 gun_image = pygame.image.load("Images/Gun.png")
-TILESIZE = 30
+TILESIZE = 120
 FPS = 60
 GRAVITY = 1
 
-#if infoObject.current_h == 720:
+if infoObject.current_h == 720:
  #   GRAVITY = GRAVITY * 0.667
+    TILESIZE = 80
 infoObject = pygame.display.Info()
 DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
@@ -99,6 +100,22 @@ def update_all():
     enemyMovement()
 
     enemy_group.update(shiftX, shiftY)
+
+    #Falling Blocks
+    for platform in platform_group:
+        if isinstance(platform, SmashyBlock):
+            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left and not platform.isFalling and not platform.hasFallen:
+                platform.velocityY = 10
+                platform.isFalling = True
+            if platform.isFalling:
+                collided_sprites = pygame.sprite.spritecollide(platform, platform_group, False, collided=None)
+
+                if len(collided_sprites) > 1:
+                    platform.velocityY = 0
+                    platform.isFalling = False
+                    platform.hasFallen = True
+                    platform.posY = collided_sprites[1].posY - TILESIZE
+
     platform_group.update(shiftX, shiftY)
 
 
@@ -177,6 +194,8 @@ def check_y_collisions():
             if main_character.rect.left + main_character.x_velocity < platform.rect.right and main_character.rect.right + main_character.x_velocity > platform.rect.left:
                 if main_character.rect.bottom + main_character.y_velocity > platform.rect.top > main_character.rect.bottom and not platform.walkthrough:
                     main_character.y_velocity = 0
+
+
 
 
 def check_x_collisions():
@@ -388,5 +407,8 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "R":
                 platform_group.add(Rock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "O":
+                platform_group.add(SmashyBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()

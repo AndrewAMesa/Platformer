@@ -498,27 +498,28 @@ class LavaBlock(Platform):
 
         super().__init__(self.sprite, posX, posY, False, 5, True)
 
-class DoorBlock(Platform):
 
-    #  D
+class SmashyBlock(Platform):
 
-    def __init__(self, posX, posY):
-
-        # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
-
-        super().__init__(self.sprite, posX, posY, False, 0, False)
-
-class MovingBlock(Platform):
-
-    #  D
+    #  O
 
     def __init__(self, posX, posY):
 
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 0, False)
+        super().__init__(self.sprite, posX, posY, True, 100, False)
+
+        self.velocityY = 0
+        self.isFalling = False
+        self.hasFallen = False
+
+    def update(self, shiftX, shiftY):
+        self.posX -= shiftX
+        self.posY -= shiftY - self.velocityY
+
+
+        self.rect.center = (self.posX, self.posY)
 
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image):
@@ -641,7 +642,7 @@ class Sword(pygame.sprite.Sprite):
             self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.667), int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.y_velocity = 0
-        self.xDirection = 2
+        self.xDirection = 4
         self.attacking = False
         self.attackingCount = 8
         self.swordDamage = 10
