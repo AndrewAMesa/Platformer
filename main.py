@@ -277,7 +277,7 @@ def main():
                         main_character.jumped = True
                 if event.key == K_RETURN:
                     if current_weapon.sprites()[0].isSword == True:
-                        sword.attacking = True
+                        current_weapon.sprites()[0].attacking = True
                     else:
                         current_weapon.sprites()[0].attack(bullet_group, DISPLAYSURF)
                 if event.key == K_e:
