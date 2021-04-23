@@ -250,6 +250,9 @@ class Enemy(pygame.sprite.Sprite):
         self.jump_height = -1
         self.isJumping = False
 
+        self.isBoss = False
+        self.isAttacking = False
+
         #if infoObject.current_h == 720:
          #  self.jump_height = int(self.jump_height * 0.667)
         self.velocityX = velocityX
@@ -411,6 +414,62 @@ class RunningEnemy(Enemy):
 
 
         super().__init__(self.images, posX, posY, 50, 20, -1, 3, 0, 0.12)
+
+
+#Bosses
+
+class FrogBoss(Enemy):
+
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Froggy1.png"))
+        self.images.append(pygame.image.load("Images/Froggy2.png"))
+        self.images.append(pygame.image.load("Images/Froggy3.png"))
+
+
+        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
+        if infoObject.current_h == 720:
+            self.velocityX = self.velocityX - .5
+        self.jumping = True
+        self.jump_height = -30
+        self.jump_distance = 20
+        self.jumpIncrement = 0
+        self.jumpIncrease = 0.005
+
+        self.isBoss = True
+
+        self.isAttacking = False
+
+    def update(self, shiftX, shiftY):
+
+        if self.isJumping:
+            self.currentSprite = 1
+        else:
+            self.currentSprite = 0
+
+
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+
+            self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - (self.currentDirection * self.velocityX)
+        self.posY -= shiftY - self.velocityY
+
+        self.rect.center = (self.posX, self.posY)
+
+    def jump(self):
+        self.isJumping = True
+        self.velocityY = self.jump_height
+        self.velocityX = self.jump_distance
+        self.jumpIncrement = 0
+        #if infoObject.current_h == 720:
+         #   self.velocityY = int(self.velocityY * 0.667)
+
+
 ##############
 # Block Classes
 ##############
@@ -511,10 +570,14 @@ class SmashyBlock(Platform):
     def __init__(self, posX, posY):
 
         # Load Images
-        self.sprite = pygame.image.load('Images/Lava.png')
+        self.sprite = []
+        self.sprite.append(pygame.image.load('Images/Smashy0.png'))
+        self.sprite.append(pygame.image.load('Images/Smashy1.png'))
+        self.sprite.append(pygame.image.load('Images/Smashy2.png'))
 
-        super().__init__(self.sprite, posX, posY, True, 100, False)
+        super().__init__(self.sprite[0], posX, posY, True, 100, False)
 
+        self.currentSprite = 0
         self.velocityY = 0
         self.isFalling = False
         self.hasFallen = False
@@ -522,6 +585,16 @@ class SmashyBlock(Platform):
         self.health = 50
 
     def update(self, shiftX, shiftY):
+
+        if not self.hasFallen:
+            if self.isFalling and self.currentSprite < 2:
+                self.currentSprite += 0.5
+        else:
+            if self.currentSprite > 0:
+                self.currentSprite -= 0.5
+
+        self.image = self.sprite[int(self.currentSprite)]
+
         self.posX -= shiftX
         self.posY -= shiftY - self.velocityY
 

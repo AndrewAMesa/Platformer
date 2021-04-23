@@ -80,7 +80,7 @@ def enemyMovement():
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
-        if enemy.jumping:
+        if enemy.jumping and not enemy.isAttacking:
             if not enemy.isJumping and int(enemy.jumpIncrement) >= 1:
                 enemy.jump()
             else:
@@ -155,7 +155,7 @@ def check_y_collisions():
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
-                if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy) or isinstance(enemy, FrogBoss):
                     enemy.velocityX = 0
             elif enemy.velocityY + GRAVITY < 0:
                 enemy.velocityY += GRAVITY
@@ -170,7 +170,7 @@ def check_y_collisions():
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY = 0
-                            if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                            if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy) or isinstance(enemy, FrogBoss):
                                 enemy.velocityX = 0
                                 enemy.isJumping = False
     #check character collisions
@@ -226,7 +226,7 @@ def main():
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(0)
+    readFile(1)
 
 
     lose = False
@@ -420,5 +420,8 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "O":
                 platform_group.add(SmashyBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "!":
+                enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()
