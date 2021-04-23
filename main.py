@@ -245,7 +245,6 @@ def main():
         else:
             main_character.flashTicks += 1
         if main_character.flashTicks == 0 or main_character.flashTicks % 4 == 0:
-            print("ok")
             character_group.draw(DISPLAYSURF)
             current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
