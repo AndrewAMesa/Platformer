@@ -154,8 +154,11 @@ class MainCharacter(Character):
         self.jumped = False
         self.can_glide = False
         self.gliding = False
+
         self.invincibilityTime = 0
         self.isInvincible = False
+        self.flashTicks = 0
+
 
     def addmaxhealth(self):
         self.maxhealth+=10
@@ -172,6 +175,7 @@ class MainCharacter(Character):
             if self.invincibilityTime < 0:
                 self.invincibilityTime = 0
                 self.isInvincible = False
+                self.flashTicks = 0
 
         super().update(self.direction, weapon1, weapon2)
 
