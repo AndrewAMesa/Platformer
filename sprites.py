@@ -427,6 +427,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect.center = (self.posX, self.posY)
 
         # Object information
+        self.health = 0
         self.breakable = breakable  # If True, destroy block in response to any damage
         self.damage = damage  # For Blocks such as spikes and lava, amount of damage inflicted to the player
         self.walkthrough = walkthrough
@@ -462,6 +463,8 @@ class BreakableBlock(Platform):
         self.sprite = pygame.image.load('Images/AnotherBlock.png')
 
         super().__init__(self.sprite, posX, posY, True, 0, False)
+
+        self.health = 1
 
 class Rock(Platform):
 
@@ -511,6 +514,8 @@ class SmashyBlock(Platform):
         self.velocityY = 0
         self.isFalling = False
         self.hasFallen = False
+
+        self.health = 50
 
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
@@ -654,7 +659,7 @@ class Sword(pygame.sprite.Sprite):
             self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
 
-    def attack(self, enemyGroup):
+    def attack(self, enemyGroup, platformGroup):
         if self.attacking == True:
             print("in loop")
             self.rect.x = self.rect.x + self.xDirection
@@ -667,11 +672,22 @@ class Sword(pygame.sprite.Sprite):
                 self.xDirection = self.xDirection * -1
             elif self.attackingCount == 4:
                 self.xDirection = self.xDirection * -1
+
+            #Check Enemy damage
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.swordDamage
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
+
+            #Check Destructable platform damage
+            spriteGroup = spritecollide(self, platformGroup, False)
+            for x in range(len(spriteGroup)):
+                if spriteGroup[x].breakable:
+                    spriteGroup[x].health -= self.swordDamage
+                    if spriteGroup[x].health <= 0:
+                        spriteGroup[x].kill()
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
         pygame.sprite.Sprite.__init__(self)
@@ -700,6 +716,14 @@ class Bullet(pygame.sprite.Sprite):
         spriteGroup = spritecollide(self, platformGroup, False)
         if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
             self.remove(self.groups())
+            spriteGroup = spritecollide(self, platformGroup, False)
+            for x in range(len(spriteGroup)):
+                if spriteGroup[x].breakable:
+                    spriteGroup[x].health -= self.damage
+                    if spriteGroup[x].health <= 0:
+                        spriteGroup[x].kill()
+
+        #check enemy collisions
         if pygame.sprite.spritecollideany(self, enemyGroup):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
@@ -707,6 +731,8 @@ class Bullet(pygame.sprite.Sprite):
 
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
+            self.remove(self.groups())
+
             self.remove(self.groups())
         if self.movementCount <= 0:
             self.kill()

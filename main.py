@@ -94,7 +94,7 @@ def update_all():
     for x in range (len(spriteGroup)):
         spriteGroup[x].move(platform_group, enemy_group)
     check_y_collisions()
-    sword.attack(enemy_group)
+    sword.attack(enemy_group, platform_group)
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
