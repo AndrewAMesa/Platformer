@@ -94,7 +94,9 @@ def update_all():
     for x in range (len(spriteGroup)):
         spriteGroup[x].move(platform_group, enemy_group)
     check_y_collisions()
-    sword.attack(enemy_group)
+    if current_weapon.sprites()[0].isSword == True:
+        if current_weapon.sprites()[0].attacking == True:
+            sword.attack(enemy_group, platform_group)
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
@@ -133,7 +135,8 @@ def damageCollision(char, group):
             if not main_character.isInvincible:
                 main_character.losehealth(sprite.damage)
                 main_character.isInvincible = True
-                main_character.invincibilityTime = 120
+                main_character.invincibilityTime = 150
+                main_character.flashTicks = 0
 
 def update_gun(milliseconds):
     if int(milliseconds / 60) >= 1 and gun.canAttack == False:
@@ -225,6 +228,7 @@ def main():
     gunMilliseconds = 0
     readFile(0)
 
+
     lose = False
     win = False
 
@@ -235,8 +239,14 @@ def main():
         checkcollision(main_character, platform_group)
         damageCollision(main_character, enemy_group)
         damageCollision(main_character, platform_group)
-        character_group.draw(DISPLAYSURF)
-        current_weapon.draw(DISPLAYSURF)
+        if not main_character.isInvincible:
+            character_group.draw(DISPLAYSURF)
+            current_weapon.draw(DISPLAYSURF)
+        else:
+            main_character.flashTicks += 1
+        if main_character.flashTicks == 0 or main_character.flashTicks % 4 == 0:
+            character_group.draw(DISPLAYSURF)
+            current_weapon.draw(DISPLAYSURF)
         bullet_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
