@@ -65,7 +65,7 @@ def enemyMovement():
                             enemy.velocityY *= -1
         if enemy.velocityX != 0:
             for platform in platform_group:
-                if enemy.rect.bottom > platform.rect.top and enemy.rect.top < platform.rect.bottom:
+                if enemy.rect.bottom + enemy.velocityY > platform.rect.top and enemy.rect.top + enemy.velocityY < platform.rect.bottom:
                     if enemy.currentDirection > 0:
                         if enemy.rect.right + (
                                 enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
