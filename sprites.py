@@ -468,14 +468,14 @@ class BreakableBlock(Platform):
 
 class Rock(Platform):
 
-    #  C
+    #  R
 
     def __init__(self, posX, posY):
 
         # Load Images
         self.sprite = pygame.image.load('Images/BreakableBlock.png')
 
-        super().__init__(self.sprite, posX, posY, True, 0, False)
+        super().__init__(self.sprite, posX, posY, False, 0, False)
 
 class SpikesBlock(Platform):
 
