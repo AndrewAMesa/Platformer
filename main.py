@@ -106,7 +106,7 @@ def update_all():
     #Falling Blocks
     for platform in platform_group:
         if isinstance(platform, SmashyBlock):
-            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left and not platform.isFalling and not platform.hasFallen:
+            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left and main_character.rect.centery > platform.rect.centery and not platform.isFalling and not platform.hasFallen:
                 platform.velocityY = 10
                 platform.isFalling = True
             if platform.isFalling:
@@ -139,7 +139,7 @@ def damageCollision(char, group):
                 main_character.flashTicks = 0
 
 def update_gun(milliseconds):
-    if int(milliseconds / 60) >= 1 and gun.canAttack == False:
+    if milliseconds / 60 >= 0.25 and gun.canAttack == False:
         gun.canAttack = True
         return 0
     else:

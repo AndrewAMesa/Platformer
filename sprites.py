@@ -329,7 +329,7 @@ class FrogEnemy(Enemy):
         self.jump_height = -18
         self.jump_distance = 5
         self.jumpIncrement = 0
-        self.jumpIncrease = 0.02
+        self.jumpIncrease = 0.01
 
     def update(self, shiftX, shiftY):
 
@@ -828,7 +828,7 @@ class Gun(pygame.sprite.Sprite):
             int(self.originalImage.get_width() * 0.667),
             int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
-        self.gunDamage = 10
+        self.gunDamage = 20
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
         self.left3 = int(DISPLAYSURF.get_width() / 2) - 26
