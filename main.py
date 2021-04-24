@@ -100,8 +100,8 @@ def update_all():
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
-
     enemy_group.update(shiftX, shiftY)
+    current_weapon.sprites()[0].update()
 
     #Falling Blocks
     for platform in platform_group:
@@ -126,7 +126,11 @@ def checkcollision(char, group):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
     for sprite in collided_sprites:
         if sprite.collectable:
-            sprite.is_collided_with(char)
+            if sprite.weaponUpgrade == True:
+                sprite.is_collided_with(char, current_weapon.sprites()[0])
+            else:
+                sprite.is_collided_with(char)
+
 
 def damageCollision(char, group):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
@@ -309,7 +313,7 @@ def main():
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
         if gun.canAttack == False:
-            gunMilliseconds += fpsClock.tick_busy_loop(660)
+            gunMilliseconds += fpsClock.tick_busy_loop(gun.shootTime)
 
 
 def readFile(levelNum):
