@@ -678,7 +678,6 @@ class Sword(pygame.sprite.Sprite):
                     spriteGroup[x].health -= self.swordDamage
                     if spriteGroup[x].health <= 0:
                         spriteGroup[x].kill()
-
     def update(self):
         if self.upgradeCount <= 0 and self.swordNumber < 2:
             self.swordNumber += 1
@@ -693,7 +692,17 @@ class Sword(pygame.sprite.Sprite):
                     int(self.originalImage.get_width() * 0.667),
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
-
+    def displayhealth(self, DISPLAYSURF):
+        if 30<self.health<60:
+            tuple=(255,235,59)
+        elif self.health<30:
+            tuple=(255,0,0)
+        else:
+            tuple=(0,255,0)
+        i=0
+        while i<self.health/10:
+            pygame.draw.rect(DISPLAYSURF, tuple, (i*15+10, 10, 10, 10))
+            i+=1
 
 
 class Bullet(pygame.sprite.Sprite):
