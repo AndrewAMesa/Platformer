@@ -10,7 +10,7 @@ fpsClock = pygame.time.Clock()
 # Image
 ##############
 sword_image = pygame.image.load("Images/Sword0.png")
-gun_image = pygame.image.load("Images/Gun.png")
+gun_image = pygame.image.load("Images/Gun0.png")
 TILESIZE = 120
 FPS = 60
 GRAVITY = 1
