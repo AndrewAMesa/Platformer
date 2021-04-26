@@ -90,9 +90,7 @@ def enemyMovement():
 
 
 def update_all():
-    spriteGroup = bullet_group.sprites()
-    for x in range (len(spriteGroup)):
-        spriteGroup[x].move(platform_group, enemy_group)
+
     check_y_collisions()
     if current_weapon.sprites()[0].isSword == True:
         if current_weapon.sprites()[0].attacking == True:
@@ -102,6 +100,9 @@ def update_all():
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
     current_weapon.sprites()[0].update()
+    spriteGroup = bullet_group.sprites()
+    for x in range(len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group)
 
     #Falling Blocks
     for platform in platform_group:
