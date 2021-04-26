@@ -99,7 +99,7 @@ def update_all():
     shiftX, shiftY = main_character.getShift()
     spriteGroup = bullet_group.sprites()
     for x in range(len(spriteGroup)):
-        spriteGroup[x].move(platform_group, enemy_group, shiftX, shiftY)
+        spriteGroup[x].move(platform_group, enemy_group)
     enemyMovement()
 
     enemy_group.update(shiftX, shiftY)
@@ -140,7 +140,7 @@ def damageCollision(char, group):
                 main_character.flashTicks = 0
 
 def update_gun(milliseconds):
-    if milliseconds / 60 >= 0.25 and gun.canAttack == False:
+    if int(milliseconds / 60) >= 1 and gun.canAttack == False:
         gun.canAttack = True
         return 0
     else:
@@ -227,7 +227,7 @@ def main():
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(1)
+    readFile(0)
 
 
     lose = False
