@@ -807,6 +807,7 @@ class Bullet(pygame.sprite.Sprite):
                 spriteGroup[x].health -= self.damage
 
                 if spriteGroup[x].health <= 0:
+
                     spriteGroup[x].kill()
             self.remove(self.groups())
 
