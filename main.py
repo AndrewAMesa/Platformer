@@ -80,7 +80,7 @@ def enemyMovement():
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
-        if enemy.jumping:
+        if enemy.jumping and not enemy.isAttacking:
             if not enemy.isJumping and int(enemy.jumpIncrement) >= 1:
                 enemy.jump()
             else:
@@ -97,6 +97,9 @@ def update_all():
             sword.attack(enemy_group, platform_group)
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
+    spriteGroup = bullet_group.sprites()
+    for x in range(len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group)
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
     current_weapon.sprites()[0].update()
@@ -107,7 +110,7 @@ def update_all():
     #Falling Blocks
     for platform in platform_group:
         if isinstance(platform, SmashyBlock):
-            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left and not platform.isFalling and not platform.hasFallen:
+            if main_character.rect.left < platform.rect.right and main_character.rect.right > platform.rect.left and main_character.rect.centery > platform.rect.centery and not platform.isFalling and not platform.hasFallen:
                 platform.velocityY = 10
                 platform.isFalling = True
             if platform.isFalling:
@@ -160,7 +163,7 @@ def check_y_collisions():
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
-                if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy) or isinstance(enemy, FrogBoss):
                     enemy.velocityX = 0
             elif enemy.velocityY + GRAVITY < 0:
                 enemy.velocityY += GRAVITY
@@ -175,7 +178,7 @@ def check_y_collisions():
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY = 0
-                            if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy):
+                            if isinstance(enemy, FrogEnemy) or isinstance(enemy, MushroomEnemy) or isinstance(enemy, FrogBoss):
                                 enemy.velocityX = 0
                                 enemy.isJumping = False
     #check character collisions
@@ -425,5 +428,8 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "O":
                 platform_group.add(SmashyBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "!":
+                enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()
