@@ -692,7 +692,7 @@ class Sword(pygame.sprite.Sprite):
                 self.originalImage = pygame.transform.scale(self.originalImage, (
                     int(self.originalImage.get_width() * 0.667),
                     int(self.originalImage.get_height() * 0.667)))
-            self.upgradeCount = 0
+            self.upgradeCount = 10
 
 
 
@@ -807,6 +807,7 @@ class Gun(pygame.sprite.Sprite):
             self.gunNumber += 1
             self.gunDamage += 10
             self.shootTime -= 150
+            print("Images/Gun" + str(self.gunNumber) + ".png")
             self.image = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
             self.originalImage = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
             if infoObject.current_h == 720:
