@@ -602,13 +602,15 @@ class SmashyBlock(Platform):
         self.rect.center = (self.posX, self.posY)
 
 class Collectables(Platform):
-    def __init__(self, name, xpos, ypos, image):
+    def __init__(self, name, xpos, ypos, image, isWeaponUpgrade):
 
         self.name = name
 
         super().__init__(image, xpos, ypos, False, 0, True)
 
         self.collectable = True
+        self.weaponUpgrade = isWeaponUpgrade
+
 
     def getname(self):
         return self.name
@@ -632,7 +634,7 @@ class DoubleUpgrade(Collectables):
 
         image = pygame.image.load('Images/DoubleJump.png')
 
-        super().__init__("doublejump", xpos, ypos, image)
+        super().__init__("doublejump", xpos, ypos, image, False)
 
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
@@ -640,24 +642,24 @@ class DoubleUpgrade(Collectables):
             char.doubleJump()
 class WeaponUpgrade(Collectables):
 
-    # J
+    # W
 
     def __init__(self, xpos, ypos):
-
         image = pygame.image.load('Images/WeaponUpgrade.png')
 
-        super().__init__("weaponupgrade", xpos, ypos, image)
+        super().__init__("weaponupgrade", xpos, ypos, image, True)
 
-    def is_collided_with(self, char):
+    def is_collided_with(self, char, weapon):
         if self.rect.colliderect(char.rect):
             self.kill()
+            weapon.upgradeCount -= 1
 
 class Glide(Collectables):
     def __init__(self, xpos, ypos):
 
         image = pygame.image.load('Images/Glide.png')
 
-        super().__init__("glide", xpos, ypos, image)
+        super().__init__("glide", xpos, ypos, image, False)
 
     def is_collided_with(self, char):
         self.kill()
@@ -671,7 +673,7 @@ class MaxHealth(Collectables):
 
         image = pygame.image.load('Images/MaxHealth.png')
 
-        super().__init__("maxhealth", xpos, ypos, image)
+        super().__init__("maxhealth", xpos, ypos, image, False)
 
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
@@ -687,26 +689,13 @@ class AddHealth(Collectables):
 
         image = pygame.image.load('Images/Health.png')
 
-        super().__init__("health", xpos, ypos, image)
+        super().__init__("health", xpos, ypos, image, False)
 
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
             self.kill()
             char.addhealth()
 
-class WeaponUpgrade(Collectables):
-
-    # W
-
-    def __init__(self, xpos, ypos):
-        image = pygame.image.load('Images/Health.png')
-
-        super().__init__("health", xpos, ypos, image)
-
-    def is_collided_with(self, char):
-        if self.rect.colliderect(char.rect):
-            self.kill()
-            char.addhealth()
 
 ##############
 #Weapons
@@ -735,13 +724,11 @@ class Sword(pygame.sprite.Sprite):
         if infoObject.current_h != 720:
             self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
-
+        self.upgradeCount = 10
+        self.swordNumber = 0
     def attack(self, enemyGroup, platformGroup):
         if self.attacking == True:
-            print("in loop")
             self.rect.x = self.rect.x + self.xDirection
-            print(self.rect.x)
-            print(self.xDirection)
             self.attackingCount -= 1
             if self.attackingCount == 0:
                 self.attacking = False
@@ -764,6 +751,23 @@ class Sword(pygame.sprite.Sprite):
                     spriteGroup[x].health -= self.swordDamage
                     if spriteGroup[x].health <= 0:
                         spriteGroup[x].kill()
+
+    def update(self):
+        if self.upgradeCount <= 0 and self.swordNumber < 2:
+            self.swordNumber += 1
+            self.swordDamage += 10
+            self.image = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
+            self.originalImage = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
+            if infoObject.current_h == 720:
+                self.left2 -= 5
+                self.image = pygame.transform.scale(self.image, (
+                    int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
+                self.originalImage = pygame.transform.scale(self.originalImage, (
+                    int(self.originalImage.get_width() * 0.667),
+                    int(self.originalImage.get_height() * 0.667)))
+            self.upgradeCount = 10
+
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
@@ -844,6 +848,9 @@ class Gun(pygame.sprite.Sprite):
             self.height = int(DISPLAYSURF.get_height() / 2) + (14 * 1.4)
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
         self.canAttack = True
+        self.shootTime = 360
+        self.upgradeCount = 10
+        self.gunNumber = 0
     def attack(self, bulletGroup, DISPLAYSURF):
         if self.canAttack == True:
             if self.rect.left == self.left1:
@@ -858,19 +865,32 @@ class Gun(pygame.sprite.Sprite):
                     spawnTop = int(DISPLAYSURF.get_height() / 2) + (25)
                 elif self.yDirection < 0:
                     spawnTop = int(DISPLAYSURF.get_height() / 2)
-                    print("in loop")
             elif self.rect.left == self.left4:
                 spawnLeft = self.rect.left + 6
                 if self.yDirection > 0:
                     spawnTop = int(DISPLAYSURF.get_height() / 2) + (25)
                 elif self.yDirection < 0:
-                    print("in loop")
                     spawnTop = int(DISPLAYSURF.get_height() / 2)
             else:
                 spawnLeft = 0
                 spawnTop = 0
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
+    def update(self):
+        if self.upgradeCount <= 0 and self.gunNumber < 2:
+            self.gunNumber += 1
+            self.gunDamage += 10
+            self.shootTime -= 150
+            print("Images/Gun" + str(self.gunNumber) + ".png")
+            self.image = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
+            self.originalImage = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
+            if infoObject.current_h == 720:
+                self.image = pygame.transform.scale(self.image, (
+                    int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
+                self.originalImage = pygame.transform.scale(self.originalImage, (
+                    int(self.originalImage.get_width() * 0.667),
+                    int(self.originalImage.get_height() * 0.667)))
+            self.upgradeCount = 10
 
 class Parachute(pygame.sprite.Sprite):
     def __init__(self, WIDTH, HEIGHT, _image):
@@ -888,7 +908,6 @@ class Parachute(pygame.sprite.Sprite):
         self.rect.center=(self.xcenter, self.ycenter)
     def update(self, direction):
         if direction == -1:
-            #print('here')
             self.image= pygame.transform.flip(self.originalImage, True, False)
             self.rect.center = (self.xcenter-16, self.ycenter)
         else:

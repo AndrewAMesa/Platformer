@@ -9,8 +9,8 @@ fpsClock = pygame.time.Clock()
 ##############
 # Image
 ##############
-sword_image = pygame.image.load("Images/Sword.png")
-gun_image = pygame.image.load("Images/Gun.png")
+sword_image = pygame.image.load("Images/Sword0.png")
+gun_image = pygame.image.load("Images/Gun0.png")
 TILESIZE = 120
 FPS = 60
 GRAVITY = 1
@@ -101,8 +101,11 @@ def update_all():
     for x in range(len(spriteGroup)):
         spriteGroup[x].move(platform_group, enemy_group)
     enemyMovement()
-
     enemy_group.update(shiftX, shiftY)
+    current_weapon.sprites()[0].update()
+    spriteGroup = bullet_group.sprites()
+    for x in range(len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group)
 
     #Falling Blocks
     for platform in platform_group:
@@ -127,7 +130,11 @@ def checkcollision(char, group):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
     for sprite in collided_sprites:
         if sprite.collectable:
-            sprite.is_collided_with(char)
+            if sprite.weaponUpgrade == True:
+                sprite.is_collided_with(char, current_weapon.sprites()[0])
+            else:
+                sprite.is_collided_with(char)
+
 
 def damageCollision(char, group):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
@@ -310,7 +317,7 @@ def main():
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
         if gun.canAttack == False:
-            gunMilliseconds += fpsClock.tick_busy_loop(660)
+            gunMilliseconds += fpsClock.tick_busy_loop(gun.shootTime)
 
 
 def readFile(levelNum):
