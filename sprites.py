@@ -786,9 +786,9 @@ class Bullet(pygame.sprite.Sprite):
             self.movementCount = int(DISPLAYSURF.get_height() / 2)
         else:
             self.movementCount = int(DISPLAYSURF.get_width()/2)
-    def move(self, platformGroup, enemyGroup, shiftX, shiftY):
-        self.rect.left -= shiftX - self.directionx * 10
-        self.rect.top -= shiftY - self.directiony * 10
+    def move(self, platformGroup, enemyGroup):
+        self.rect.left += self.directionx * 10
+        self.rect.top += self.directiony * 10
         self.movementCount -= 1
         spriteGroup = spritecollide(self, platformGroup, False)
         if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
@@ -829,7 +829,7 @@ class Gun(pygame.sprite.Sprite):
             int(self.originalImage.get_width() * 0.667),
             int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
-        self.gunDamage = 20
+        self.gunDamage = 10
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
         self.left3 = int(DISPLAYSURF.get_width() / 2) - 26
