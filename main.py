@@ -90,15 +90,16 @@ def enemyMovement():
 
 
 def update_all():
-    spriteGroup = bullet_group.sprites()
-    for x in range (len(spriteGroup)):
-        spriteGroup[x].move(platform_group, enemy_group)
+
     check_y_collisions()
     if current_weapon.sprites()[0].isSword == True:
         if current_weapon.sprites()[0].attacking == True:
             sword.attack(enemy_group, platform_group)
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
+    spriteGroup = bullet_group.sprites()
+    for x in range(len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group, shiftX, shiftY)
     enemyMovement()
 
     enemy_group.update(shiftX, shiftY)
