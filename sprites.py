@@ -165,7 +165,7 @@ class MainCharacter(Character):
 
     def update(self, weapon1, weapon2, ms):
         if infoObject.current_h == 720:
-            self.x_velocity = int(self.x_velocity * 0.667)
+            self.x_velocity = int(self.x_velocity * 0.87)
 
         if self.x_velocity == 0 or self.y_velocity != 0:
             self.isMoving = False
@@ -692,17 +692,10 @@ class Sword(pygame.sprite.Sprite):
                     int(self.originalImage.get_width() * 0.667),
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
-    def displayhealth(self, DISPLAYSURF):
-        if 30<self.health<60:
-            tuple=(255,235,59)
-        elif self.health<30:
-            tuple=(255,0,0)
-        else:
-            tuple=(0,255,0)
-        i=0
-        while i<self.health/10:
-            pygame.draw.rect(DISPLAYSURF, tuple, (i*15+10, 10, 10, 10))
-            i+=1
+    def displayPoints(self, DISPLAYSURF):
+        for x in range(self.upgradeCount):
+            color = (27, 70, 188)
+            pygame.draw.rect(DISPLAYSURF, color, (10 + (x*15), 25, 10, 10))
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -745,11 +738,8 @@ class Bullet(pygame.sprite.Sprite):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.damage
-
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
-            self.remove(self.groups())
-
             self.remove(self.groups())
         if self.movementCount <= 0:
             self.kill()
@@ -826,6 +816,10 @@ class Gun(pygame.sprite.Sprite):
                     int(self.originalImage.get_width() * 0.667),
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
+    def displayPoints(self, DISPLAYSURF):
+        for x in range(self.upgradeCount):
+            color = (27, 70, 188)
+            pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 25, 10, 10))
 
 class Parachute(pygame.sprite.Sprite):
     def __init__(self, WIDTH, HEIGHT, _image):

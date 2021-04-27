@@ -256,6 +256,7 @@ def main():
         enemy_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
+        current_weapon.sprites()[0].displayPoints(DISPLAYSURF)
         display_time(milliseconds)
         gunMilliseconds = update_gun(gunMilliseconds)
         keys = pygame.key.get_pressed()
