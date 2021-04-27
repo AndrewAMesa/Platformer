@@ -230,11 +230,11 @@ def checkStanding(character):
                 return True
 
 
-def main():
+def main(levelNum):
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(0)
+    readFile(levelNum)
 
 
     lose = False
@@ -309,8 +309,8 @@ def main():
                         current_weapon.add(sword)
 
 
-        #if main_character.health <= 0:
-        #    lose = True
+        if main_character.health <= 0:
+            lose = True
 
         # Update the Screen
 
@@ -319,6 +319,8 @@ def main():
         milliseconds += fpsClock.tick_busy_loop(560)
         if gun.canAttack == False:
             gunMilliseconds += fpsClock.tick_busy_loop(gun.shootTime)
+
+    return win
 
 
 def readFile(levelNum):
@@ -433,4 +435,96 @@ def readFile(levelNum):
             elif b[i][j] == "!":
                 enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
-main()
+
+
+def menu():
+    font = pygame.font.SysFont(None, 100)
+    smallFont = pygame.font.SysFont(None, 50)
+    pygame.event.clear(eventtype=KEYDOWN)
+
+    mode = 0
+    pos = 1
+    showControls = False
+
+    while mode == 0:
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.key == K_RETURN:
+                    if not showControls:
+                        if pos == 1:
+                            mode = 1
+                        else:
+                            showControls = True
+                    else:
+                        showControls = False
+
+                if event.key == K_w and pos > 1:
+                    pos -= 1
+                if event.key == K_s and pos < 2:
+                    pos += 1
+
+        DISPLAYSURF.fill((69, 69, 69))
+        if not showControls:
+            img = font.render("GAME", True, (255, 255, 255))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4)))
+            DISPLAYSURF.blit(img, imgPos)
+
+            img = smallFont.render("Play", True, (255, 255, 255))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 2)))
+            DISPLAYSURF.blit(img, imgPos)
+            if pos == 1:
+                pygame.draw.rect(DISPLAYSURF, (0, 0, 0),
+                                 (imgPos.x - 3, imgPos.y - 3, imgPos.width + 6, imgPos.height + 6), 2)
+            img = smallFont.render("Controls", True, (255, 255, 255))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), 3 * int(SCREEN_HEIGHT / 4)))
+            DISPLAYSURF.blit(img, imgPos)
+            if pos == 2:
+                pygame.draw.rect(DISPLAYSURF, (0, 0, 0),
+                                 (imgPos.x - 3, imgPos.y - 3, imgPos.width + 6, imgPos.height + 6), 2)
+        else:
+            img = smallFont.render(" - Controls - ", True, (255, 255, 255))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Use the WASD keys to move", True, (255, 255, 255))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Press Enter to use your weapon", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 2 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Press E to change weapons", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 3 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Press Escape to quit", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 4 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+
+            img = smallFont.render("Press Enter to return to the title screen", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + 3 * int(SCREEN_HEIGHT * 0.05) + 11 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+
+        pygame.display.update()
+        fpsClock.tick(FPS)
+
+
+if __name__ == '__main__':
+    replay = True
+    while replay:
+        menu()
+        win = True
+        levelNum = 0
+        while win and levelNum < 4:
+            win = main(levelNum)
+            levelNum += 1
