@@ -53,7 +53,7 @@ def display_time(milliseconds):
 
 def enemyMovement():
     for enemy in enemy_group:
-        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy):
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss):
             for platform in platform_group:
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
@@ -159,7 +159,7 @@ def update_gun(milliseconds):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy):
+        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss):
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
@@ -234,7 +234,7 @@ def main():
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(0)
+    readFile(1)
 
 
     lose = False
@@ -432,5 +432,8 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "!":
                 enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "@":
+                enemy_group.add(BirdBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()

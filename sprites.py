@@ -4,6 +4,7 @@ pygame.init()
 import pygame
 import os
 from pygame.sprite import *
+from random import randint
 infoObject = pygame.display.Info()
 
 ##################
@@ -469,7 +470,16 @@ class FrogBoss(Enemy):
         #if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * 0.667)
 
+class BirdBoss(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        #self.images.append(pygame.image.load("Images/Bat.png"))
+        self.images.append(pygame.image.load("Images/Birdy1.png"))
+        self.images.append(pygame.image.load("Images/Birdy2.png"))
+        #self.images.append(pygame.image.load("Images/Bat3.png"))
 
+        super().__init__(self.images, posX, posY, 20, 10, -1, 4, 4, 0.18)
 ##############
 # Block Classes
 ##############
@@ -744,6 +754,12 @@ class Sword(pygame.sprite.Sprite):
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.swordDamage
                 if spriteGroup[x].health <= 0:
+                    randomNum = randint(1, 5)
+                    if randomNum == 1:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum == 2:
+                        platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+
                     spriteGroup[x].kill()
 
             #Check Destructable platform damage
@@ -814,6 +830,11 @@ class Bullet(pygame.sprite.Sprite):
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.damage
                 if spriteGroup[x].health <= 0:
+                    randomNum = randint(1, 5)
+                    if randomNum == 1:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum == 2:
+                        platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
             self.remove(self.groups())
