@@ -439,7 +439,7 @@ class FrogBoss(Enemy):
         self.jump_height = -30
         self.jump_distance = 20
         self.jumpIncrement = 0
-        self.jumpIncrease = 0.005
+        self.jumpIncrease = 0.01
 
         self.isBoss = True
 
@@ -464,14 +464,12 @@ class FrogBoss(Enemy):
         self.posY -= shiftY - self.velocityY
 
         self.rect.center = (self.posX, self.posY)
-
     def jump(self):
         self.isJumping = True
         self.velocityY = self.jump_height
         self.velocityX = self.jump_distance
         self.jumpIncrement = 0
-        #if infoObject.current_h == 720:
-         #   self.velocityY = int(self.velocityY * 0.667)
+
 
 
 ##############
