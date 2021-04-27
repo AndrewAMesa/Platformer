@@ -576,7 +576,9 @@ class SmashyBlock(Platform):
         self.sprite.append(pygame.image.load('Images/Smashy2.png'))
 
         super().__init__(self.sprite[0], posX, posY, True, 100, False)
-
+        if infoObject.current_h == 720:
+            for x in range(3):
+                self.sprite[x] = pygame.transform.scale(self.sprite[x], (int(self.sprite[x].get_width() * .667), int(self.sprite[x].get_height() * 0.667)))
         self.currentSprite = 0
         self.velocityY = 0
         self.isFalling = False
