@@ -158,6 +158,7 @@ class MainCharacter(Character):
         self.invincibilityTime = 0
         self.isInvincible = False
         self.flashTicks = 0
+        self.numberOfBoxes = 10
 
 
     def addmaxhealth(self):
@@ -195,6 +196,9 @@ class MainCharacter(Character):
     def glide(self):
         self.gliding = True
     def displayhealth(self, DISPLAYSURF):
+        for x in range(self.numberOfBoxes):
+            color = (80, 80, 80)
+            pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 10, 10, 10))
         if 30<self.health<60:
             tuple=(255,235,59)
         elif self.health<30:
@@ -682,6 +686,7 @@ class MaxHealth(Collectables):
             self.kill()
             char.addmaxhealth()
             char.addhealth()
+            char.numberOfBoxes += 1
 
 class AddHealth(Collectables):
 
@@ -728,6 +733,7 @@ class Sword(pygame.sprite.Sprite):
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
         self.upgradeCount = 10
         self.swordNumber = 0
+        self.levelObj = pygame.font.Font('freesansbold.ttf', 13)
     def attack(self, enemyGroup, platformGroup):
         if self.attacking == True:
             self.rect.x = self.rect.x + self.xDirection
@@ -768,9 +774,15 @@ class Sword(pygame.sprite.Sprite):
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
     def displayPoints(self, DISPLAYSURF):
-        for x in range(self.upgradeCount):
-            color = (27, 70, 188)
+        for x in range(10):
+            if x < 10 - self.upgradeCount:
+                color = (185, 246, 202)
+            else:
+                color = (80,80,80)
             pygame.draw.rect(DISPLAYSURF, color, (10 + (x*15), 25, 10, 10))
+
+        levelSurfaceObj = self.levelObj.render("Weapon Level: " + str(self.swordNumber + 1), True, (255, 255, 255))
+        DISPLAYSURF.blit(levelSurfaceObj, (10, 40))
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -852,6 +864,7 @@ class Gun(pygame.sprite.Sprite):
         self.shootTime = 360
         self.upgradeCount = 10
         self.gunNumber = 0
+        self.levelObj = pygame.font.Font('freesansbold.ttf', 13)
     def attack(self, bulletGroup, DISPLAYSURF):
         if self.canAttack == True:
             if self.rect.left == self.left1:
@@ -893,9 +906,14 @@ class Gun(pygame.sprite.Sprite):
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
     def displayPoints(self, DISPLAYSURF):
-        for x in range(self.upgradeCount):
-            color = (27, 70, 188)
+        for x in range(10):
+            if x < 10 - self.upgradeCount:
+                color = (185, 246, 202)
+            else:
+                color = (80, 80, 80)
             pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 25, 10, 10))
+        levelSurfaceObj = self.levelObj.render("Weapon Level: " + str(self.gunNumber + 1), True, (255, 255, 255))
+        DISPLAYSURF.blit(levelSurfaceObj, (10, 40))
 
 class Parachute(pygame.sprite.Sprite):
     def __init__(self, WIDTH, HEIGHT, _image):
