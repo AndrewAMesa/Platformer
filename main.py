@@ -56,29 +56,37 @@ def enemyMovement():
         if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss):
             for platform in platform_group:
                 if enemy.velocityY < 0:
-                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
+                    if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY * enemy.variationY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
                             enemy.velocityY *= -1
+                            if isinstance(enemy, BirdBoss):
+                                enemy.randomizeVariation()
                 if enemy.velocityY > 0:
-                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                        if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
+                    if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY * enemy.variationY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY *= -1
+                            if isinstance(enemy, BirdBoss):
+                                enemy.randomizeVariation()
         if enemy.velocityX != 0:
             for platform in platform_group:
-                if enemy.rect.bottom + enemy.velocityY > platform.rect.top and enemy.rect.top + enemy.velocityY < platform.rect.bottom:
+                if enemy.rect.bottom + enemy.velocityY * enemy.variationY > platform.rect.top and enemy.rect.top + enemy.velocityY * enemy.variationY < platform.rect.bottom:
                     if enemy.currentDirection > 0:
                         if enemy.rect.right + (
-                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+                                enemy.currentDirection * enemy.velocityX * enemy.variationX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
                             enemy.currentDirection *= -1
+                            if isinstance(enemy, BirdBoss):
+                                enemy.randomizeVariation()
                         if isinstance(enemy, FrogEnemy):
-                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
                     if enemy.currentDirection < 0:
                         if enemy.rect.left + (
-                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                                enemy.currentDirection * enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                             enemy.currentDirection *= -1
+                            if isinstance(enemy, BirdBoss):
+                                enemy.randomizeVariation()
                         if isinstance(enemy, FrogEnemy):
-                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
         if enemy.jumping and not enemy.isAttacking:
             if not enemy.isJumping and int(enemy.jumpIncrement) >= 1:
