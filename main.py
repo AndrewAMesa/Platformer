@@ -110,15 +110,12 @@ def update_all():
             sword.attack(enemy_group, platform_group)
     character_group.update(sword, gun, milliseconds)
     shiftX, shiftY = main_character.getShift()
-    spriteGroup = bullet_group.sprites()
-    for x in range(len(spriteGroup)):
-        spriteGroup[x].move(platform_group, enemy_group)
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
     current_weapon.sprites()[0].update()
     spriteGroup = bullet_group.sprites()
     for x in range(len(spriteGroup)):
-        spriteGroup[x].move(platform_group, enemy_group)
+        spriteGroup[x].move(platform_group, enemy_group, shiftX, shiftY)
 
     #Falling Blocks
     for platform in platform_group:
