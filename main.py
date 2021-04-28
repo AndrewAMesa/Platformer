@@ -53,7 +53,7 @@ def display_time(milliseconds):
 
 def enemyMovement():
     for enemy in enemy_group:
-        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss):
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss):
             for platform in platform_group:
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
@@ -61,12 +61,20 @@ def enemyMovement():
                             enemy.velocityY *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                print("Top")
+                                enemy.velocityX = enemy.velocity
+                                enemy.velocityY = 0
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY * enemy.variationY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                print("Bottom")
+                                enemy.velocityX = enemy.velocity
+                                enemy.velocityY = 0
         if enemy.velocityX != 0:
             for platform in platform_group:
                 if enemy.rect.bottom + enemy.velocityY * enemy.variationY > platform.rect.top and enemy.rect.top + enemy.velocityY * enemy.variationY < platform.rect.bottom:
@@ -76,6 +84,9 @@ def enemyMovement():
                             enemy.currentDirection *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                enemy.velocityX = 0
+                                enemy.velocityY = -enemy.velocity
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -85,6 +96,9 @@ def enemyMovement():
                             enemy.currentDirection *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                enemy.velocityX = 0
+                                enemy.velocityY = enemy.velocityY
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -167,7 +181,7 @@ def update_gun(milliseconds):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss):
+        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss) and not isinstance(enemy, SpinnyBoss):
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
@@ -443,5 +457,8 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "@":
                 enemy_group.add(BirdBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "#":
+                enemy_group.add(SpinnyBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()

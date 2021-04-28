@@ -530,6 +530,42 @@ class BirdBoss(Enemy):
             self.posY -= shiftY
 
         self.rect.center = (self.posX, self.posY)
+
+class SpinnyBoss(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/BigCircleThing1.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing2.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing3.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing4.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing5.png"))
+
+
+        super().__init__(self.images, posX, posY, 1000, 10, 1, 5, 5, 0.18)
+
+        self.velocity = 5
+
+        self.isInjured = False
+        self.injuredCounter = 0
+
+    def update(self, shiftX, shiftY):
+        if infoObject.current_h == 720:
+         #   self.velocityY = int(self.velocityY * .667)
+            if self.velocityX != 0:
+                self.velocityX = 2
+        self.currentSprite += self.animationSpeed
+
+        if self.currentSprite >= len(self.sprites):
+                self.currentSprite = 1
+
+
+        self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - int(self.currentDirection * self.velocityX)
+        self.posY -= shiftY - int(self.velocityY)
+
+        self.rect.center = (self.posX, self.posY)
 ##############
 # Block Classes
 ##############
@@ -804,7 +840,11 @@ class Sword(pygame.sprite.Sprite):
             #Check Enemy damage
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
-                spriteGroup[x].health -= self.swordDamage
+                if isinstance(spriteGroup[x], SpinnyBoss):
+                    if spriteGroup[x].currentSprite == 0:
+                        spriteGroup[x].health -= self.swordDamage
+                else:
+                    spriteGroup[x].health -= self.swordDamage
                 if isinstance(spriteGroup[x], BirdBoss):
                     spriteGroup[x].isInjured = True
                 if spriteGroup[x].health <= 0:
@@ -888,7 +928,11 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, enemyGroup):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
-                spriteGroup[x].health -= self.damage
+                if isinstance(spriteGroup[x], SpinnyBoss):
+                    if spriteGroup[x].currentSprite == 0:
+                        spriteGroup[x].health -= self.damage
+                else:
+                    spriteGroup[x].health -= self.damage
                 if isinstance(spriteGroup[x], BirdBoss):
                     spriteGroup[x].isInjured = True
                 if spriteGroup[x].health <= 0:
