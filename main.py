@@ -62,7 +62,6 @@ def enemyMovement():
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
-                                print("Top")
                                 enemy.velocityX = enemy.velocity
                                 enemy.velocityY = 0
                 if enemy.velocityY > 0:
@@ -72,7 +71,6 @@ def enemyMovement():
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
-                                print("Bottom")
                                 enemy.velocityX = enemy.velocity
                                 enemy.velocityY = 0
         if enemy.velocityX != 0:
@@ -98,7 +96,7 @@ def enemyMovement():
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
                                 enemy.velocityX = 0
-                                enemy.velocityY = enemy.velocityY
+                                enemy.velocityY = enemy.velocity
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1

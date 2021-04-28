@@ -542,9 +542,9 @@ class SpinnyBoss(Enemy):
         self.images.append(pygame.image.load("Images/BigCircleThing5.png"))
 
 
-        super().__init__(self.images, posX, posY, 1000, 10, 1, 5, 5, 0.18)
+        super().__init__(self.images, posX, posY, 1000, 10, 1, 1, 1, 0.18)
 
-        self.velocity = 5
+        self.velocity = 8
 
         self.isInjured = False
         self.injuredCounter = 0
