@@ -809,17 +809,14 @@ class Bullet(pygame.sprite.Sprite):
         else:
             self.movementCount = int(DISPLAYSURF.get_width()/2)
     def move(self, platformGroup, enemyGroup, shiftX, shiftY):
-        print(shiftY)
         self.rect.centerx -= shiftX
         self.rect.centery -= shiftY
-        self.rect.centerx += (self.directionx * 1)
-        print(self.directiony * 1)
-        self.rect.centery += (self.directiony * 1)
+        self.rect.centerx += (self.directionx * 10)
+        self.rect.centery += (self.directiony * 10)
         self.movementCount -= 1
         spriteGroup = spritecollide(self, platformGroup, False)
         if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
             self.remove(self.groups())
-            print("si")
             spriteGroup = spritecollide(self, platformGroup, False)
             for x in range(len(spriteGroup)):
                 if spriteGroup[x].breakable:

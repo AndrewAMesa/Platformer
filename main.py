@@ -113,9 +113,7 @@ def update_all():
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
     current_weapon.sprites()[0].update()
-    spriteGroup = bullet_group.sprites()
-    for x in range(len(spriteGroup)):
-        spriteGroup[x].move(platform_group, enemy_group, shiftX, shiftY)
+
 
     #Falling Blocks
     for platform in platform_group:
@@ -133,7 +131,9 @@ def update_all():
                     platform.posY = collided_sprites[1].posY - TILESIZE
 
     platform_group.update(shiftX, shiftY)
-
+    spriteGroup = bullet_group.sprites()
+    for x in range(len(spriteGroup)):
+        spriteGroup[x].move(platform_group, enemy_group, shiftX, shiftY)
 
 
 def checkcollision(char, group):
