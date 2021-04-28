@@ -506,7 +506,7 @@ class Platform(pygame.sprite.Sprite):
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
         self.posY -= shiftY
-
+        print("plat" + str(shiftY))
         self.rect.center = (self.posX, self.posY)
 
 
