@@ -40,7 +40,7 @@ parachute_group=pygame.sprite.Group()
 parachute_group.add(parachute)
 
 enemy_group = pygame.sprite.Group()
-
+slimeBallGroup = pygame.sprite.Group()
 
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
 timeLeft = 500
@@ -66,12 +66,27 @@ def enemyMovement():
                             enemy.velocityY *= -1
         if isinstance(enemy, FrogBoss):
             if enemy.jumpCount >= 3 and enemy.isJumping == False:
-                enemy.isAttacking = True
                 dirvect = pygame.math.Vector2(DISPLAYSURF.get_width()/2 - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
                 if dirvect.x < 0:
                     enemy.currentDirection = -1
                 elif dirvect.x > 0:
                     enemy.currentDirection = 1
+                enemy.time += fpsClock.tick_busy_loop(560)
+                if (enemy.time/60) > .5:
+                    enemy.isAttacking = True
+                if enemy.isAttacking == True:
+                    enemy.time += fpsClock.tick_busy_loop(560)
+                    if (enemy.time/60) > .5:
+                        enemy.attack(DISPLAYSURF, slimeBallGroup)
+                        enemy.time = 0
+                        enemy.spitAmount -= 1
+                    if enemy.spitAmount <= 0:
+                        enemy.spitAmount = 3
+                        enemy.time = 0
+                        enemy.isAttacking = False
+                        enemy.jumpCount = 0
+                        enemy.jump()
+
             elif int(enemy.jumpIncrement) >= 1:
                 enemy.jump()
             else:
@@ -134,6 +149,9 @@ def update_all():
     spriteGroup = bullet_group.sprites()
     for x in range(len(spriteGroup)):
         spriteGroup[x].move(platform_group, enemy_group, shiftX, shiftY)
+    ballSprites = slimeBallGroup.sprites()
+    for x in range(len(ballSprites)):
+        ballSprites[x].move(platform_group, main_character, shiftX, shiftY)
 
 
 def checkcollision(char, group):
@@ -268,6 +286,7 @@ def main():
         bullet_group.draw(DISPLAYSURF)
         enemy_group.draw(DISPLAYSURF)
         platform_group.draw(DISPLAYSURF)
+        slimeBallGroup.draw(DISPLAYSURF)
         main_character.displayhealth(DISPLAYSURF)
         current_weapon.sprites()[0].displayPoints(DISPLAYSURF)
         display_time(milliseconds)

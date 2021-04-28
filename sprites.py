@@ -445,7 +445,8 @@ class FrogBoss(Enemy):
         self.isBoss = True
         self.isAttacking = False
         self.time = 0
-
+        self.damage = 20
+        self.spitAmount = 3
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
@@ -473,7 +474,12 @@ class FrogBoss(Enemy):
         self.velocityX = self.jump_distance
         self.jumpIncrement = 0
         self.jumpCount += 1
-
+    def attack(self, DISPLAYSURF, slimeBallGroup):
+        if self.currentDirection == 1:
+            (spawnLeft, spawnTop) = self.rect.midright
+        else:
+            (spawnLeft, spawnTop) = self.rect.midleft
+        slimeBallGroup.add(SlimeBall(DISPLAYSURF, pygame.image.load("Images/Lava.png"), spawnLeft, spawnTop, self.currentDirection, self.damage))
 
 
 ##############
@@ -506,7 +512,6 @@ class Platform(pygame.sprite.Sprite):
     def update(self, shiftX, shiftY):
         self.posX -= shiftX
         self.posY -= shiftY
-        print("plat" + str(shiftY))
         self.rect.center = (self.posX, self.posY)
 
 
@@ -786,7 +791,35 @@ class Sword(pygame.sprite.Sprite):
         levelSurfaceObj = self.levelObj.render("Weapon Level: " + str(self.swordNumber + 1), True, (255, 255, 255))
         DISPLAYSURF.blit(levelSurfaceObj, (10, 40))
 
+class SlimeBall(pygame.sprite.Sprite):
+    def __init__(self, DISPLAYSURF, _image, left, top, directionx, damage):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = _image
+        if infoObject.current_h == 720:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
+        self.rect = self.image.get_rect()
+        self.left = left
+        if infoObject.current_h != 720:
+            self.left = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
+        self.height = top
+        if infoObject.current_h != 720:
+            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
+        self.rect.center = (self.left, self.height)
+        self.directionx = directionx
+        self.damage = damage
+    def move(self, platformGroup, player, shiftX, shiftY):
+        self.rect.centerx -= shiftX
+        self.rect.centery -= shiftY
+        self.rect.centerx += (self.directionx * 10)
+        spriteGroup = spritecollide(self, platformGroup, False)
+        if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
+            self.remove(self.groups())
 
+        #check enemy collisions
+        if pygame.sprite.collide_rect(self, player):
+            player.health -= self.damage
+            if player.health <= 0:
+                print("dead")
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
         pygame.sprite.Sprite.__init__(self)
