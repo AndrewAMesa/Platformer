@@ -4,6 +4,7 @@ pygame.init()
 import pygame
 import os
 from pygame.sprite import *
+from random import randint
 infoObject = pygame.display.Info()
 
 ##################
@@ -262,6 +263,9 @@ class Enemy(pygame.sprite.Sprite):
         self.velocityX = velocityX
         self.velocityY = velocityY
 
+        self.variationX = 1
+        self.variationY = 1
+
         self.currentDirection = directionX
 
     def update(self, shiftX, shiftY):
@@ -473,7 +477,59 @@ class FrogBoss(Enemy):
         #if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * 0.667)
 
+class BirdBoss(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Birdy1.png"))
+        self.images.append(pygame.image.load("Images/Birdy2.png"))
+        self.images.append(pygame.image.load("Images/Birdy3.png"))
 
+        super().__init__(self.images, posX, posY, 10000, 10, -1, 4, 4, 0.18)
+
+        self.variationX = 1
+        self.variationY = 1
+
+        self.isInjured = False
+        self.injuredCounter = 0
+
+    def randomizeVariation(self):
+        self.variationX = 1 + (randint(0, 100) / 25)
+        self.variationY = 1 + (randint(0, 100) / 25)
+
+    def update(self, shiftX, shiftY):
+        if infoObject.current_h == 720:
+         #   self.velocityY = int(self.velocityY * .667)
+            if self.velocityX != 0:
+                self.velocityX = 2
+        self.currentSprite += self.animationSpeed
+
+        if self.currentSprite >= 2:
+            self.currentSprite = 0
+
+        if self.isInjured:
+            self.currentSprite = 2
+            self.injuredCounter += 1
+            if self.injuredCounter > 10:
+                self.isInjured = False
+                self.injuredCounter = 0
+
+
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
+
+        if not self.isInjured:
+            self.posX -= shiftX - int((self.currentDirection * self.velocityX) * self.variationX)
+            self.posY -= shiftY - int(self.velocityY * self.variationY)
+        else:
+            self.posX -= shiftX
+            self.posY -= shiftY
+
+        self.rect.center = (self.posX, self.posY)
 ##############
 # Block Classes
 ##############
@@ -749,7 +805,15 @@ class Sword(pygame.sprite.Sprite):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.swordDamage
+                if isinstance(spriteGroup[x], BirdBoss):
+                    spriteGroup[x].isInjured = True
                 if spriteGroup[x].health <= 0:
+                    randomNum = randint(1, 5)
+                    if randomNum == 1:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum == 2:
+                        platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+
                     spriteGroup[x].kill()
 
             #Check Destructable platform damage
@@ -825,7 +889,14 @@ class Bullet(pygame.sprite.Sprite):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.damage
+                if isinstance(spriteGroup[x], BirdBoss):
+                    spriteGroup[x].isInjured = True
                 if spriteGroup[x].health <= 0:
+                    randomNum = randint(1, 5)
+                    if randomNum == 1:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum == 2:
+                        platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
             self.remove(self.groups())
