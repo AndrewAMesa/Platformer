@@ -476,7 +476,7 @@ class FrogBoss(Enemy):
 
 # Main Block Class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, image, posX, posY, breakable, damage, walkthrough):
+    def __init__(self, image, posX, posY, breakable, damage, walkthrough, hint):
 
         super().__init__()
         self.image = image
@@ -488,7 +488,7 @@ class Platform(pygame.sprite.Sprite):
         self.posX = posX
         self.posY = posY
         self.rect.center = (self.posX, self.posY)
-
+        self.hint=hint
         # Object information
         self.health = 0
         self.breakable = breakable  # If True, destroy block in response to any damage
@@ -514,18 +514,48 @@ class BasicBlock(Platform):
         #Load Images
         self.sprite = pygame.image.load('Images/Grass.png')
 
-        super().__init__(self.sprite, posX, posY, False, 0, False)
+        super().__init__(self.sprite, posX, posY, False, 0, False, False)
+class Hint(Platform):
+
+    #  B
+
+    def __init__(self, posX, posY, stringNum, DISPLAYSURF):
+
+        #Load Images
+        self.sprite = pygame.image.load('Images/Hint.png')
+        self.strings=['Press SPACE to jump', 'This is the double jump upgrade', 'This is the glide upgrade', 'Hold shift to glide while jumping', 'Watch out for falling blocks', 'Press E to change weapons', 'Press ENTER to attack', 'This adds health', 'This increases your max health', 'This upgrades the weapon in your hand']
+        super().__init__(self.sprite, posX, posY, False, 0, True, True)
+        self.stringNum = stringNum
+        self.DISPLAYSURF=DISPLAYSURF
+    def is_collided_with(self, char):
+        if self.rect.colliderect(char.rect):
+            print('here')
+            #pygame.draw.rect(self.DISPLAYSURF, (255,255,255), (self.DISPLAYSURF.get_wid/2,0,500,500) )
+            fontObj = pygame.font.Font('freesansbold.ttf', 50)
+            textSurfaceObj = fontObj.render(self.strings[self.stringNum], True, (255, 255, 255))
+            textRectObj = textSurfaceObj.get_rect()
+            textRectObj.center = (int(self.DISPLAYSURF.get_width()/2+120), int(self.DISPLAYSURF.get_height()/2-240))
+            self.DISPLAYSURF.blit(textSurfaceObj, textRectObj)
+class Dirt(Platform):
+
+    #  B
+
+    def __init__(self, posX, posY):
+
+        #Load Images
+        self.sprite = pygame.image.load('Images/Dirt.png')
+
+        super().__init__(self.sprite, posX, posY, False, 0, False, False)
 
 class BreakableBlock(Platform):
 
     #  C
 
     def __init__(self, posX, posY):
-
         # Load Images
         self.sprite = pygame.image.load('Images/AnotherBlock.png')
 
-        super().__init__(self.sprite, posX, posY, True, 0, False)
+        super().__init__(self.sprite, posX, posY, True, 0, False, False)
 
         self.health = 1
 
@@ -538,18 +568,17 @@ class Rock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/BreakableBlock.png')
 
-        super().__init__(self.sprite, posX, posY, False, 0, False)
+        super().__init__(self.sprite, posX, posY, False, 0, False, False)
 
 class SpikesBlock(Platform):
 
     #  S
 
     def __init__(self, posX, posY):
-
         # Load Images
         self.sprite = pygame.image.load('Images/Spikes.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, True)
+        super().__init__(self.sprite, posX, posY, False, 5, True, False)
 
 class LavaBlock(Platform):
 
@@ -560,7 +589,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, True)
+        super().__init__(self.sprite, posX, posY, False, 5, True, False)
 
 
 class SmashyBlock(Platform):
@@ -575,7 +604,7 @@ class SmashyBlock(Platform):
         self.sprite.append(pygame.image.load('Images/Smashy1.png'))
         self.sprite.append(pygame.image.load('Images/Smashy2.png'))
 
-        super().__init__(self.sprite[0], posX, posY, True, 100, False)
+        super().__init__(self.sprite[0], posX, posY, True, 100, False, False)
         if infoObject.current_h == 720:
             for x in range(3):
                 self.sprite[x] = pygame.transform.scale(self.sprite[x], (int(self.sprite[x].get_width() * .667), int(self.sprite[x].get_height() * 0.667)))
@@ -608,7 +637,7 @@ class Collectables(Platform):
 
         self.name = name
 
-        super().__init__(image, xpos, ypos, False, 0, True)
+        super().__init__(image, xpos, ypos, False, 0, True, False)
 
         self.collectable = True
         self.weaponUpgrade = isWeaponUpgrade
