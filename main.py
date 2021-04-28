@@ -54,41 +54,50 @@ def display_time(milliseconds):
 def enemyMovement():
 
     for enemy in enemy_group:
-        dirvect = pygame.math.Vector2(DISPLAYSURF.get_width()/2 - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
-        print(dirvect)
-        if dirvect.x < DISPLAYSURF.get_width():
-            if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy):
-                for platform in platform_group:
-                    if enemy.velocityY < 0:
-                        if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                            if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
-                                enemy.velocityY *= -1
-                    if enemy.velocityY > 0:
-                        if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
-                            if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
-                                enemy.velocityY *= -1
-            if enemy.velocityX != 0:
-                for platform in platform_group:
-                    if enemy.rect.bottom + enemy.velocityY > platform.rect.top and enemy.rect.top + enemy.velocityY < platform.rect.bottom:
-                        if enemy.currentDirection > 0:
-                            if enemy.rect.right + (
-                                    enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy):
+            for platform in platform_group:
+                if enemy.velocityY < 0:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.top + enemy.velocityY <= platform.rect.bottom <= enemy.rect.top and not platform.walkthrough:
+                            enemy.velocityY *= -1
+                if enemy.velocityY > 0:
+                    if enemy.rect.left + enemy.velocityX < platform.rect.right and enemy.rect.right + enemy.velocityX > platform.rect.left:
+                        if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
+                            enemy.velocityY *= -1
+        if isinstance(enemy, FrogBoss):
+            if enemy.jumpCount >= 3 and enemy.isJumping == False:
+                enemy.isAttacking = True
+                dirvect = pygame.math.Vector2(DISPLAYSURF.get_width()/2 - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
+                if dirvect.x < 0:
+                    enemy.currentDirection = -1
+                elif dirvect.x > 0:
+                    enemy.currentDirection = 1
+            elif int(enemy.jumpIncrement) >= 1:
+                enemy.jump()
+            else:
+                enemy.jumpIncrement += enemy.jumpIncrease
+        if enemy.velocityX != 0:
+            for platform in platform_group:
+                if enemy.rect.bottom + enemy.velocityY > platform.rect.top and enemy.rect.top + enemy.velocityY < platform.rect.bottom:
+                    if enemy.currentDirection > 0:
+                        if enemy.rect.right + (
+                                enemy.currentDirection * enemy.velocityX) >= platform.rect.left >= enemy.rect.right and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                        if isinstance(enemy, FrogEnemy):
+                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
-                            if isinstance(enemy, FrogEnemy):
-                                if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
-                                    enemy.currentDirection *= -1
-                        if enemy.currentDirection < 0:
-                            if enemy.rect.left + (
-                                    enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                    if enemy.currentDirection < 0:
+                        if enemy.rect.left + (
+                                enemy.currentDirection * enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
+                            enemy.currentDirection *= -1
+                        if isinstance(enemy, FrogEnemy):
+                            if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
-                            if isinstance(enemy, FrogEnemy):
-                                if enemy.rect.left + (enemy.velocityX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
-                                    enemy.currentDirection *= -1
-            if enemy.jumping and not enemy.isAttacking:
-                if not enemy.isJumping and int(enemy.jumpIncrement) >= 1:
-                    enemy.jump()
-                else:
-                    enemy.jumpIncrement += enemy.jumpIncrease
+        if enemy.jumping and not enemy.isAttacking:
+            if not enemy.isJumping and int(enemy.jumpIncrement) >= 1 and enemy.isBoss == False:
+                enemy.jump()
+            else:
+                enemy.jumpIncrement += enemy.jumpIncrease
 
 
 

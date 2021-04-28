@@ -436,19 +436,22 @@ class FrogBoss(Enemy):
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
-        self.jump_height = -30
+        self.jump_height = -20
         self.jump_distance = 20
         self.jumpIncrement = 0
-        self.jumpIncrease = 0.01
+        self.jumpIncrease = 0.007
 
+        self.jumpCount = 0
         self.isBoss = True
-
         self.isAttacking = False
+        self.time = 0
 
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
             self.currentSprite = 1
+        elif self.isAttacking:
+            self.currentSprite = 2
         else:
             self.currentSprite = 0
 
@@ -459,7 +462,7 @@ class FrogBoss(Enemy):
         else:
 
             self.image = self.sprites[int(self.currentSprite)]
-
+        self.rect.update(self.rect.left, self.rect.left, self.image.get_width(), self.image.get_height())
         self.posX -= shiftX - (self.currentDirection * self.velocityX)
         self.posY -= shiftY - self.velocityY
 
@@ -469,6 +472,7 @@ class FrogBoss(Enemy):
         self.velocityY = self.jump_height
         self.velocityX = self.jump_distance
         self.jumpIncrement = 0
+        self.jumpCount += 1
 
 
 
