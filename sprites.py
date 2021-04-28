@@ -529,7 +529,6 @@ class Hint(Platform):
         self.DISPLAYSURF=DISPLAYSURF
     def is_collided_with(self, char):
         if self.rect.colliderect(char.rect):
-            print('here')
             #pygame.draw.rect(self.DISPLAYSURF, (255,255,255), (self.DISPLAYSURF.get_wid/2,0,500,500) )
             fontObj = pygame.font.Font('freesansbold.ttf', 50)
             textSurfaceObj = fontObj.render(self.strings[self.stringNum], True, (255, 255, 255))
