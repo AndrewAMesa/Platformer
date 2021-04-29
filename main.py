@@ -53,7 +53,7 @@ def display_time(milliseconds):
 
 def enemyMovement():
     for enemy in enemy_group:
-        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss):
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss) or isinstance(enemy, SmallSpinnyBoiEnemy):
             for platform in platform_group:
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
@@ -66,6 +66,7 @@ def enemyMovement():
                                     enemy.velocityX = enemy.velocity
                                     enemy.velocityY = 0
                                     enemy.rotationCounter += 1
+                                    enemy_group.add(SmallSpinnyBoiEnemy(enemy.posX, enemy.posY))
 
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
@@ -77,6 +78,7 @@ def enemyMovement():
                                 if not enemy.goToCenter:
                                     enemy.velocityX = enemy.velocity
                                     enemy.velocityY = 0
+                                    enemy_group.add(SmallSpinnyBoiEnemy(enemy.posX, enemy.posY))
                 if isinstance(enemy, SpinnyBoss) and isinstance(platform, InvisibleBlock):
                     if enemy.rotationCounter > 2 and not enemy.goToCenter:
                         if platform.posX - 5 <= enemy.posX <= platform.posX + 5:
@@ -199,7 +201,7 @@ def update_gun(milliseconds):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss) and not isinstance(enemy, SpinnyBoss):
+        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss) and not isinstance(enemy, SpinnyBoss) and not isinstance(enemy, SmallSpinnyBoiEnemy):
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False

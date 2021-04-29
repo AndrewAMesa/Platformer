@@ -552,7 +552,7 @@ class SpinnyBoss(Enemy):
         self.rotationCounter = 0
         self.goToCenter = False
 
-        self.vulnerableTime = 800
+        self.vulnerableTime = 900
         self.vCounter = 0
 
     def update(self, shiftX, shiftY):
@@ -560,13 +560,14 @@ class SpinnyBoss(Enemy):
          #   self.velocityY = int(self.velocityY * .667)
             if self.velocityX != 0:
                 self.velocityX = 2
-        self.currentSprite += self.animationSpeed
+
+        if self.vCounter == 0:
+            self.currentSprite += self.animationSpeed
+        else:
+            self.currentSprite = 0
 
         if self.currentSprite >= len(self.sprites):
                 self.currentSprite = 1
-
-        #self.currentSprite = 0
-
 
         self.image = self.sprites[int(self.currentSprite)]
 
@@ -574,6 +575,17 @@ class SpinnyBoss(Enemy):
         self.posY -= shiftY - int(self.velocityY)
 
         self.rect.center = (self.posX, self.posY)
+
+class SmallSpinnyBoiEnemy(Enemy):
+
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/SmallCircleThing.png"))
+
+
+        super().__init__(self.images, posX, posY, 20, 10, -1, randint(2, 4), randint(2, 4), 1)
+
 ##############
 # Block Classes
 ##############
