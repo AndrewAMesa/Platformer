@@ -505,9 +505,14 @@ def menu():
             imgPos = img.get_rect(
                 center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 3 * int(SCREEN_HEIGHT * 0.05)))
             DISPLAYSURF.blit(img, imgPos)
-            img = smallFont.render("Press Escape to quit", True, (255, 255, 255))
+            img = smallFont.render("Press Space to jump", True, (255, 255, 255))
             imgPos = img.get_rect(
                 center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 4 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Press Escape to quit", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2),
+                        int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 5 * int(SCREEN_HEIGHT * 0.05)))
             DISPLAYSURF.blit(img, imgPos)
 
             img = smallFont.render("Press Enter to return to the title screen", True, (255, 255, 255))
