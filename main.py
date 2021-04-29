@@ -62,8 +62,11 @@ def enemyMovement():
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
-                                enemy.velocityX = enemy.velocity
-                                enemy.velocityY = 0
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = enemy.velocity
+                                    enemy.velocityY = 0
+                                    enemy.rotationCounter += 1
+
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY * enemy.variationY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
@@ -71,8 +74,18 @@ def enemyMovement():
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
-                                enemy.velocityX = enemy.velocity
-                                enemy.velocityY = 0
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = enemy.velocity
+                                    enemy.velocityY = 0
+                if isinstance(enemy, SpinnyBoss) and isinstance(platform, InvisibleBlock):
+                    if enemy.rotationCounter > 0:
+                        if platform.posX - 5 <= enemy.posX <= platform.posX + 5:
+                            enemy.rotationCounter = 0
+                            enemy.velocityX = 0
+                            enemy.velocityY = 6
+                            enemy.goToCenter = True
+                        if enemy.goToCenter:
+                            pass
         if enemy.velocityX != 0:
             for platform in platform_group:
                 if enemy.rect.bottom + enemy.velocityY * enemy.variationY > platform.rect.top and enemy.rect.top + enemy.velocityY * enemy.variationY < platform.rect.bottom:
@@ -83,8 +96,9 @@ def enemyMovement():
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
-                                enemy.velocityX = 0
-                                enemy.velocityY = -enemy.velocity
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = 0
+                                    enemy.velocityY = -enemy.velocity
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -95,8 +109,9 @@ def enemyMovement():
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
                             if isinstance(enemy, SpinnyBoss):
-                                enemy.velocityX = 0
-                                enemy.velocityY = enemy.velocity
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = 0
+                                    enemy.velocityY = enemy.velocity
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -105,6 +120,8 @@ def enemyMovement():
                 enemy.jump()
             else:
                 enemy.jumpIncrement += enemy.jumpIncrease
+
+
 
 
 
@@ -449,6 +466,9 @@ def readFile(levelNum):
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "O":
                 platform_group.add(SmashyBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "I":
+                platform_group.add(InvisibleBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "!":
                 enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),

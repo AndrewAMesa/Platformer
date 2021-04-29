@@ -550,6 +550,7 @@ class SpinnyBoss(Enemy):
         self.injuredCounter = 0
 
         self.rotationCounter = 0
+        self.goToCenter = False
 
     def update(self, shiftX, shiftY):
         if infoObject.current_h == 720:
@@ -560,6 +561,8 @@ class SpinnyBoss(Enemy):
 
         if self.currentSprite >= len(self.sprites):
                 self.currentSprite = 1
+
+        #self.currentSprite = 0
 
 
         self.image = self.sprites[int(self.currentSprite)]
@@ -700,6 +703,18 @@ class SmashyBlock(Platform):
 
 
         self.rect.center = (self.posX, self.posY)
+
+class InvisibleBlock(Platform):
+
+    #  I
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/InvisibleBlock.png')
+
+
+        super().__init__(self.sprite, posX, posY, False, 0, True)
 
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image, isWeaponUpgrade):
