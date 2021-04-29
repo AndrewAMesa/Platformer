@@ -78,14 +78,17 @@ def enemyMovement():
                                     enemy.velocityX = enemy.velocity
                                     enemy.velocityY = 0
                 if isinstance(enemy, SpinnyBoss) and isinstance(platform, InvisibleBlock):
-                    if enemy.rotationCounter > 0:
+                    if enemy.rotationCounter > 2 and not enemy.goToCenter:
                         if platform.posX - 5 <= enemy.posX <= platform.posX + 5:
                             enemy.rotationCounter = 0
                             enemy.velocityX = 0
                             enemy.velocityY = 6
                             enemy.goToCenter = True
-                        if enemy.goToCenter:
-                            pass
+                    if enemy.goToCenter:
+                        enemy.vCounter += 1
+                        if enemy.vCounter > enemy.vulnerableTime:
+                            enemy.goToCenter = False
+                            enemy.vCounter = 0
         if enemy.velocityX != 0:
             for platform in platform_group:
                 if enemy.rect.bottom + enemy.velocityY * enemy.variationY > platform.rect.top and enemy.rect.top + enemy.velocityY * enemy.variationY < platform.rect.bottom:
