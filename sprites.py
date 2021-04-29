@@ -3,6 +3,7 @@ import pygame, sys
 pygame.init()
 import pygame
 import os
+import random
 from pygame.sprite import *
 infoObject = pygame.display.Info()
 
@@ -432,7 +433,7 @@ class FrogBoss(Enemy):
         self.images.append(pygame.image.load("Images/Froggy3.png"))
 
 
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 100, 20, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -445,8 +446,13 @@ class FrogBoss(Enemy):
         self.isBoss = True
         self.isAttacking = False
         self.time = 0
-        self.damage = 20
+        self.largeDamage = 3
+        self.smallDamage = 1
         self.spitAmount = 3
+        self.hurt = False
+        self.crazy = False
+        self.slime = pygame.image.load("Images/Lava.png")
+        self.smallSlime = pygame.transform.scale(self.slime, (60, 60))
     def update(self, shiftX, shiftY):
 
         if self.isJumping:
@@ -475,11 +481,43 @@ class FrogBoss(Enemy):
         self.jumpIncrement = 0
         self.jumpCount += 1
     def attack(self, DISPLAYSURF, slimeBallGroup):
-        if self.currentDirection == 1:
-            (spawnLeft, spawnTop) = self.rect.midright
+        if self.crazy == True:
+            if self.currentDirection == 1:
+                (spawnLeft, spawnTop) = self.rect.midright
+            else:
+                (spawnLeft, spawnTop) = self.rect.midleft
+            image = self.slime
+            damage = self.largeDamage
         else:
-            (spawnLeft, spawnTop) = self.rect.midleft
-        slimeBallGroup.add(SlimeBall(DISPLAYSURF, pygame.image.load("Images/Lava.png"), spawnLeft, spawnTop, self.currentDirection, self.damage))
+            tempCheck = int((random.random() * 3) + 1)
+            if self.currentDirection == 1:
+                if tempCheck == 1:
+                    (spawnLeft, spawnTop) = self.rect.topright
+                    spawnTop += 75
+                elif tempCheck == 2:
+                    (spawnLeft, spawnTop) = self.rect.midright
+                else:
+                    (spawnLeft, spawnTop) = self.rect.bottomright
+                    spawnTop -= 60
+            else:
+                if tempCheck == 1:
+                    (spawnLeft, spawnTop) = self.rect.topleft
+                    spawnTop += 75
+                elif tempCheck == 2:
+                    (spawnLeft, spawnTop) = self.rect.midleft
+                else:
+                    (spawnLeft, spawnTop) = self.rect.bottomleft
+                    spawnTop -= 60
+            tempCheck = int((random.random() * 3) + 1)
+            if tempCheck == 1:
+                self.currentDirection *= 1.5
+            elif tempCheck == 2:
+                self.currentDirection *= 1.25
+            elif tempCheck == 3:
+                self.currentDirection *= .75
+            image = self.smallSlime
+            damage = self.smallDamage
+        slimeBallGroup.add(SlimeBall(DISPLAYSURF, image, spawnLeft, spawnTop, self.currentDirection, damage))
 
 
 ##############
@@ -755,7 +793,13 @@ class Sword(pygame.sprite.Sprite):
             #Check Enemy damage
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
-                spriteGroup[x].health -= self.swordDamage
+                if isinstance(spriteGroup[x], FrogBoss):
+                    if spriteGroup[x].isAttacking == True and spriteGroup[x].crazy == False:
+                        spriteGroup[x].hurt = True
+                        spriteGroup[x].health -= self.swordDamage
+                else:
+                    spriteGroup[x].health -= self.swordDamage
+
                 if spriteGroup[x].health <= 0:
                     spriteGroup[x].kill()
 
@@ -861,7 +905,12 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, enemyGroup):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
-                spriteGroup[x].health -= self.damage
+                if isinstance(spriteGroup[x], FrogBoss):
+                    if spriteGroup[x].isAttacking == True and spriteGroup[x].crazy == False:
+                        spriteGroup[x].hurt = True
+                        spriteGroup[x].health -= self.damage
+                else:
+                    spriteGroup[x].health -= self.damage
                 if spriteGroup[x].health <= 0:
 
                     spriteGroup[x].kill()

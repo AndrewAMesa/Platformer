@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from sprites import *
 
+
 pygame.init()
 fpsClock = pygame.time.Clock()
 
@@ -65,28 +66,49 @@ def enemyMovement():
                         if enemy.rect.bottom + enemy.velocityY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY *= -1
         if isinstance(enemy, FrogBoss):
-            if enemy.jumpCount >= 3 and enemy.isJumping == False:
-                dirvect = pygame.math.Vector2(DISPLAYSURF.get_width()/2 - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
+            if enemy.crazy == True and enemy.isJumping == False:
+                enemy.time += fpsClock.tick_busy_loop(560)
+                if (enemy.time / 60) > .2 and enemy.spitAmount > 0:
+                    enemy.attack(DISPLAYSURF, slimeBallGroup)
+                    enemy.time = 0
+                    enemy.spitAmount -= 1
+                    if enemy.spitAmount == 3:
+                        enemy.currentDirection = enemy.currentDirection*-1
+                if enemy.spitAmount <= 0:
+                    enemy.spitAmount = 3
+                    enemy.time = 0
+                    enemy.isAttacking = False
+                    enemy.jumpCount = 0
+                    enemy.jump()
+                    enemy.crazy = False
+                    enemy.hurt = False
+            elif enemy.jumpCount >= 3 and enemy.isJumping == False:
+                dirvect = pygame.math.Vector2(int(DISPLAYSURF.get_width()/2) - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
                 if dirvect.x < 0:
                     enemy.currentDirection = -1
                 elif dirvect.x > 0:
                     enemy.currentDirection = 1
                 enemy.time += fpsClock.tick_busy_loop(560)
-                if (enemy.time/60) > .5:
+                if (enemy.time/60) > 1 and enemy.isAttacking == False:
+                    enemy.time = 0
                     enemy.isAttacking = True
                 if enemy.isAttacking == True:
                     enemy.time += fpsClock.tick_busy_loop(560)
-                    if (enemy.time/60) > .5:
+                    if (enemy.time/60) > .75 and enemy.spitAmount > 0:
                         enemy.attack(DISPLAYSURF, slimeBallGroup)
                         enemy.time = 0
                         enemy.spitAmount -= 1
                     if enemy.spitAmount <= 0:
-                        enemy.spitAmount = 3
-                        enemy.time = 0
-                        enemy.isAttacking = False
-                        enemy.jumpCount = 0
-                        enemy.jump()
-
+                        if (enemy.time/60) > 4:
+                            enemy.spitAmount = 3
+                            enemy.time = 0
+                            enemy.isAttacking = False
+                            enemy.jumpCount = 0
+                            enemy.jump()
+                            if enemy.hurt == True:
+                                enemy.crazy = True
+                                enemy.isAttacking = True
+                                enemy.spitAmount = 6
             elif int(enemy.jumpIncrement) >= 1:
                 enemy.jump()
             else:
