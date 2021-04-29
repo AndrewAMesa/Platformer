@@ -770,11 +770,11 @@ class Sword(pygame.sprite.Sprite):
         self.left1 = int(DISPLAYSURF.get_width() / 2) + 20
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 36
         if infoObject.current_h != 720:
-            self.left1 = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
-            self.left2 = int(DISPLAYSURF.get_width() / 2) - (36*1.45)
+            self.left1 = int((DISPLAYSURF.get_width() / 2) + (22*1.4))
+            self.left2 = int((DISPLAYSURF.get_width() / 2) - (38*1.45))
         self.height = int(DISPLAYSURF.get_height() / 2) + (14)
         if infoObject.current_h != 720:
-            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
+            self.height =int((DISPLAYSURF.get_height()/2) + (14*1.4))
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
         self.upgradeCount = 10
         self.swordNumber = 0
@@ -823,6 +823,8 @@ class Sword(pygame.sprite.Sprite):
                 self.originalImage = pygame.transform.scale(self.originalImage, (
                     int(self.originalImage.get_width() * 0.667),
                     int(self.originalImage.get_height() * 0.667)))
+            else:
+                self.left2 -= 9
             self.upgradeCount = 10
     def displayPoints(self, DISPLAYSURF):
         for x in range(10):
@@ -962,20 +964,25 @@ class Gun(pygame.sprite.Sprite):
         if self.canAttack == True:
             if self.rect.left == self.left1:
                 (spawnLeft, spawnTop) = self.rect.midright
-                print("in loop")
+                spawnTop -= 7
             elif self.rect.left == self.left2:
                 (spawnLeft, spawnTop) = self.rect.midleft
-                print("in loop")
+                spawnTop -= 7
             elif self.rect.left == self.left3:
                 if self.yDirection > 0:
-                    (spawnLeft, spawnTop) = self.rect.midtop
+                    (spawnLeft, spawnTop) = self.rect.midleft
+                    spawnLeft += 4
+                    spawnTop += 40
                 elif self.yDirection < 0:
-                    (spawnLeft, spawnTop) = self.rect.midbottom
+                    (spawnLeft, spawnTop) = self.rect.midleft
             elif self.rect.left == self.left4:
                 if self.yDirection > 0:
-                    (spawnLeft, spawnTop) = self.rect.midtop
+                    (spawnLeft, spawnTop) = self.rect.midleft
+                    spawnLeft += 12
+                    spawnTop += 40
                 elif self.yDirection < 0:
                     (spawnLeft, spawnTop) = self.rect.midbottom
+                    spawnLeft -= 18
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
     def update(self):
@@ -983,7 +990,6 @@ class Gun(pygame.sprite.Sprite):
             self.gunNumber += 1
             self.gunDamage += 10
             self.shootTime -= 150
-            print("Images/Gun" + str(self.gunNumber) + ".png")
             self.image = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
             self.originalImage = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
             if infoObject.current_h == 720:
