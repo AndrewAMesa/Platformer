@@ -45,7 +45,7 @@ enemy_group = pygame.sprite.Group()
 slimeBallGroup = pygame.sprite.Group()
 
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
-timeLeft = 500
+timeLeft = 5
 
 
 def display_time(milliseconds):
@@ -376,6 +376,8 @@ def main():
 
         # Update the Screen
 
+        if timeLeft - int(milliseconds/60) <= 0:
+            main_character.health = 0
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
