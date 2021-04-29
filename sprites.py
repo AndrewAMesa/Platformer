@@ -4,6 +4,7 @@ pygame.init()
 import pygame
 import os
 from pygame.sprite import *
+from random import randint
 infoObject = pygame.display.Info()
 
 ##################
@@ -158,6 +159,7 @@ class MainCharacter(Character):
         self.invincibilityTime = 0
         self.isInvincible = False
         self.flashTicks = 0
+        self.numberOfBoxes = 10
 
 
     def addmaxhealth(self):
@@ -195,6 +197,9 @@ class MainCharacter(Character):
     def glide(self):
         self.gliding = True
     def displayhealth(self, DISPLAYSURF):
+        for x in range(self.numberOfBoxes):
+            color = (80, 80, 80)
+            pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 10, 10, 10))
         if 30<self.health<60:
             tuple=(255,235,59)
         elif self.health<30:
@@ -257,6 +262,9 @@ class Enemy(pygame.sprite.Sprite):
          #  self.jump_height = int(self.jump_height * 0.667)
         self.velocityX = velocityX
         self.velocityY = velocityY
+
+        self.variationX = 1
+        self.variationY = 1
 
         self.currentDirection = directionX
 
@@ -469,7 +477,59 @@ class FrogBoss(Enemy):
         #if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * 0.667)
 
+class BirdBoss(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/Birdy1.png"))
+        self.images.append(pygame.image.load("Images/Birdy2.png"))
+        self.images.append(pygame.image.load("Images/Birdy3.png"))
 
+        super().__init__(self.images, posX, posY, 10000, 10, -1, 4, 4, 0.18)
+
+        self.variationX = 1
+        self.variationY = 1
+
+        self.isInjured = False
+        self.injuredCounter = 0
+
+    def randomizeVariation(self):
+        self.variationX = 1 + (randint(0, 100) / 25)
+        self.variationY = 1 + (randint(0, 100) / 25)
+
+    def update(self, shiftX, shiftY):
+        if infoObject.current_h == 720:
+         #   self.velocityY = int(self.velocityY * .667)
+            if self.velocityX != 0:
+                self.velocityX = 2
+        self.currentSprite += self.animationSpeed
+
+        if self.currentSprite >= 2:
+            self.currentSprite = 0
+
+        if self.isInjured:
+            self.currentSprite = 2
+            self.injuredCounter += 1
+            if self.injuredCounter > 10:
+                self.isInjured = False
+                self.injuredCounter = 0
+
+
+
+        if self.currentDirection == 1:
+            self.image = self.sprites1[int(self.currentSprite)]
+        else:
+            self.image = self.sprites[int(self.currentSprite)]
+
+
+        if not self.isInjured:
+            self.posX -= shiftX - int((self.currentDirection * self.velocityX) * self.variationX)
+            self.posY -= shiftY - int(self.velocityY * self.variationY)
+        else:
+            self.posX -= shiftX
+            self.posY -= shiftY
+
+        self.rect.center = (self.posX, self.posY)
 ##############
 # Block Classes
 ##############
@@ -710,6 +770,7 @@ class MaxHealth(Collectables):
             self.kill()
             char.addmaxhealth()
             char.addhealth()
+            char.numberOfBoxes += 1
 
 class AddHealth(Collectables):
 
@@ -756,6 +817,7 @@ class Sword(pygame.sprite.Sprite):
         self.rect.update(self.left1, self.height, self.rect.width, self.rect.height)
         self.upgradeCount = 10
         self.swordNumber = 0
+        self.levelObj = pygame.font.Font('freesansbold.ttf', 13)
     def attack(self, enemyGroup, platformGroup):
         if self.attacking == True:
             self.rect.x = self.rect.x + self.xDirection
@@ -771,7 +833,15 @@ class Sword(pygame.sprite.Sprite):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.swordDamage
+                if isinstance(spriteGroup[x], BirdBoss):
+                    spriteGroup[x].isInjured = True
                 if spriteGroup[x].health <= 0:
+                    randomNum = randint(1, 5)
+                    if randomNum == 1:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum == 2:
+                        platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+
                     spriteGroup[x].kill()
 
             #Check Destructable platform damage
@@ -796,9 +866,15 @@ class Sword(pygame.sprite.Sprite):
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
     def displayPoints(self, DISPLAYSURF):
-        for x in range(self.upgradeCount):
-            color = (27, 70, 188)
+        for x in range(10):
+            if x < 10 - self.upgradeCount:
+                color = (185, 246, 202)
+            else:
+                color = (80,80,80)
             pygame.draw.rect(DISPLAYSURF, color, (10 + (x*15), 25, 10, 10))
+
+        levelSurfaceObj = self.levelObj.render("Weapon Level: " + str(self.swordNumber + 1), True, (255, 255, 255))
+        DISPLAYSURF.blit(levelSurfaceObj, (10, 40))
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -841,7 +917,14 @@ class Bullet(pygame.sprite.Sprite):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
                 spriteGroup[x].health -= self.damage
+                if isinstance(spriteGroup[x], BirdBoss):
+                    spriteGroup[x].isInjured = True
                 if spriteGroup[x].health <= 0:
+                    randomNum = randint(1, 5)
+                    if randomNum == 1:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum == 2:
+                        platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
             self.remove(self.groups())
@@ -880,6 +963,7 @@ class Gun(pygame.sprite.Sprite):
         self.shootTime = 360
         self.upgradeCount = 10
         self.gunNumber = 0
+        self.levelObj = pygame.font.Font('freesansbold.ttf', 13)
     def attack(self, bulletGroup, DISPLAYSURF):
         if self.canAttack == True:
             if self.rect.left == self.left1:
@@ -921,9 +1005,14 @@ class Gun(pygame.sprite.Sprite):
                     int(self.originalImage.get_height() * 0.667)))
             self.upgradeCount = 10
     def displayPoints(self, DISPLAYSURF):
-        for x in range(self.upgradeCount):
-            color = (27, 70, 188)
+        for x in range(10):
+            if x < 10 - self.upgradeCount:
+                color = (185, 246, 202)
+            else:
+                color = (80, 80, 80)
             pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 25, 10, 10))
+        levelSurfaceObj = self.levelObj.render("Weapon Level: " + str(self.gunNumber + 1), True, (255, 255, 255))
+        DISPLAYSURF.blit(levelSurfaceObj, (10, 40))
 
 class Parachute(pygame.sprite.Sprite):
     def __init__(self, WIDTH, HEIGHT, _image):
