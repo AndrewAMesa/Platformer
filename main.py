@@ -45,7 +45,7 @@ enemy_group = pygame.sprite.Group()
 slimeBallGroup = pygame.sprite.Group()
 
 clockObj = pygame.font.Font('freesansbold.ttf', 20)
-timeLeft = 5
+timeLeft = 500
 
 
 def display_time(milliseconds):
