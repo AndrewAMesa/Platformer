@@ -855,7 +855,7 @@ class Sword(pygame.sprite.Sprite):
         self.xDirection = 4
         self.attacking = False
         self.attackingCount = 8
-        self.swordDamage = 10
+        self.swordDamage = 15
         self.left1 = int(DISPLAYSURF.get_width() / 2) + 20
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 36
         if infoObject.current_h != 720:
@@ -885,7 +885,7 @@ class Sword(pygame.sprite.Sprite):
                 if isinstance(spriteGroup[x], BirdBoss):
                       spriteGroup[x].isInjured = True
                 if isinstance(spriteGroup[x], FrogBoss):
-                    if spriteGroup[x].isAttacking == True and spriteGroup[x].crazy == False:
+                    if spriteGroup[x].isAttacking == True and spriteGroup[x].crazy == False and spriteGroup[x].hurt == False:
                         spriteGroup[x].hurt = True
                         spriteGroup[x].health -= self.swordDamage
                 else:
@@ -1039,7 +1039,7 @@ class Gun(pygame.sprite.Sprite):
             int(self.originalImage.get_width() * 0.667),
             int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
-        self.gunDamage = 15
+        self.gunDamage = 10
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 31
         self.left3 = int(DISPLAYSURF.get_width() / 2) - 26
