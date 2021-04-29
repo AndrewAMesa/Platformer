@@ -23,6 +23,7 @@ DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
 platform_group = pygame.sprite.Group()
+hint_group=pygame.sprite.Group()
 
 sword = Sword(DISPLAYSURF, sword_image)
 gun = Gun(DISPLAYSURF, gun_image)
@@ -142,7 +143,8 @@ def checkcollision(char, group):
                 sprite.is_collided_with(char, current_weapon.sprites()[0])
             else:
                 sprite.is_collided_with(char)
-
+        elif sprite.hint:
+            sprite.is_collided_with(char)
 
 def damageCollision(char, group):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
@@ -385,6 +387,8 @@ def readFile(levelNum):
     if infoObject.current_h == 720:
         shiftSize = 80
 
+    stringNum = 0
+
     for i in range(lenX):
         for j in range(lenY):
             if b[i][j] == "L":
@@ -429,6 +433,9 @@ def readFile(levelNum):
             elif b[i][j] == "B":
                 platform_group.add(BasicBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "D":
+                platform_group.add(Dirt((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "C":
                 platform_group.add(BreakableBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
@@ -441,6 +448,10 @@ def readFile(levelNum):
             elif b[i][j] == "!":
                 enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "?":
+                platform_group.add(Hint((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize), stringNum, DISPLAYSURF))
+                stringNum += 1
             elif b[i][j] == "@":
                 enemy_group.add(BirdBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
