@@ -549,6 +549,8 @@ class SpinnyBoss(Enemy):
         self.isInjured = False
         self.injuredCounter = 0
 
+        self.rotationCounter = 0
+
     def update(self, shiftX, shiftY):
         if infoObject.current_h == 720:
          #   self.velocityY = int(self.velocityY * .667)
