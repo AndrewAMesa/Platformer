@@ -73,7 +73,7 @@ def enemyMovement():
         if isinstance(enemy, FrogBoss):
             if enemy.crazy == True and enemy.isJumping == False:
                 enemy.time += fpsClock.tick_busy_loop(560)
-                if (enemy.time / 60) > .2 and enemy.spitAmount > 0:
+                if (enemy.time / 60) > .4 and enemy.spitAmount > 0:
                     enemy.attack(DISPLAYSURF, slimeBallGroup)
                     enemy.time = 0
                     enemy.spitAmount -= 1
@@ -99,7 +99,7 @@ def enemyMovement():
                     enemy.isAttacking = True
                 if enemy.isAttacking == True:
                     enemy.time += fpsClock.tick_busy_loop(560)
-                    if (enemy.time/60) > .75 and enemy.spitAmount > 0:
+                    if (enemy.time/60) > 1 and enemy.spitAmount > 0:
                         enemy.attack(DISPLAYSURF, slimeBallGroup)
                         enemy.time = 0
                         enemy.spitAmount -= 1

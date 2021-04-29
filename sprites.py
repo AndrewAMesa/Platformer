@@ -455,7 +455,7 @@ class FrogBoss(Enemy):
         self.spitAmount = 3
         self.hurt = False
         self.crazy = False
-        self.slime = pygame.image.load("Images/Lava.png")
+        self.slime = pygame.image.load("Images/Slimey.png")
         self.smallSlime = pygame.transform.scale(self.slime, (60, 60))
     def update(self, shiftX, shiftY):
 
@@ -492,6 +492,7 @@ class FrogBoss(Enemy):
                 (spawnLeft, spawnTop) = self.rect.midleft
             image = self.slime
             damage = self.largeDamage
+            speed = self.currentDirection
         else:
             tempCheck = int((random.random() * 3) + 1)
             if self.currentDirection == 1:
@@ -500,6 +501,7 @@ class FrogBoss(Enemy):
                     spawnTop += 75
                 elif tempCheck == 2:
                     (spawnLeft, spawnTop) = self.rect.midright
+                    spawnTop += 15
                 else:
                     (spawnLeft, spawnTop) = self.rect.bottomright
                     spawnTop -= 60
@@ -509,19 +511,22 @@ class FrogBoss(Enemy):
                     spawnTop += 75
                 elif tempCheck == 2:
                     (spawnLeft, spawnTop) = self.rect.midleft
+                    spawnTop += 15
                 else:
                     (spawnLeft, spawnTop) = self.rect.bottomleft
                     spawnTop -= 60
             tempCheck = int((random.random() * 3) + 1)
             if tempCheck == 1:
-                self.currentDirection *= 1.5
+                speed = self.currentDirection * 1.15
             elif tempCheck == 2:
-                self.currentDirection *= 1.25
+                speed = self.currentDirection * 1.05
             elif tempCheck == 3:
-                self.currentDirection *= .75
+                speed = self.currentDirection * .95
+            else:
+                speed = self.currentDirection
             image = self.smallSlime
             damage = self.smallDamage
-        slimeBallGroup.add(SlimeBall(DISPLAYSURF, image, spawnLeft, spawnTop, self.currentDirection, damage))
+        slimeBallGroup.add(SlimeBall(DISPLAYSURF, image, spawnLeft, spawnTop, speed, damage))
 
 class BirdBoss(Enemy):
     def __init__(self, posX, posY):
@@ -937,11 +942,7 @@ class SlimeBall(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.left = left
-        if infoObject.current_h != 720:
-            self.left = int(DISPLAYSURF.get_width() / 2) + (20*1.4)
         self.height = top
-        if infoObject.current_h != 720:
-            self.height =int(DISPLAYSURF.get_height()/2) + (14*1.4)
         self.rect.center = (self.left, self.height)
         self.directionx = directionx
         self.damage = damage
