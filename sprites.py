@@ -166,7 +166,7 @@ class MainCharacter(Character):
     def addmaxhealth(self):
         self.maxhealth+=10
 
-    def update(self, weapon1, weapon2, ms):
+    def update(self, weapon1, weapon2, ms, timeLeft):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.87)
 
@@ -174,7 +174,7 @@ class MainCharacter(Character):
             self.isMoving = False
 
         if self.isInvincible:
-            self.invincibilityTime -= int(ms / 60)
+            self.invincibilityTime -= int(timeLeft - ms / 60)
             if self.invincibilityTime < 0:
                 self.invincibilityTime = 0
                 self.isInvincible = False

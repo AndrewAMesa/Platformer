@@ -188,7 +188,7 @@ def update_all():
     if current_weapon.sprites()[0].isSword == True:
         if current_weapon.sprites()[0].attacking == True:
             sword.attack(enemy_group, platform_group)
-    character_group.update(sword, gun, milliseconds)
+    character_group.update(sword, gun, milliseconds, timeLeft)
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
@@ -237,7 +237,7 @@ def damageCollision(char, group):
             if not main_character.isInvincible:
                 main_character.losehealth(sprite.damage)
                 main_character.isInvincible = True
-                main_character.invincibilityTime = 150
+                main_character.invincibilityTime = 3
                 main_character.flashTicks = 0
 
 def update_gun(milliseconds):
