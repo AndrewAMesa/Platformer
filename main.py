@@ -328,7 +328,7 @@ def main():
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(-1)
+    readFile(1)
 
 
     lose = False
