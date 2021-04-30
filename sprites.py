@@ -1034,8 +1034,7 @@ class SlimeBall(pygame.sprite.Sprite):
                 player.isInvincible = True
                 player.invincibilityTime = 150
                 player.flashTicks = 0
-            if player.health <= 0:
-                print("dead")
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
         pygame.sprite.Sprite.__init__(self)
