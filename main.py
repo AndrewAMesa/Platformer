@@ -376,6 +376,8 @@ def main():
 
         # Update the Screen
 
+        if timeLeft - int(milliseconds/60) <= 0:
+            main_character.health = 0
         pygame.display.update()
         fpsClock.tick(FPS)
         milliseconds += fpsClock.tick_busy_loop(560)
