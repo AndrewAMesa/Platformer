@@ -807,7 +807,7 @@ class InvisibleBlock(Platform):
         self.sprite = pygame.image.load('Images/InvisibleBlock.png')
 
 
-        super().__init__(self.sprite, posX, posY, False, 0, True)
+        super().__init__(self.sprite, posX, posY, False, 0, True, False)
 
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image, isWeaponUpgrade):
