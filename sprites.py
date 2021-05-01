@@ -161,12 +161,13 @@ class MainCharacter(Character):
         self.isInvincible = False
         self.flashTicks = 0
         self.numberOfBoxes = 10
+        self.timeTaken = 0
 
 
     def addmaxhealth(self):
         self.maxhealth+=10
 
-    def update(self, weapon1, weapon2, ms, timeLeft):
+    def update(self, weapon1, weapon2, ms):
         if infoObject.current_h == 720:
             self.x_velocity = int(self.x_velocity * 0.87)
 
@@ -174,8 +175,7 @@ class MainCharacter(Character):
             self.isMoving = False
 
         if self.isInvincible:
-            self.invincibilityTime -= int(timeLeft - ms / 60)
-            if self.invincibilityTime < 0:
+            if int((ms - self.timeTaken)/60) >= self.invincibilityTime:
                 self.invincibilityTime = 0
                 self.isInvincible = False
                 self.flashTicks = 0
