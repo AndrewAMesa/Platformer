@@ -300,7 +300,7 @@ class BatEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bat2.png"))
         self.images.append(pygame.image.load("Images/Bat3.png"))
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, 0, -4, 0.18)
+        super().__init__(self.images, posX, posY, 20, 5, -1, 0, -4, 0.18)
 
 class BugEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -331,7 +331,7 @@ class FrogEnemy(Enemy):
         self.images.append(pygame.image.load("Images/frog2.png"))
 
 
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 50, 15, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -379,7 +379,7 @@ class MushroomEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Mushroom3.png"))
 
 
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 25, 5, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -437,7 +437,7 @@ class FrogBoss(Enemy):
         self.images.append(pygame.image.load("Images/Froggy3.png"))
 
 
-        super().__init__(self.images, posX, posY, 100, 8, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 1000, 8, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -807,7 +807,7 @@ class InvisibleBlock(Platform):
         self.sprite = pygame.image.load('Images/InvisibleBlock.png')
 
 
-        super().__init__(self.sprite, posX, posY, False, 0, True)
+        super().__init__(self.sprite, posX, posY, False, 0, True, False)
 
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image, isWeaponUpgrade):
@@ -923,7 +923,7 @@ class Sword(pygame.sprite.Sprite):
         self.xDirection = 4
         self.attacking = False
         self.attackingCount = 8
-        self.swordDamage = 15
+        self.swordDamage = 8
         self.left1 = int(DISPLAYSURF.get_width() / 2) + 20
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 36
         if infoObject.current_h != 720:
@@ -967,9 +967,9 @@ class Sword(pygame.sprite.Sprite):
                 if spriteGroup[x].health <= 0:
                     randomNum = randint(1, 5)
                     if randomNum == 1:
-                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
-                    elif randomNum == 2:
                         platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum < 4:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
 
@@ -983,7 +983,7 @@ class Sword(pygame.sprite.Sprite):
     def update(self):
         if self.upgradeCount <= 0 and self.swordNumber < 2:
             self.swordNumber += 1
-            self.swordDamage += 10
+            self.swordDamage += 5
             self.image = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
             self.originalImage = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
             if infoObject.current_h == 720:
@@ -1093,9 +1093,9 @@ class Bullet(pygame.sprite.Sprite):
                 if spriteGroup[x].health <= 0:
                     randomNum = randint(1, 5)
                     if randomNum == 1:
-                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
-                    elif randomNum == 2:
                         platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum < 4:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
             self.remove(self.groups())
