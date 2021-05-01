@@ -161,6 +161,7 @@ class MainCharacter(Character):
         self.isInvincible = False
         self.flashTicks = 0
         self.numberOfBoxes = 10
+        self.timeTaken = 0
 
 
     def addmaxhealth(self):
@@ -174,8 +175,7 @@ class MainCharacter(Character):
             self.isMoving = False
 
         if self.isInvincible:
-            self.invincibilityTime -= int(ms / 60)
-            if self.invincibilityTime < 0:
+            if int((ms - self.timeTaken)/60) >= self.invincibilityTime:
                 self.invincibilityTime = 0
                 self.isInvincible = False
                 self.flashTicks = 0
