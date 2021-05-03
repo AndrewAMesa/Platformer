@@ -635,7 +635,7 @@ class SmallSpinnyBoiEnemy(Enemy):
         self.images.append(pygame.image.load("Images/SmallCircleThing.png"))
 
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, randint(2, 4), randint(2, 4), 1)
+        super().__init__(self.images, posX, posY, 10, 2, -1, randint(2, 4), randint(2, 4), 1)
 
 ##############
 # Block Classes
