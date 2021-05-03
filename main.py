@@ -70,6 +70,8 @@ def enemyMovement():
                                     enemy.velocityY = 0
                                     enemy.rotationCounter += 1
                                     enemy_group.add(SmallSpinnyBoiEnemy(enemy.posX, enemy.posY))
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
 
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
@@ -82,6 +84,8 @@ def enemyMovement():
                                     enemy.velocityX = enemy.velocity
                                     enemy.velocityY = 0
                                     enemy_group.add(SmallSpinnyBoiEnemy(enemy.posX, enemy.posY))
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
                 if isinstance(enemy, SpinnyBoss) and isinstance(platform, InvisibleBlock):
                     if enemy.rotationCounter > 2 and not enemy.goToCenter:
                         if platform.posX - 5 <= enemy.posX <= platform.posX + 5:
@@ -155,6 +159,8 @@ def enemyMovement():
                                 if not enemy.goToCenter:
                                     enemy.velocityX = 0
                                     enemy.velocityY = -enemy.velocity
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -168,6 +174,8 @@ def enemyMovement():
                                 if not enemy.goToCenter:
                                     enemy.velocityX = 0
                                     enemy.velocityY = enemy.velocity
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1

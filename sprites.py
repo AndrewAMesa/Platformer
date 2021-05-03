@@ -637,6 +637,14 @@ class SmallSpinnyBoiEnemy(Enemy):
 
         super().__init__(self.images, posX, posY, 10, 2, -1, randint(2, 4), randint(2, 4), 1)
 
+        self.bounceCounter = 0
+
+    def update(self, shiftX, shiftY):
+        super().update(shiftX, shiftY)
+
+        if self.bounceCounter > 7:
+            self.kill()
+
 ##############
 # Block Classes
 ##############
