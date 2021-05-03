@@ -762,7 +762,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, True, False)
+        super().__init__(self.sprite, posX, posY, False, 10, True, False)
 
 
 class SmashyBlock(Platform):
