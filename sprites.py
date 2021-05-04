@@ -1036,13 +1036,7 @@ class SlimeBall(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, platformGroup) and spriteGroup[0].walkthrough == False:
             self.remove(self.groups())
 
-        #check enemy collisions
-        if pygame.sprite.collide_rect(self, player):
-            if not player.isInvincible:
-                player.losehealth(self.damage)
-                player.isInvincible = True
-                player.invincibilityTime = 150
-                player.flashTicks = 0
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
