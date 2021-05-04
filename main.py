@@ -340,7 +340,7 @@ def main():
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(3)
+    readFile(1)
 
 
     lose = False
@@ -353,6 +353,7 @@ def main():
         checkcollision(main_character, platform_group)
         damageCollision(main_character, enemy_group, milliseconds)
         damageCollision(main_character, platform_group, milliseconds)
+        damageCollision(main_character, slimeBallGroup, milliseconds)
         if not main_character.isInvincible:
             character_group.draw(DISPLAYSURF)
             current_weapon.draw(DISPLAYSURF)
