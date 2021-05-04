@@ -161,6 +161,7 @@ class MainCharacter(Character):
         self.isInvincible = False
         self.flashTicks = 0
         self.numberOfBoxes = 10
+        self.timeTaken = 0
 
 
     def addmaxhealth(self):
@@ -174,8 +175,7 @@ class MainCharacter(Character):
             self.isMoving = False
 
         if self.isInvincible:
-            self.invincibilityTime -= int(ms / 60)
-            if self.invincibilityTime < 0:
+            if int((ms - self.timeTaken)/60) >= self.invincibilityTime:
                 self.invincibilityTime = 0
                 self.isInvincible = False
                 self.flashTicks = 0
@@ -300,7 +300,7 @@ class BatEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Bat2.png"))
         self.images.append(pygame.image.load("Images/Bat3.png"))
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, 0, -4, 0.18)
+        super().__init__(self.images, posX, posY, 20, 5, -1, 0, -4, 0.18)
 
 class BugEnemy(Enemy):
     def __init__(self, posX, posY):
@@ -331,7 +331,7 @@ class FrogEnemy(Enemy):
         self.images.append(pygame.image.load("Images/frog2.png"))
 
 
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 50, 15, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -379,7 +379,7 @@ class MushroomEnemy(Enemy):
         self.images.append(pygame.image.load("Images/Mushroom3.png"))
 
 
-        super().__init__(self.images, posX, posY, 50, 20, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 25, 5, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -437,7 +437,7 @@ class FrogBoss(Enemy):
         self.images.append(pygame.image.load("Images/Froggy3.png"))
 
 
-        super().__init__(self.images, posX, posY, 100, 8, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 1000, 8, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
@@ -455,6 +455,7 @@ class FrogBoss(Enemy):
         self.spitAmount = 3
         self.hurt = False
         self.crazy = False
+        self.activated = False
         self.slime = pygame.image.load("Images/Slimey.png")
         self.smallSlime = pygame.transform.scale(self.slime, (60, 60))
     def update(self, shiftX, shiftY):
@@ -581,6 +582,70 @@ class BirdBoss(Enemy):
             self.posY -= shiftY
 
         self.rect.center = (self.posX, self.posY)
+
+class SpinnyBoss(Enemy):
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/BigCircleThing1.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing2.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing3.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing4.png"))
+        self.images.append(pygame.image.load("Images/BigCircleThing5.png"))
+
+
+        super().__init__(self.images, posX, posY, 1000, 10, 1, 1, 1, 0.18)
+
+        self.velocity = 8
+
+        self.isInjured = False
+        self.injuredCounter = 0
+
+        self.rotationCounter = 0
+        self.goToCenter = False
+
+        self.vulnerableTime = 900
+        self.vCounter = 0
+
+    def update(self, shiftX, shiftY):
+        if infoObject.current_h == 720:
+         #   self.velocityY = int(self.velocityY * .667)
+            if self.velocityX != 0:
+                self.velocityX = 2
+
+        if self.vCounter == 0:
+            self.currentSprite += self.animationSpeed
+        else:
+            self.currentSprite = 0
+
+        if self.currentSprite >= len(self.sprites):
+                self.currentSprite = 1
+
+        self.image = self.sprites[int(self.currentSprite)]
+
+        self.posX -= shiftX - int(self.currentDirection * self.velocityX)
+        self.posY -= shiftY - int(self.velocityY)
+
+        self.rect.center = (self.posX, self.posY)
+
+class SmallSpinnyBoiEnemy(Enemy):
+
+    def __init__(self, posX, posY):
+        #Pass sprites as arrays to allow for easier animations
+        self.images = []
+        self.images.append(pygame.image.load("Images/SmallCircleThing.png"))
+
+
+        super().__init__(self.images, posX, posY, 10, 2, -1, randint(2, 4), randint(2, 4), 1)
+
+        self.bounceCounter = 0
+
+    def update(self, shiftX, shiftY):
+        super().update(shiftX, shiftY)
+
+        if self.bounceCounter > 7:
+            self.kill()
+
 ##############
 # Block Classes
 ##############
@@ -698,7 +763,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, True, False)
+        super().__init__(self.sprite, posX, posY, False, 10, True, False)
 
 
 class SmashyBlock(Platform):
@@ -740,6 +805,18 @@ class SmashyBlock(Platform):
 
 
         self.rect.center = (self.posX, self.posY)
+
+class InvisibleBlock(Platform):
+
+    #  I
+
+    def __init__(self, posX, posY):
+
+        # Load Images
+        self.sprite = pygame.image.load('Images/InvisibleBlock.png')
+
+
+        super().__init__(self.sprite, posX, posY, False, 0, True, False)
 
 class Collectables(Platform):
     def __init__(self, name, xpos, ypos, image, isWeaponUpgrade):
@@ -855,7 +932,7 @@ class Sword(pygame.sprite.Sprite):
         self.xDirection = 4
         self.attacking = False
         self.attackingCount = 8
-        self.swordDamage = 15
+        self.swordDamage = 8
         self.left1 = int(DISPLAYSURF.get_width() / 2) + 20
         self.left2 = int(DISPLAYSURF.get_width() / 2) - 36
         if infoObject.current_h != 720:
@@ -882,6 +959,11 @@ class Sword(pygame.sprite.Sprite):
             #Check Enemy damage
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
+                if isinstance(spriteGroup[x], SpinnyBoss):
+                    if spriteGroup[x].currentSprite == 0:
+                        spriteGroup[x].health -= self.swordDamage
+                else:
+                    spriteGroup[x].health -= self.swordDamage
                 if isinstance(spriteGroup[x], BirdBoss):
                       spriteGroup[x].isInjured = True
                 if isinstance(spriteGroup[x], FrogBoss):
@@ -894,9 +976,9 @@ class Sword(pygame.sprite.Sprite):
                 if spriteGroup[x].health <= 0:
                     randomNum = randint(1, 5)
                     if randomNum == 1:
-                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
-                    elif randomNum == 2:
                         platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum < 4:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
 
@@ -910,7 +992,7 @@ class Sword(pygame.sprite.Sprite):
     def update(self):
         if self.upgradeCount <= 0 and self.swordNumber < 2:
             self.swordNumber += 1
-            self.swordDamage += 10
+            self.swordDamage += 5
             self.image = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
             self.originalImage = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
             if infoObject.current_h == 720:
@@ -961,8 +1043,7 @@ class SlimeBall(pygame.sprite.Sprite):
                 player.isInvincible = True
                 player.invincibilityTime = 150
                 player.flashTicks = 0
-            if player.health <= 0:
-                print("dead")
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, DISPLAYSURF, _image, left, top, directionx, directiony, damage):
         pygame.sprite.Sprite.__init__(self)
@@ -1004,6 +1085,11 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, enemyGroup):
             spriteGroup = spritecollide(self, enemyGroup, False)
             for x in range(len(spriteGroup)):
+                if isinstance(spriteGroup[x], SpinnyBoss):
+                    if spriteGroup[x].currentSprite == 0:
+                        spriteGroup[x].health -= self.damage
+                else:
+                    spriteGroup[x].health -= self.damage
                 if isinstance(spriteGroup[x], BirdBoss):
                     spriteGroup[x].isInjured = True
                 if isinstance(spriteGroup[x], FrogBoss):
@@ -1016,9 +1102,9 @@ class Bullet(pygame.sprite.Sprite):
                 if spriteGroup[x].health <= 0:
                     randomNum = randint(1, 5)
                     if randomNum == 1:
-                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
-                    elif randomNum == 2:
                         platformGroup.add(AddHealth(spriteGroup[x].posX, spriteGroup[x].posY))
+                    elif randomNum < 4:
+                        platformGroup.add(WeaponUpgrade(spriteGroup[x].posX, spriteGroup[x].posY))
 
                     spriteGroup[x].kill()
             self.remove(self.groups())

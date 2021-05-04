@@ -56,7 +56,7 @@ def display_time(milliseconds):
 def enemyMovement():
 
     for enemy in enemy_group:
-        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss):
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss) or isinstance(enemy, SmallSpinnyBoiEnemy):
             for platform in platform_group:
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
@@ -64,61 +64,91 @@ def enemyMovement():
                             enemy.velocityY *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = enemy.velocity
+                                    enemy.velocityY = 0
+                                    enemy.rotationCounter += 1
+                                    enemy_group.add(SmallSpinnyBoiEnemy(enemy.posX, enemy.posY))
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
+
                 if enemy.velocityY > 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
                         if enemy.rect.bottom + enemy.velocityY * enemy.variationY >= platform.rect.top >= enemy.rect.bottom and not platform.walkthrough:
                             enemy.velocityY *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = enemy.velocity
+                                    enemy.velocityY = 0
+                                    enemy_group.add(SmallSpinnyBoiEnemy(enemy.posX, enemy.posY))
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
+                if isinstance(enemy, SpinnyBoss) and isinstance(platform, InvisibleBlock):
+                    if enemy.rotationCounter > 2 and not enemy.goToCenter:
+                        if platform.posX - 5 <= enemy.posX <= platform.posX + 5:
+                            enemy.rotationCounter = 0
+                            enemy.velocityX = 0
+                            enemy.velocityY = 6
+                            enemy.goToCenter = True
+                    if enemy.goToCenter:
+                        enemy.vCounter += 1
+                        if enemy.vCounter > enemy.vulnerableTime:
+                            enemy.goToCenter = False
+                            enemy.vCounter = 0
         if isinstance(enemy, FrogBoss):
-            if enemy.crazy == True and enemy.isJumping == False:
-                enemy.time += fpsClock.tick_busy_loop(560)
-                if (enemy.time / 60) > .4 and enemy.spitAmount > 0:
-                    enemy.attack(DISPLAYSURF, slimeBallGroup)
-                    enemy.time = 0
-                    enemy.spitAmount -= 1
-                    if enemy.spitAmount == 3:
-                        enemy.currentDirection = enemy.currentDirection*-1
-                if enemy.spitAmount <= 0:
-                    enemy.spitAmount = 3
-                    enemy.time = 0
-                    enemy.isAttacking = False
-                    enemy.jumpCount = 0
-                    enemy.jump()
-                    enemy.crazy = False
-                    enemy.hurt = False
-            elif enemy.jumpCount >= 3 and enemy.isJumping == False:
-                dirvect = pygame.math.Vector2(int(DISPLAYSURF.get_width()/2) - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
-                if dirvect.x < 0:
-                    enemy.currentDirection = -1
-                elif dirvect.x > 0:
-                    enemy.currentDirection = 1
-                enemy.time += fpsClock.tick_busy_loop(560)
-                if (enemy.time/60) > 1 and enemy.isAttacking == False:
-                    enemy.time = 0
-                    enemy.isAttacking = True
-                if enemy.isAttacking == True:
+            dirvect = pygame.math.Vector2(enemy.rect.centerx - main_character.rect.centerx, enemy.rect.centery - main_character.rect.centery)
+            if (abs(dirvect.x) <= int(DISPLAYSURF.get_width()/2) and abs(dirvect.y) <= int(DISPLAYSURF.get_height()/2)) or enemy.activated == True:
+                enemy.activated = True
+                if enemy.crazy == True and enemy.isJumping == False:
                     enemy.time += fpsClock.tick_busy_loop(560)
-                    if (enemy.time/60) > 1 and enemy.spitAmount > 0:
+                    if (enemy.time / 60) > .4 and enemy.spitAmount > 0:
                         enemy.attack(DISPLAYSURF, slimeBallGroup)
                         enemy.time = 0
                         enemy.spitAmount -= 1
+                        if enemy.spitAmount == 3:
+                            enemy.currentDirection = enemy.currentDirection*-1
                     if enemy.spitAmount <= 0:
-                        if (enemy.time/60) > 4:
-                            enemy.spitAmount = 3
+                        enemy.spitAmount = 3
+                        enemy.time = 0
+                        enemy.isAttacking = False
+                        enemy.jumpCount = 0
+                        enemy.jump()
+                        enemy.crazy = False
+                        enemy.hurt = False
+                elif enemy.jumpCount >= 3 and enemy.isJumping == False:
+                    dirvect = pygame.math.Vector2(int(DISPLAYSURF.get_width()/2) - enemy.rect.x, DISPLAYSURF.get_height()/2 - enemy.rect.y)
+                    if dirvect.x < 0:
+                        enemy.currentDirection = -1
+                    elif dirvect.x > 0:
+                        enemy.currentDirection = 1
+                    enemy.time += fpsClock.tick_busy_loop(560)
+                    if (enemy.time/60) > 1 and enemy.isAttacking == False:
+                        enemy.time = 0
+                        enemy.isAttacking = True
+                    if enemy.isAttacking == True:
+                        enemy.time += fpsClock.tick_busy_loop(560)
+                        if (enemy.time/60) > 1 and enemy.spitAmount > 0:
+                            enemy.attack(DISPLAYSURF, slimeBallGroup)
                             enemy.time = 0
-                            enemy.isAttacking = False
-                            enemy.jumpCount = 0
-                            enemy.jump()
-                            if enemy.hurt == True:
-                                enemy.crazy = True
-                                enemy.isAttacking = True
-                                enemy.spitAmount = 6
-            elif int(enemy.jumpIncrement) >= 1:
-                enemy.jump()
-            else:
-                enemy.jumpIncrement += enemy.jumpIncrease
-
+                            enemy.spitAmount -= 1
+                        if enemy.spitAmount <= 0:
+                            if (enemy.time/60) > 4:
+                                enemy.spitAmount = 3
+                                enemy.time = 0
+                                enemy.isAttacking = False
+                                enemy.jumpCount = 0
+                                enemy.jump()
+                                if enemy.hurt == True:
+                                    enemy.crazy = True
+                                    enemy.isAttacking = True
+                                    enemy.spitAmount = 6
+                elif int(enemy.jumpIncrement) >= 1:
+                    enemy.jump()
+                else:
+                    enemy.jumpIncrement += enemy.jumpIncrease
         if enemy.velocityX != 0:
             for platform in platform_group:
                 if enemy.rect.bottom + enemy.velocityY * enemy.variationY > platform.rect.top and enemy.rect.top + enemy.velocityY * enemy.variationY < platform.rect.bottom:
@@ -128,6 +158,12 @@ def enemyMovement():
                             enemy.currentDirection *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = 0
+                                    enemy.velocityY = -enemy.velocity
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -137,6 +173,12 @@ def enemyMovement():
                             enemy.currentDirection *= -1
                             if isinstance(enemy, BirdBoss):
                                 enemy.randomizeVariation()
+                            if isinstance(enemy, SpinnyBoss):
+                                if not enemy.goToCenter:
+                                    enemy.velocityX = 0
+                                    enemy.velocityY = enemy.velocity
+                            if isinstance(enemy, SmallSpinnyBoiEnemy):
+                                enemy.bounceCounter += 1
                         if isinstance(enemy, FrogEnemy):
                             if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
                                 enemy.currentDirection *= -1
@@ -145,6 +187,8 @@ def enemyMovement():
                 enemy.jump()
             else:
                 enemy.jumpIncrement += enemy.jumpIncrease
+
+
 
 
 
@@ -197,14 +241,15 @@ def checkcollision(char, group):
         elif sprite.hint:
             sprite.is_collided_with(char)
 
-def damageCollision(char, group):
+def damageCollision(char, group, milliseconds):
     collided_sprites = pygame.sprite.spritecollide(char, group, False, collided=None)
     for sprite in collided_sprites:
         if sprite.damage != 0:
             if not main_character.isInvincible:
                 main_character.losehealth(sprite.damage)
                 main_character.isInvincible = True
-                main_character.invincibilityTime = 150
+                main_character.invincibilityTime = 1
+                main_character.timeTaken = milliseconds
                 main_character.flashTicks = 0
 
 def update_gun(milliseconds):
@@ -220,7 +265,7 @@ def update_gun(milliseconds):
 def check_y_collisions():
     #check enemy collisions
     for enemy in enemy_group:
-        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss):
+        if not isinstance(enemy, BatEnemy) and not isinstance(enemy, BugEnemy) and not isinstance(enemy, BirdBoss) and not isinstance(enemy, SpinnyBoss) and not isinstance(enemy, SmallSpinnyBoiEnemy):
             if checkStanding(enemy) and enemy.velocityY != enemy.jump_height:
                 enemy.velocityY = 0
                 enemy.isJumping = False
@@ -295,7 +340,7 @@ def main():
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(2)
+    readFile(1)
 
 
     lose = False
@@ -306,8 +351,8 @@ def main():
         DISPLAYSURF.fill((0, 69, 69))
         update_all()
         checkcollision(main_character, platform_group)
-        damageCollision(main_character, enemy_group)
-        damageCollision(main_character, platform_group)
+        damageCollision(main_character, enemy_group, milliseconds)
+        damageCollision(main_character, platform_group, milliseconds)
         if not main_character.isInvincible:
             character_group.draw(DISPLAYSURF)
             current_weapon.draw(DISPLAYSURF)
@@ -499,6 +544,9 @@ def readFile(levelNum):
             elif b[i][j] == "O":
                 platform_group.add(SmashyBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "I":
+                platform_group.add(InvisibleBlock((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
             elif b[i][j] == "!":
                 enemy_group.add(FrogBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
@@ -508,5 +556,8 @@ def readFile(levelNum):
                 stringNum += 1
             elif b[i][j] == "@":
                 enemy_group.add(BirdBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
+                                             (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
+            elif b[i][j] == "#":
+                enemy_group.add(SpinnyBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 main()
