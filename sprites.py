@@ -635,7 +635,15 @@ class SmallSpinnyBoiEnemy(Enemy):
         self.images.append(pygame.image.load("Images/SmallCircleThing.png"))
 
 
-        super().__init__(self.images, posX, posY, 20, 10, -1, randint(2, 4), randint(2, 4), 1)
+        super().__init__(self.images, posX, posY, 10, 2, -1, randint(2, 4), randint(2, 4), 1)
+
+        self.bounceCounter = 0
+
+    def update(self, shiftX, shiftY):
+        super().update(shiftX, shiftY)
+
+        if self.bounceCounter > 7:
+            self.kill()
 
 ##############
 # Block Classes
@@ -754,7 +762,7 @@ class LavaBlock(Platform):
         # Load Images
         self.sprite = pygame.image.load('Images/Lava.png')
 
-        super().__init__(self.sprite, posX, posY, False, 5, True, False)
+        super().__init__(self.sprite, posX, posY, False, 10, True, False)
 
 
 class SmashyBlock(Platform):
