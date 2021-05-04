@@ -455,6 +455,7 @@ class FrogBoss(Enemy):
         self.spitAmount = 3
         self.hurt = False
         self.crazy = False
+        self.activated = False
         self.slime = pygame.image.load("Images/Slimey.png")
         self.smallSlime = pygame.transform.scale(self.slime, (60, 60))
     def update(self, shiftX, shiftY):
