@@ -335,7 +335,7 @@ class FrogEnemy(Enemy):
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
-        self.jump_height = -18
+        self.jump_height = -16
         self.jump_distance = 5
         self.jumpIncrement = 0
         self.jumpIncrease = 0.01
@@ -444,7 +444,7 @@ class FrogBoss(Enemy):
         self.jump_height = -20
         self.jump_distance = 20
         self.jumpIncrement = 0
-        self.jumpIncrease = 0.007
+        self.jumpIncrease = 0.015
 
         self.jumpCount = 0
         self.isBoss = True

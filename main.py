@@ -56,7 +56,7 @@ def display_time(milliseconds):
 def enemyMovement():
 
     for enemy in enemy_group:
-        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss) or isinstance(enemy, SmallSpinnyBoiEnemy):
+        if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss) or isinstance(enemy, SmallSpinnyBoiEnemy) or isinstance(enemy, FrogBoss):
             for platform in platform_group:
                 if enemy.velocityY < 0:
                     if enemy.rect.left + enemy.velocityX * enemy.variationX < platform.rect.right and enemy.rect.right + enemy.velocityX * enemy.variationX > platform.rect.left:
@@ -104,7 +104,7 @@ def enemyMovement():
                 enemy.activated = True
                 if enemy.crazy == True and enemy.isJumping == False:
                     enemy.time += fpsClock.tick_busy_loop(560)
-                    if (enemy.time / 60) > .4 and enemy.spitAmount > 0:
+                    if (enemy.time / 60) >= 1.3 and enemy.spitAmount > 0:
                         enemy.attack(DISPLAYSURF, slimeBallGroup)
                         enemy.time = 0
                         enemy.spitAmount -= 1
@@ -135,7 +135,7 @@ def enemyMovement():
                             enemy.time = 0
                             enemy.spitAmount -= 1
                         if enemy.spitAmount <= 0:
-                            if (enemy.time/60) > 4:
+                            if (enemy.time/60) > 9:
                                 enemy.spitAmount = 3
                                 enemy.time = 0
                                 enemy.isAttacking = False
@@ -164,9 +164,6 @@ def enemyMovement():
                                     enemy.velocityY = -enemy.velocity
                             if isinstance(enemy, SmallSpinnyBoiEnemy):
                                 enemy.bounceCounter += 1
-                        if isinstance(enemy, FrogEnemy):
-                            if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
-                                enemy.currentDirection *= -1
                     if enemy.currentDirection < 0:
                         if enemy.rect.left + (
                                 enemy.currentDirection * enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
@@ -179,13 +176,10 @@ def enemyMovement():
                                     enemy.velocityY = enemy.velocity
                             if isinstance(enemy, SmallSpinnyBoiEnemy):
                                 enemy.bounceCounter += 1
-                        if isinstance(enemy, FrogEnemy):
-                            if enemy.rect.left + (enemy.velocityX * enemy.variationX) <= platform.rect.right <= enemy.rect.left and not platform.walkthrough:
-                                enemy.currentDirection *= -1
         if enemy.jumping and not enemy.isAttacking:
             if not enemy.isJumping and int(enemy.jumpIncrement) >= 1 and enemy.isBoss == False:
                 enemy.jump()
-            else:
+            elif enemy.isBoss == False:
                 enemy.jumpIncrement += enemy.jumpIncrease
 
 
