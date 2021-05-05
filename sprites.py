@@ -203,7 +203,7 @@ class MainCharacter(Character):
             pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 10, 10, 10))
         if 30<self.health<60:
             tuple=(255,235,59)
-        elif self.health<30:
+        elif self.health<=30:
             tuple=(255,0,0)
         else:
             tuple=(0,255,0)

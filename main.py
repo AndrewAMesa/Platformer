@@ -54,7 +54,6 @@ def display_time(milliseconds):
 
 
 def enemyMovement():
-
     for enemy in enemy_group:
         if isinstance(enemy, BatEnemy) or isinstance(enemy, BugEnemy) or isinstance(enemy, BirdBoss) or isinstance(enemy, SpinnyBoss) or isinstance(enemy, SmallSpinnyBoiEnemy) or isinstance(enemy, FrogBoss):
             for platform in platform_group:
@@ -135,7 +134,7 @@ def enemyMovement():
                             enemy.time = 0
                             enemy.spitAmount -= 1
                         if enemy.spitAmount <= 0:
-                            if (enemy.time/60) > 9:
+                            if (enemy.time/60) > 12:
                                 enemy.spitAmount = 3
                                 enemy.time = 0
                                 enemy.isAttacking = False
@@ -422,6 +421,13 @@ def main(levelNum):
         if main_character.health <= 0:
             lose = True
 
+        win = True
+        spriteGroup = enemy_group.sprites()
+        for x in range(len(spriteGroup)):
+            if spriteGroup[x].isBoss == True:
+                win = False
+
+
         # Update the Screen
 
         if timeLeft - int(milliseconds/60) <= 0:
@@ -654,7 +660,6 @@ def menu():
 
 
 if __name__ == '__main__':
-
     menu()
     levelNum = 1
     while True:
