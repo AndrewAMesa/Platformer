@@ -437,7 +437,7 @@ class FrogBoss(Enemy):
         self.images.append(pygame.image.load("Images/Froggy3.png"))
 
 
-        super().__init__(self.images, posX, posY, 10, 8, -1, 0, 0, 0)
+        super().__init__(self.images, posX, posY, 1000, 8, -1, 0, 0, 0)
         if infoObject.current_h == 720:
             self.velocityX = self.velocityX - .5
         self.jumping = True
