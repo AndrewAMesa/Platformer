@@ -103,7 +103,7 @@ def enemyMovement():
                 enemy.activated = True
                 if enemy.crazy == True and enemy.isJumping == False:
                     enemy.time += fpsClock.tick_busy_loop(560)
-                    if (enemy.time / 60) >= 1.25 and enemy.spitAmount > 0:
+                    if (enemy.time / 60) >= 1 and enemy.spitAmount > 0:
                         enemy.attack(DISPLAYSURF, slimeBallGroup)
                         enemy.time = 0
                         enemy.spitAmount -= 1
