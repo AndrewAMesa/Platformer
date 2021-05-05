@@ -542,6 +542,8 @@ class BirdBoss(Enemy):
         self.variationX = 1
         self.variationY = 1
 
+        self.isBoss = True
+
         self.isInjured = False
         self.injuredCounter = 0
 
@@ -600,6 +602,8 @@ class SpinnyBoss(Enemy):
 
         self.isInjured = False
         self.injuredCounter = 0
+
+        self.isBoss = True
 
         self.rotationCounter = 0
         self.goToCenter = False
