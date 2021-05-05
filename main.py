@@ -438,7 +438,7 @@ def main(levelNum):
         if gun.canAttack == False:
             gunMilliseconds += fpsClock.tick_busy_loop(gun.shootTime)
 
-    return win
+    return win, lose
 
 
 def readFile(levelNum):
@@ -660,11 +660,16 @@ def menu():
 
 
 if __name__ == '__main__':
-    replay = True
-    while replay:
-        menu()
-        win = True
-        levelNum = 1
-        while win and levelNum < 4:
-            win = main(levelNum)
-            levelNum += 1       
+    menu()
+    levelNum = 1
+    while True:
+        win, lose = main(levelNum)
+        if win:
+            levelNum += 1
+
+        if lose:
+            main_character.health = main_character.maxhealth
+            main_character.isInvincible = False
+
+        enemy_group.empty()
+        platform_group.empty()
