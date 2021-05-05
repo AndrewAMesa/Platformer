@@ -539,6 +539,7 @@ class BirdBoss(Enemy):
 
         super().__init__(self.images, posX, posY, 800, 10, -1, 4, 4, 0.18)
 
+
         self.variationX = 1
         self.variationY = 1
 
