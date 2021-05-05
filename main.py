@@ -216,7 +216,7 @@ def update_all():
             if platform.isFalling:
                 collided_sprites = pygame.sprite.spritecollide(platform, platform_group, False, collided=None)
 
-                if len(collided_sprites) > 1:
+                if len(collided_sprites) > 1 and not collided_sprites[1].walkthrough:
                     platform.velocityY = 0
                     platform.isFalling = False
                     platform.hasFallen = True

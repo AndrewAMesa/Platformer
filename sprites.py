@@ -537,7 +537,7 @@ class BirdBoss(Enemy):
         self.images.append(pygame.image.load("Images/Birdy2.png"))
         self.images.append(pygame.image.load("Images/Birdy3.png"))
 
-        super().__init__(self.images, posX, posY, 10000, 10, -1, 4, 4, 0.18)
+        super().__init__(self.images, posX, posY, 1000, 10, -1, 4, 4, 0.18)
 
         self.variationX = 1
         self.variationY = 1
