@@ -134,7 +134,7 @@ def enemyMovement():
                             enemy.time = 0
                             enemy.spitAmount -= 1
                         if enemy.spitAmount <= 0:
-                            if (enemy.time/60) > 7:
+                            if (enemy.time/60) > 9:
                                 enemy.spitAmount = 3
                                 enemy.time = 0
                                 enemy.isAttacking = False
