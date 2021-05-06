@@ -672,7 +672,7 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-    levelNum = 2
+    levelNum = 1
     while levelNum < 4:
         win, lose = main(levelNum)
         if win:
