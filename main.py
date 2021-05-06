@@ -189,6 +189,13 @@ def enemyMovement():
             elif enemy.isBoss == False:
                 enemy.jumpIncrement += enemy.jumpIncrease
 
+        if isinstance(enemy, BirdBoss) and isinstance(platform, InvisibleBlock):
+            collided_sprites = pygame.sprite.spritecollide(enemy, platform_group, False, collided=None)
+            if len(collided_sprites) > 1:
+                for i in range(len(collided_sprites)):
+                    if isinstance(collided_sprites[i], InvisibleBlock):
+                        enemy.kill()
+
 
 
 
@@ -341,8 +348,8 @@ def main(levelNum):
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    readFile(levelNum)
-
+    #readFile(levelNum)
+    readFile(2)
 
     lose = False
     win = False
