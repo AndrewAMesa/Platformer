@@ -669,7 +669,7 @@ if __name__ == '__main__':
 
         if lose:
             main_character.health = main_character.maxhealth
-            main_character.isInvincible = False
 
+        main_character.isInvincible = False
         enemy_group.empty()
         platform_group.empty()
