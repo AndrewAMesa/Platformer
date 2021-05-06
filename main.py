@@ -359,7 +359,7 @@ def main(levelNum):
         elif levelNum == 2:
             color = (0, 71, 71)
         elif levelNum == 3:
-            color = (100, 120, 120)
+            color = (90, 90, 90)
         DISPLAYSURF.fill(color)
         update_all()
         checkcollision(main_character, platform_group)
