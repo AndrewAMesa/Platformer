@@ -702,8 +702,6 @@ if __name__ == '__main__':
             while levelNum < 4:
                 win, lose = main(levelNum)
 
-                if win:
-                    levelNum += 1
                 if lose:
                     if levelNum == 1:
                         main_character.can_double_jump = False
@@ -712,6 +710,9 @@ if __name__ == '__main__':
                     elif levelNum == 3:
                         main_character.can_glide = False
                     main_character.health = main_character.maxhealth
+
+                if win:
+                    levelNum += 1
 
                 main_character.isInvincible = False
                 enemy_group.empty()
