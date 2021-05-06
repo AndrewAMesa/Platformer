@@ -348,8 +348,7 @@ def main(levelNum):
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    #readFile(levelNum)
-    readFile(2)
+    readFile(levelNum)
 
     lose = False
     win = False
