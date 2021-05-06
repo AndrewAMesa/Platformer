@@ -703,7 +703,7 @@ class Hint(Platform):
 
         #Load Images
         self.sprite = pygame.image.load('Images/Hint.png')
-        self.strings=['Press SPACE to jump', 'This is the double jump upgrade', 'This is the glide upgrade', 'Hold shift to glide while jumping', 'Watch out for falling blocks', 'Press E to change weapons', 'Press ENTER to attack', 'This adds health', 'This increases your max health', 'This upgrades the weapon in your hand']
+        self.strings=['Press SPACE to jump', 'This is the double jump upgrade', 'This is the glide upgrade', 'Hold shift to glide while jumping', 'Watch out for falling blocks', 'Press E to change weapons', 'Press ENTER to attack', 'This adds health', 'This increases your max health', 'This upgrades the weapon in your hand', 'Press esc to end']
         super().__init__(self.sprite, posX, posY, False, 0, True, True)
         self.stringNum = stringNum
         self.DISPLAYSURF=DISPLAYSURF
