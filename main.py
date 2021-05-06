@@ -354,8 +354,13 @@ def main(levelNum):
     win = False
 
     while not lose and not win:
-
-        DISPLAYSURF.fill((0, 69, 69))
+        if levelNum == 1 or levelNum == 0:
+            color = (0, 109, 109)
+        elif levelNum == 2:
+            color = (0, 71, 71)
+        elif levelNum == 3:
+            color = (90, 90, 90)
+        DISPLAYSURF.fill(color)
         update_all()
         checkcollision(main_character, platform_group)
         damageCollision(main_character, enemy_group, milliseconds)
@@ -723,3 +728,4 @@ if __name__ == '__main__':
             main_character.isInvincible = False
             enemy_group.empty()
             platform_group.empty()
+
