@@ -666,8 +666,13 @@ if __name__ == '__main__':
         win, lose = main(levelNum)
         if win:
             levelNum += 1
-
         if lose:
+            if levelNum == 1:
+                main_character.can_double_jump = False
+            elif levelNum == 2:
+                main_character.maxhealth = 100
+            elif levelNum == 3:
+                main_character.can_glide = False
             main_character.health = main_character.maxhealth
 
         main_character.isInvincible = False
