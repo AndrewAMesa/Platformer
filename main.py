@@ -348,8 +348,7 @@ def main(levelNum):
     global milliseconds
     milliseconds = 0
     gunMilliseconds = 0
-    #readFile(levelNum)
-    readFile(2)
+    readFile(levelNum)
 
     lose = False
     win = False
@@ -401,8 +400,9 @@ def main(levelNum):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    win = True
+                    lose = True
+
                 if event.key == K_SPACE:
                     if checkStanding(main_character):
                         main_character.jump(sword)
@@ -424,15 +424,18 @@ def main(levelNum):
                         current_weapon.remove(spriteArray[0])
                         current_weapon.add(sword)
 
+        if win and lose:
+            break
 
         if main_character.health <= 0:
             lose = True
 
-        win = True
-        spriteGroup = enemy_group.sprites()
-        for x in range(len(spriteGroup)):
-            if spriteGroup[x].isBoss == True:
-                win = False
+        if levelNum != 0:
+            win = True
+            spriteGroup = enemy_group.sprites()
+            for x in range(len(spriteGroup)):
+                if spriteGroup[x].isBoss == True:
+                    win = False
 
 
         # Update the Screen
@@ -597,21 +600,26 @@ def menu():
 
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    if showControls:
+                        showControls = False
+                    else:
+                        pygame.quit()
+                        sys.exit()
 
                 if event.key == K_RETURN:
                     if not showControls:
                         if pos == 1:
                             mode = 1
-                        else:
+                        elif pos == 2:
                             showControls = True
+                        else:
+                            mode = 2
                     else:
                         showControls = False
 
                 if event.key == K_w and pos > 1:
                     pos -= 1
-                if event.key == K_s and pos < 2:
+                if event.key == K_s and pos < 3:
                     pos += 1
 
         DISPLAYSURF.fill((69, 69, 69))
@@ -627,9 +635,15 @@ def menu():
                 pygame.draw.rect(DISPLAYSURF, (0, 0, 0),
                                  (imgPos.x - 3, imgPos.y - 3, imgPos.width + 6, imgPos.height + 6), 2)
             img = smallFont.render("Controls", True, (255, 255, 255))
-            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), 3 * int(SCREEN_HEIGHT / 4)))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), 1.25 * int(SCREEN_HEIGHT / 2)))
             DISPLAYSURF.blit(img, imgPos)
             if pos == 2:
+                pygame.draw.rect(DISPLAYSURF, (0, 0, 0),
+                                 (imgPos.x - 3, imgPos.y - 3, imgPos.width + 6, imgPos.height + 6), 2)
+            img = smallFont.render("Tutorial", True, (255, 255, 255))
+            imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), 3 * int(SCREEN_HEIGHT / 4)))
+            DISPLAYSURF.blit(img, imgPos)
+            if pos == 3:
                 pygame.draw.rect(DISPLAYSURF, (0, 0, 0),
                                  (imgPos.x - 3, imgPos.y - 3, imgPos.width + 6, imgPos.height + 6), 2)
         else:
@@ -651,10 +665,15 @@ def menu():
             imgPos = img.get_rect(
                 center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 4 * int(SCREEN_HEIGHT * 0.05)))
             DISPLAYSURF.blit(img, imgPos)
-            img = smallFont.render("Press Escape to quit", True, (255, 255, 255))
+            img = smallFont.render("Press Shift in midair to glide", True, (255, 255, 255))
             imgPos = img.get_rect(
                 center=(int(SCREEN_WIDTH / 2),
                         int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 5 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Press Escape to quit", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2),
+                        int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 6 * int(SCREEN_HEIGHT * 0.05)))
             DISPLAYSURF.blit(img, imgPos)
 
             img = smallFont.render("Press Enter to return to the title screen", True, (255, 255, 255))
@@ -665,23 +684,42 @@ def menu():
         pygame.display.update()
         fpsClock.tick(FPS)
 
+    return mode
+
 
 if __name__ == '__main__':
-    menu()
-    levelNum = 1
-    while levelNum < 4:
-        win, lose = main(levelNum)
-        if win:
-            levelNum += 1
-        if lose:
-            if levelNum == 1:
-                main_character.can_double_jump = False
-            elif levelNum == 2:
-                main_character.maxhealth = 100
-            elif levelNum == 3:
-                main_character.can_glide = False
-            main_character.health = main_character.maxhealth
+    while True:
+        mode = menu()
+        if mode == 1:
+            levelNum = 1
+            while levelNum < 4:
+                win, lose = main(levelNum)
 
-        main_character.isInvincible = False
-        enemy_group.empty()
-        platform_group.empty()
+                if win:
+                    levelNum += 1
+                if lose:
+                    if levelNum == 1:
+                        main_character.can_double_jump = False
+                    elif levelNum == 2:
+                        main_character.maxhealth = 100
+                    elif levelNum == 3:
+                        main_character.can_glide = False
+                    main_character.health = main_character.maxhealth
+
+                main_character.isInvincible = False
+                enemy_group.empty()
+                platform_group.empty()
+
+                if win and lose:
+                    break
+
+        elif mode == 2:
+            main(0)
+
+            main_character.can_double_jump = False
+            main_character.maxhealth = 100
+            main_character.can_glide = False
+            main_character.health = main_character.maxhealth
+            main_character.isInvincible = False
+            enemy_group.empty()
+            platform_group.empty()
