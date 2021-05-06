@@ -672,7 +672,7 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-    levelNum = 1
+    levelNum = 2
     while levelNum < 4:
         win, lose = main(levelNum)
         if win:
@@ -684,7 +684,7 @@ if __name__ == '__main__':
                 main_character.maxhealth = 100
             elif levelNum == 3:
                 main_character.can_glide = False
-            main_character.health = main_character.maxhealth
+            main_character.health = 100
 
         main_character.isInvincible = False
         enemy_group.empty()
