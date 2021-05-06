@@ -350,16 +350,18 @@ def main(levelNum):
     gunMilliseconds = 0
     readFile(levelNum)
 
+    if levelNum == 1 or levelNum == 0:
+        color = (0, 129, 129)
+    elif levelNum == 2:
+        color = (0, 71, 71)
+    elif levelNum == 3:
+        color = (90, 90, 90)
+
     lose = False
     win = False
 
     while not lose and not win:
-        if levelNum == 1 or levelNum == 0:
-            color = (0, 109, 109)
-        elif levelNum == 2:
-            color = (0, 71, 71)
-        elif levelNum == 3:
-            color = (90, 90, 90)
+
         DISPLAYSURF.fill(color)
         update_all()
         checkcollision(main_character, platform_group)
