@@ -355,8 +355,13 @@ def main(levelNum):
     win = False
 
     while not lose and not win:
-
-        DISPLAYSURF.fill((0, 69, 69))
+        if levelNum == 1 or levelNum == 0:
+            color = (0, 109, 109)
+        elif levelNum == 2:
+            color = (0, 71, 71)
+        elif levelNum == 3:
+            color = (100, 120, 120)
+        DISPLAYSURF.fill(color)
         update_all()
         checkcollision(main_character, platform_group)
         damageCollision(main_character, enemy_group, milliseconds)
@@ -668,7 +673,7 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-    levelNum = 1
+    levelNum = 2
     while levelNum < 4:
         win, lose = main(levelNum)
         if win:
