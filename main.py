@@ -695,6 +695,9 @@ def menu():
 
 
 if __name__ == '__main__':
+
+    font = pygame.font.SysFont(None, 100)
+
     while True:
         mode = menu()
         if mode == 1:
@@ -702,7 +705,7 @@ if __name__ == '__main__':
             while levelNum < 4:
                 win, lose = main(levelNum)
 
-                if lose:
+                if lose and not win:
                     if levelNum == 1:
                         main_character.can_double_jump = False
                     elif levelNum == 2:
@@ -711,8 +714,26 @@ if __name__ == '__main__':
                         main_character.can_glide = False
                     main_character.health = main_character.maxhealth
 
-                if win:
+                    waitTime = int(pygame.time.get_ticks() / 1000) + 2
+                    while waitTime > int(pygame.time.get_ticks() / 1000):
+                        img = font.render("You Died!", True, (255, 255, 255))
+                        imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 3)))
+                        DISPLAYSURF.blit(img, imgPos)
+
+                        pygame.display.update()
+
+                if win and not lose:
                     levelNum += 1
+                    waitTime = int(pygame.time.get_ticks() / 1000) + 2
+                    while waitTime > int(pygame.time.get_ticks() / 1000):
+                        if levelNum != 3:
+                            img = font.render("You won level " + str(levelNum) + "!", True, (255, 255, 255))
+                        else:
+                            img = font.render("Congratulations, you beat the game!", True, (255, 255, 255))
+                        imgPos = img.get_rect(center=(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 3)))
+                        DISPLAYSURF.blit(img, imgPos)
+
+                        pygame.display.update()
 
                 main_character.isInvincible = False
                 enemy_group.empty()
