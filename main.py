@@ -726,7 +726,7 @@ if __name__ == '__main__':
                     levelNum += 1
                     waitTime = int(pygame.time.get_ticks() / 1000) + 2
                     while waitTime > int(pygame.time.get_ticks() / 1000):
-                        if levelNum != 3:
+                        if levelNum != 4:
                             img = font.render("You won level " + str(levelNum) + "!", True, (255, 255, 255))
                         else:
                             img = font.render("Congratulations, you beat the game!", True, (255, 255, 255))
