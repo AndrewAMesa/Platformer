@@ -160,7 +160,6 @@ class MainCharacter(Character):
         self.invincibilityTime = 0
         self.isInvincible = False
         self.flashTicks = 0
-        self.numberOfBoxes = 10
         self.timeTaken = 0
 
 
@@ -198,7 +197,7 @@ class MainCharacter(Character):
     def glide(self):
         self.gliding = True
     def displayhealth(self, DISPLAYSURF):
-        for x in range(self.numberOfBoxes):
+        for x in range(int(self.maxhealth/10)):
             color = (80, 80, 80)
             pygame.draw.rect(DISPLAYSURF, color, (10 + (x * 15), 10, 10, 10))
         if 30<self.health<60:
@@ -902,7 +901,7 @@ class MaxHealth(Collectables):
             self.kill()
             char.addmaxhealth()
             char.addhealth()
-            char.numberOfBoxes += 1
+
 
 class AddHealth(Collectables):
 
