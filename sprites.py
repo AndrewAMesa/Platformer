@@ -185,6 +185,8 @@ class MainCharacter(Character):
     def addhealth(self):
         if self.health<self.maxhealth:
             self.health+=10
+        if self.health > self.maxhealth:
+            self.health = self.maxhealth
     def losehealth(self, damageTaken):
         if self.health>0:
             self.health -= damageTaken
