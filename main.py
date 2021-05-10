@@ -191,7 +191,7 @@ def enemyMovement():
 
         if isinstance(enemy, BirdBoss) and isinstance(platform, InvisibleBlock):
             collided_sprites = pygame.sprite.spritecollide(enemy, platform_group, False, collided=None)
-            if len(collided_sprites) > 1:
+            if len(collided_sprites) > 0:
                 for i in range(len(collided_sprites)):
                     if isinstance(collided_sprites[i], InvisibleBlock):
                         enemy.kill()
@@ -725,7 +725,7 @@ if __name__ == '__main__':
                 if win and not lose:
                     waitTime = int(pygame.time.get_ticks() / 1000) + 2
                     while waitTime > int(pygame.time.get_ticks() / 1000):
-                        if levelNum != 4:
+                        if levelNum != 3:
                             img = font.render("You won level " + str(levelNum) + "!", True, (255, 255, 255))
                         else:
                             img = font.render("Congratulations, you beat the game!", True, (255, 255, 255))
