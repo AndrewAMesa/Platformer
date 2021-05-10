@@ -742,6 +742,17 @@ if __name__ == '__main__':
 
                 if win and lose:
                     break
+            main_character.can_double_jump = False
+            main_character.maxhealth = 100
+            main_character.can_glide = False
+            main_character.health = main_character.maxhealth
+            main_character.isInvincible = False
+            sword.upgradeCount = 10
+            sword.swordNumber = 0
+            gun.gunNumber = 0
+            gun.upgradeCount = 10
+            enemy_group.empty()
+            platform_group.empty()
 
         elif mode == 2:
             main(0)
@@ -752,6 +763,8 @@ if __name__ == '__main__':
             main_character.health = main_character.maxhealth
             main_character.isInvincible = False
             sword.upgradeCount = 10
+            sword.swordNumber = 0
+            gun.gunNumber = 0
             gun.upgradeCount = 10
             enemy_group.empty()
             platform_group.empty()
