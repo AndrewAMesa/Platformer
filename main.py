@@ -19,6 +19,11 @@ GRAVITY = 1
 if infoObject.current_h == 720:
  #   GRAVITY = GRAVITY * 0.667
     TILESIZE = 80
+    sword_image = pygame.transform.scale(sword_image, (
+        int(sword_image.get_width() * 0.667), int(sword_image.get_height() * 0.667)))
+    gun_image = pygame.transform.scale(gun_image, (
+        int(gun_image.get_width() * 0.667),
+        int(gun_image.get_height() * 0.667)))
 infoObject = pygame.display.Info()
 DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
@@ -211,7 +216,7 @@ def update_all():
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
-    current_weapon.sprites()[0].update()
+    current_weapon.sprites()[0].update(main_character)
 
 
     #Falling Blocks
@@ -749,20 +754,15 @@ if __name__ == '__main__':
             main_character.isInvincible = False
             sword.upgradeCount = 10
             sword.swordNumber = 0
+            sword.image = sword_image
+            sword.originalImage = sword_image
+            gun.image = gun_image
+            gun.originalImage = gun_image
             gun.gunNumber = 0
             gun.upgradeCount = 10
             enemy_group.empty()
             platform_group.empty()
 
-            main_character.can_double_jump = False
-            main_character.maxhealth = 100
-            main_character.can_glide = False
-            main_character.health = main_character.maxhealth
-            main_character.isInvincible = False
-            sword.upgradeCount = 10
-            gun.upgradeCount = 10
-            enemy_group.empty()
-            platform_group.empty()
 
         elif mode == 2:
             main(0)
@@ -774,6 +774,10 @@ if __name__ == '__main__':
             main_character.isInvincible = False
             sword.upgradeCount = 10
             sword.swordNumber = 0
+            sword.image = sword_image
+            sword.originalImage = sword_image
+            gun.image = gun_image
+            gun.originalImage = gun_image
             gun.gunNumber = 0
             gun.upgradeCount = 10
             enemy_group.empty()
