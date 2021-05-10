@@ -723,7 +723,6 @@ if __name__ == '__main__':
                         pygame.display.update()
 
                 if win and not lose:
-                    levelNum += 1
                     waitTime = int(pygame.time.get_ticks() / 1000) + 2
                     while waitTime > int(pygame.time.get_ticks() / 1000):
                         if levelNum != 4:
@@ -734,6 +733,8 @@ if __name__ == '__main__':
                         DISPLAYSURF.blit(img, imgPos)
 
                         pygame.display.update()
+
+                    levelNum += 1
 
                 main_character.isInvincible = False
                 enemy_group.empty()
