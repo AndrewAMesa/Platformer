@@ -760,6 +760,7 @@ if __name__ == '__main__':
             gun.originalImage = gun_image
             gun.gunNumber = 0
             gun.upgradeCount = 10
+            gun.shootTime = 360
             enemy_group.empty()
             platform_group.empty()
 
@@ -780,6 +781,7 @@ if __name__ == '__main__':
             gun.originalImage = gun_image
             gun.gunNumber = 0
             gun.upgradeCount = 10
+            gun.shootTime = 360
             enemy_group.empty()
             platform_group.empty()
 
