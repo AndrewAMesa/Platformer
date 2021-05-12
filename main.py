@@ -759,6 +759,8 @@ if __name__ == '__main__':
             gun.image = gun_image
             gun.originalImage = gun_image
             gun.gunNumber = 0
+            gun.gunDamage = 10
+            sword.swordDamage = 8
             gun.upgradeCount = 10
             gun.shootTime = 360
             enemy_group.empty()
@@ -782,6 +784,8 @@ if __name__ == '__main__':
             gun.gunNumber = 0
             gun.upgradeCount = 10
             gun.shootTime = 360
+            gun.gunDamage = 10
+            sword.swordDamage = 8
             enemy_group.empty()
             platform_group.empty()
 
