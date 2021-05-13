@@ -410,6 +410,9 @@ def main(levelNum):
                     win = True
                     lose = True
 
+                if event.key == K_r:
+                    lose = True
+
                 if event.key == K_SPACE:
                     if checkStanding(main_character):
                         main_character.jump(sword)
@@ -681,6 +684,11 @@ def menu():
             imgPos = img.get_rect(
                 center=(int(SCREEN_WIDTH / 2),
                         int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 6 * int(SCREEN_HEIGHT * 0.05)))
+            DISPLAYSURF.blit(img, imgPos)
+            img = smallFont.render("Press R to restart the level", True, (255, 255, 255))
+            imgPos = img.get_rect(
+                center=(int(SCREEN_WIDTH / 2),
+                        int(SCREEN_HEIGHT / 4) + int(SCREEN_HEIGHT * 0.05) + 7 * int(SCREEN_HEIGHT * 0.05)))
             DISPLAYSURF.blit(img, imgPos)
 
             img = smallFont.render("Press Enter to return to the title screen", True, (255, 255, 255))
