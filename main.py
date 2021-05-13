@@ -19,6 +19,11 @@ GRAVITY = 1
 if infoObject.current_h == 720:
  #   GRAVITY = GRAVITY * 0.667
     TILESIZE = 80
+    sword_image = pygame.transform.scale(sword_image, (
+        int(sword_image.get_width() * 0.667), int(sword_image.get_height() * 0.667)))
+    gun_image = pygame.transform.scale(gun_image, (
+        int(gun_image.get_width() * 0.667),
+        int(gun_image.get_height() * 0.667)))
 infoObject = pygame.display.Info()
 DISPLAYSURF = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
@@ -191,7 +196,7 @@ def enemyMovement():
 
         if isinstance(enemy, BirdBoss) and isinstance(platform, InvisibleBlock):
             collided_sprites = pygame.sprite.spritecollide(enemy, platform_group, False, collided=None)
-            if len(collided_sprites) > 1:
+            if len(collided_sprites) > 0:
                 for i in range(len(collided_sprites)):
                     if isinstance(collided_sprites[i], InvisibleBlock):
                         enemy.kill()
@@ -211,7 +216,7 @@ def update_all():
     shiftX, shiftY = main_character.getShift()
     enemyMovement()
     enemy_group.update(shiftX, shiftY)
-    current_weapon.sprites()[0].update()
+    current_weapon.sprites()[0].update(main_character)
 
 
     #Falling Blocks
@@ -326,7 +331,7 @@ def check_y_collisions():
 def check_x_collisions():
     if main_character.x_velocity != 0:
         for platform in platform_group:
-            if main_character.rect.bottom > platform.rect.top and main_character.rect.top < platform.rect.bottom:
+            if main_character.rect.bottom + main_character.y_velocity > platform.rect.top and main_character.rect.top + main_character.y_velocity < platform.rect.bottom:
                 if main_character.x_velocity > 0:
                     if main_character.rect.right + main_character.x_velocity >= platform.rect.left >= main_character.rect.right and not platform.walkthrough:
                         return "Right"
@@ -731,10 +736,9 @@ if __name__ == '__main__':
                         pygame.display.update()
 
                 if win and not lose:
-                    levelNum += 1
                     waitTime = int(pygame.time.get_ticks() / 1000) + 2
                     while waitTime > int(pygame.time.get_ticks() / 1000):
-                        if levelNum != 4:
+                        if levelNum != 3:
                             img = font.render("You won level " + str(levelNum) + "!", True, (255, 255, 255))
                         else:
                             img = font.render("Congratulations, you beat the game!", True, (255, 255, 255))
@@ -743,12 +747,33 @@ if __name__ == '__main__':
 
                         pygame.display.update()
 
+                    levelNum += 1
+
                 main_character.isInvincible = False
                 enemy_group.empty()
                 platform_group.empty()
 
                 if win and lose:
                     break
+            main_character.can_double_jump = False
+            main_character.maxhealth = 100
+            main_character.can_glide = False
+            main_character.health = main_character.maxhealth
+            main_character.isInvincible = False
+            sword.upgradeCount = 10
+            sword.swordNumber = 0
+            sword.image = sword_image
+            sword.originalImage = sword_image
+            gun.image = gun_image
+            gun.originalImage = gun_image
+            gun.gunNumber = 0
+            gun.gunDamage = 10
+            sword.swordDamage = 8
+            gun.upgradeCount = 10
+            gun.shootTime = 360
+            enemy_group.empty()
+            platform_group.empty()
+
 
         elif mode == 2:
             main(0)
@@ -759,7 +784,16 @@ if __name__ == '__main__':
             main_character.health = main_character.maxhealth
             main_character.isInvincible = False
             sword.upgradeCount = 10
+            sword.swordNumber = 0
+            sword.image = sword_image
+            sword.originalImage = sword_image
+            gun.image = gun_image
+            gun.originalImage = gun_image
+            gun.gunNumber = 0
             gun.upgradeCount = 10
+            gun.shootTime = 360
+            gun.gunDamage = 10
+            sword.swordDamage = 8
             enemy_group.empty()
             platform_group.empty()
 

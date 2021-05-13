@@ -54,6 +54,7 @@ class Character(pygame.sprite.Sprite):
         self.currentDirection = 1
 
 
+
     def update(self, direction, weapon1, weapon2):
 
         if self.isMoving:
@@ -161,6 +162,7 @@ class MainCharacter(Character):
         self.isInvincible = False
         self.flashTicks = 0
         self.timeTaken = 0
+
 
 
     def addmaxhealth(self):
@@ -930,9 +932,6 @@ class Sword(pygame.sprite.Sprite):
         self.image = _image
         self.originalImage = _image
         self.isSword = True
-        if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
-            self.originalImage = pygame.transform.scale(self.originalImage, (int(self.originalImage.get_width() * 0.667), int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.y_velocity = 0
         self.xDirection = 4
@@ -995,12 +994,15 @@ class Sword(pygame.sprite.Sprite):
                     spriteGroup[x].health -= self.swordDamage
                     if spriteGroup[x].health <= 0:
                         spriteGroup[x].kill()
-    def update(self):
+    def update(self, mainCharacter):
         if self.upgradeCount <= 0 and self.swordNumber < 2:
+
             self.swordNumber += 1
             self.swordDamage += 5
             self.image = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
             self.originalImage = pygame.image.load("Images/Sword" + str(self.swordNumber) + ".png")
+            if mainCharacter.direction == -1:
+                self.image = pygame.transform.flip(self.originalImage, True, False)
             if infoObject.current_h == 720:
                 self.left2 -= 5
                 self.image = pygame.transform.scale(self.image, (
@@ -1118,12 +1120,6 @@ class Gun(pygame.sprite.Sprite):
         self.isSword = False
         self.xDirection = 2
         self.yDirection = 0
-        if infoObject.current_h == 720:
-            self.image = pygame.transform.scale(self.image, (
-            int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
-            self.originalImage = pygame.transform.scale(self.originalImage, (
-            int(self.originalImage.get_width() * 0.667),
-            int(self.originalImage.get_height() * 0.667)))
         self.rect = self.image.get_rect()
         self.gunDamage = 10
         self.left1 = int(DISPLAYSURF.get_width() / 2) - 13
@@ -1172,13 +1168,15 @@ class Gun(pygame.sprite.Sprite):
                     spawnLeft -= 18
             bulletGroup.add(Bullet(DISPLAYSURF, pygame.image.load("Images/Bullet.png"), spawnLeft, spawnTop, self.xDirection, self.yDirection, self.gunDamage))
             self.canAttack = False
-    def update(self):
+    def update(self, mainCharacter):
         if self.upgradeCount <= 0 and self.gunNumber < 2:
             self.gunNumber += 1
             self.gunDamage += 10
             self.shootTime -= 150
             self.image = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
             self.originalImage = pygame.image.load("Images/Gun" + str(self.gunNumber) + ".png")
+            if mainCharacter.direction == -1:
+                self.image = pygame.transform.flip(self.originalImage, True, False)
             if infoObject.current_h == 720:
                 self.image = pygame.transform.scale(self.image, (
                     int(self.image.get_width() * 0.667), int(self.image.get_height() * 0.667)))
