@@ -331,7 +331,7 @@ def check_y_collisions():
 def check_x_collisions():
     if main_character.x_velocity != 0:
         for platform in platform_group:
-            if main_character.rect.bottom > platform.rect.top and main_character.rect.top < platform.rect.bottom:
+            if main_character.rect.bottom + main_character.y_velocity > platform.rect.top and main_character.rect.top + main_character.y_velocity < platform.rect.bottom:
                 if main_character.x_velocity > 0:
                     if main_character.rect.right + main_character.x_velocity >= platform.rect.left >= main_character.rect.right and not platform.walkthrough:
                         return "Right"
