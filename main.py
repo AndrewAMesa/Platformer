@@ -411,11 +411,11 @@ def main(levelNum):
         # Event Loop
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
+                if event.key == K_ESCAPE and sword.attacking == False:
                     win = True
                     lose = True
 
-                if event.key == K_r:
+                if event.key == K_r and sword.attacking == False:
                     lose = True
 
                 if event.key == K_SPACE:
@@ -445,7 +445,7 @@ def main(levelNum):
         if main_character.health <= 0:
             lose = True
 
-        if levelNum != 0:
+        if levelNum != 0 and sword.attacking == False:
             win = True
             spriteGroup = enemy_group.sprites()
             for x in range(len(spriteGroup)):
