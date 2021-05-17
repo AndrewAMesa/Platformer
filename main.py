@@ -426,9 +426,9 @@ def main(levelNum):
                         check_y_collisions()
                         main_character.jumped = True
                 if event.key == K_RETURN:
-                    if current_weapon.sprites()[0].isSword == True:
+                    if current_weapon.sprites()[0].isSword == True and main_character.health > 0:
                         current_weapon.sprites()[0].attacking = True
-                    else:
+                    elif main_character.health > 0:
                         current_weapon.sprites()[0].attack(bullet_group, DISPLAYSURF)
                 if event.key == K_e:
                     spriteArray = current_weapon.sprites()
