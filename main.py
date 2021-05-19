@@ -758,6 +758,7 @@ if __name__ == '__main__':
             main_character.can_double_jump = False
             main_character.maxhealth = 100
             main_character.can_glide = False
+            main_character.direction = 1
             main_character.health = main_character.maxhealth
             main_character.isInvincible = False
             sword.upgradeCount = 10
@@ -781,6 +782,7 @@ if __name__ == '__main__':
             main_character.can_double_jump = False
             main_character.maxhealth = 100
             main_character.can_glide = False
+            main_character.direction = 1
             main_character.health = main_character.maxhealth
             main_character.isInvincible = False
             sword.upgradeCount = 10
