@@ -1,2 +1,2 @@
-# platformer
+# Platformer
 This is a platformer game developed using the Python programming language and Pygame. This game was developed by a group and used git for SCM. The point of this game is to get to the end of each level and defeat the boss at the end. There are 4 levels with the first one being a tutorial level. To move on to the next level you will have to reach the end of the level and defeat the boss of that level. You can gain powerups in each level that unlock new abilities, and you can improve the weapons by picking up items dropped by enemies. You can also pick up hearts that heal the character or increase the character's max health.
