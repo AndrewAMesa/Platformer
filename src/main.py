@@ -603,7 +603,7 @@ def readFile(levelNum):
                 enemy_group.add(SpinnyBoss((int(SCREEN_WIDTH / 2) - (startingPosX - i) * shiftSize),
                                              (int(SCREEN_HEIGHT / 2) - (startingPosY - j) * shiftSize)))
 
-def menu():
+async def menu():
     font = pygame.font.SysFont(None, 100)
     smallFont = pygame.font.SysFont(None, 50)
     pygame.event.clear(eventtype=KEYDOWN)
@@ -710,13 +710,16 @@ def menu():
         pygame.display.update()
         fpsClock.tick(FPS)
 
+        # Yield control back to the event loop
+        await asyncio.sleep(0)
+
     return mode
 
 async def async_main():
     font = pygame.font.SysFont(None, 100)
 
     while True:
-        mode = menu()
+        mode = await menu()
         if mode == 1:
             levelNum = 1
             while levelNum < 4:
